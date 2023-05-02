@@ -1,4 +1,3 @@
-import "@/styles/tailwind.css";
 import type { AppProps } from "next/app";
 import "@/styles/app.scss";
 

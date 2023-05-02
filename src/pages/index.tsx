@@ -1,3 +1,4 @@
+import Home from "./home/home";
 export default function App() {
-    return <div>Appaaabbb</div>;
+    return <div><Home></Home></div>;
 }
