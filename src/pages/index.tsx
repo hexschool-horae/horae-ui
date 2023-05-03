@@ -1,3 +1,6 @@
 export default function App() {
-    return <div>Appaaabbb</div>;
+    return (<>
+        <h1>首頁</h1>
+    
+    </>);
 }
