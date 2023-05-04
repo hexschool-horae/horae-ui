@@ -9,7 +9,12 @@ export default function Header() {
       <div className="nav-brand text-2xl">Horae</div>
 
       <div className="ml-auto">
-        <Button className="text-red-600" label="登入" link />
+        <Button
+          className="text-red-600"
+          label="登入"
+          onClick={() => router.push("/login")}
+          link
+        />
         <Button
           className=" bg-red-600"
           label="立即免費註冊"

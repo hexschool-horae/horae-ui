@@ -2,12 +2,12 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import yup from "@/libs/yup";
 
-import useUserState from "@/hooks/useUserState";
-
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
 
+import { useAppDispatch } from "@/hooks/useAppStore";
+import { setIsLogin, setToken } from "@/slices/userSlice";
 import axiosFetcher from "@/apis/axios";
 
 const { post } = axiosFetcher;
@@ -46,18 +46,16 @@ export default function Register() {
     reset,
   } = useForm({ defaultValues, resolver: yupResolver(schema) });
 
-  const userState = useUserState();
-  const { setUserIsLogin, setUserToken } = userState;
+  const dispatch = useAppDispatch();
 
   const onSubmit = async (submitData: IRegisterForm) => {
     const result = await post<IRegisterResponse>("/user/register", submitData);
 
     if (result === undefined) return;
-
     const { token } = result?.user;
 
-    setUserToken(token);
-    setUserIsLogin(true);
+    dispatch(setToken(token));
+    dispatch(setIsLogin(true));
     // 重置表單
     reset();
   };

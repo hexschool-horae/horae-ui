@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, ReactNode } from "react";
-import useUserState from "@/hooks/useUserState";
+import { useAppSelector } from "@/hooks/useAppStore";
 
 // 不需要權限驗證的路由
 const nonAuthPaths = ["/login", "/register"];
@@ -8,11 +8,8 @@ const nonAuthPaths = ["/login", "/register"];
 const RouterGuard = ({ children }: { children?: ReactNode }) => {
   const router = useRouter();
   const { pathname } = router;
+  const isLogin = useAppSelector((state) => state.user.isLogin);
 
-  const userState = useUserState();
-  const {
-    state: { isLogin },
-  } = userState;
   // 路由權限驗證
   useEffect(() => {
     if (isLogin) {
