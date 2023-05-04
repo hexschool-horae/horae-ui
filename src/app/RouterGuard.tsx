@@ -17,6 +17,7 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
         router.push("/");
       }
     } else {
+      console.log(pathname);
       if (!nonAuthPaths.includes(pathname)) {
         router.push("/login");
       }

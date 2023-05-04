@@ -1,13 +1,20 @@
-import axiosFetcher from "@/apis/axios";
-import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-const { get } = axiosFetcher;
+import { Button } from "primereact/button";
+
 export default function Index() {
-  //   useEffect(() => {
-  //     (async () => {
-  //       const result = await get("user/ptofile", "");
-  //     })();
-  //   }, []);
+  const router = useRouter();
 
-  return <div>Appaaabbb</div>;
+  return (
+    <div>
+      <h2 className="text-2xl font-bold mb-6">歡迎！</h2>
+
+      <Button
+        className="p-0"
+        label="前往個人頁面"
+        onClick={() => router.push("/profile")}
+        link
+      />
+    </div>
+  );
 }

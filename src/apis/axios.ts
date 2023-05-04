@@ -1,29 +1,23 @@
 import axios from "axios";
-import type { AxiosInstance, AxiosResponse, AxiosError } from "axios";
-
 import { httpErrorHandler } from "./errorHandlers";
+import { RootState } from "@/app/store";
+
+import type { AxiosInstance, AxiosResponse, AxiosError } from "axios";
+import type { EnhancedStore } from "@reduxjs/toolkit";
 import type { IBasicResponse } from "@/types/api";
 
-// 把驗證設定成boolean
-// interface IPostArgs {
-//   url: string;
-//   data: object | null;
-//   auth?: boolean;
-// }
+// app.js建立時，會注入store
+let store: EnhancedStore | null = null;
 
-// 把驗證設定成token
-// export interface IPostArgs {
-//   url: string;
-//   data: object | null;
-//   token: string;
-// }
+export const injectStore = (_store: EnhancedStore) => {
+  store = _store;
+};
 
 const baseURL = "https://horae-api.onrender.com/";
 
 const instance: AxiosInstance = axios.create({
   baseURL,
   headers: {
-    Accept: "application/json",
     "Content-Type": "application/json",
   },
 });
@@ -47,12 +41,31 @@ instance.interceptors.response.use(
 );
 
 // api回傳的data，可以透過泛型傳入格式
-async function post<T>(url: string, data: unknown, token = "") {
+async function post<T>(url: string, data?: unknown | null, isAuth = true) {
   try {
-    if (token !== "") {
-      instance.defaults.headers.common["Authorization"] = token;
+    if (store === null)
+      throw new Error("data from redux-toolkit store is null!");
+
+    // 取得store中的state
+    const rootState: RootState = store.getState();
+
+    // 取得 store 裡的 token
+    const { user } = rootState;
+    const { token } = user;
+
+    // 是否帶入驗證
+    if (isAuth) {
+      instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
       delete instance.defaults.headers.common["Authorization"];
+    }
+
+    // 檢核傳送 data 是否為 null，改變 request content-type
+    if (data === null) {
+      instance.defaults.headers["Content-Type"] =
+        "application/x-www-form-urlencoded";
+    } else {
+      instance.defaults.headers["Content-Type"] = "application/json";
     }
 
     const clarifiedPath = url.replace(/[^ -~]/g, "");
@@ -65,10 +78,20 @@ async function post<T>(url: string, data: unknown, token = "") {
   }
 }
 
-async function patch<T>(url: string, data: unknown, token: string) {
+async function patch<T>(url: string, data: unknown, isAuth = true) {
   try {
-    if (token !== "") {
-      instance.defaults.headers.common["Authorization"] = token;
+    if (store === null)
+      throw new Error("data from redux-toolkit store is null!");
+
+    // 取得store中的state
+    const rootState: RootState = store.getState();
+
+    // 取得 store 裡的 token
+    const { user } = rootState;
+    const { token } = user;
+
+    if (isAuth) {
+      instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
       delete instance.defaults.headers.common["Authorization"];
     }
@@ -83,8 +106,24 @@ async function patch<T>(url: string, data: unknown, token: string) {
   }
 }
 
-async function get<T>(url: string, token: string) {
+async function get<T>(url: string, isAuth = true) {
   try {
+    if (store === null)
+      throw new Error("data from redux-toolkit store is null!");
+
+    // 取得store中的state
+    const rootState: RootState = store.getState();
+
+    // 取得 store 裡的 token
+    const { user } = rootState;
+    const { token } = user;
+
+    if (isAuth) {
+      instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete instance.defaults.headers.common["Authorization"];
+    }
+
     const clarifiedPath = url.replace(/[^ -~]/g, "");
     const response = await instance.get<T>(clarifiedPath);
 
