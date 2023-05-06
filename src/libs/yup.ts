@@ -26,6 +26,7 @@ yup.setLocale({
   string: {
     max: "長度不得超過${max}個字元",
     min: "長度不得少於${min}個字元",
+    email: "請填寫有效之電子郵件",
   },
   number: {
     min: "輸入數值不可小於${min}",

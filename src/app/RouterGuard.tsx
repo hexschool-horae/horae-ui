@@ -13,12 +13,12 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
   // 路由權限驗證
   useEffect(() => {
     if (isLogin) {
-      if (pathname === "/login") {
-        router.push("/");
+      if (pathname === "/login" || pathname === "/sign-up") {
+        router.push("/board");
       }
     } else {
       console.log(pathname);
-      if (!nonAuthPaths.includes(pathname)) {
+      if (!nonAuthPaths.includes(pathname) && pathname !== "/") {
         router.push("/login");
       }
     }

@@ -19,7 +19,7 @@ const { post } = axiosFetcher;
 
 const schema = yup
   .object({
-    email: yup.string().required().email(),
+    email: yup.string().email().required(),
     password: yup.string().required().min(8).max(12),
   })
   .required();
