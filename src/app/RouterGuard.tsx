@@ -3,7 +3,7 @@ import { useEffect, ReactNode } from "react";
 import { useAppSelector } from "@/hooks/useAppStore";
 
 // 不需要權限驗證的路由
-const nonAuthPaths = ["/login", "/register"];
+const nonAuthPaths = ["/login", "/sign-up"];
 
 const RouterGuard = ({ children }: { children?: ReactNode }) => {
   const router = useRouter();

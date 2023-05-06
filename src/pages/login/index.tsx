@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
@@ -141,12 +143,21 @@ export default function Register() {
       </div>
 
       <Button
-        className="bg-red-600 px-10"
+        className="bg-red-600 px-10 mb-6"
         onClick={handleSubmit(onSubmit)}
         rounded
       >
         登入
       </Button>
+
+      <div>
+        還沒有註冊帳號？
+        <Link href="sign-up">
+          <Button className="text-red-600 p-0" link>
+            註冊
+          </Button>
+        </Link>
+      </div>
 
       {/* 登入中 loading */}
       <Dialog

@@ -54,7 +54,7 @@ export default function Header() {
               className=" bg-red-600"
               label="立即免費註冊"
               rounded
-              onClick={() => router.push("/register")}
+              onClick={() => router.push("/sign-up")}
             />
           </div>
         )}
