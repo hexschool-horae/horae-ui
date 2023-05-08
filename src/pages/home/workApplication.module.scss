@@ -3,7 +3,7 @@
   margin-bottom: 40px;
 }
 .section {
-  @apply bg-secondary-200;
+  @apply bg-secondary-2;
 }
 .container {
   padding: 12px 12px 80px;
@@ -11,8 +11,7 @@
 .card_area {
   display: flex;
   .card {
-    @apply w-1/3;
-    background: white;
+    @apply w-1/3 bg-white;
     padding: 24px;
     box-shadow: 0px 8px 60px rgba(171, 19, 19, 0.1);
     border-radius: 6px;
@@ -26,12 +25,13 @@
     }
     
     &:hover {
-      background: #FFF1F1;
+      @apply bg-secondary-4;
       .img_box {
         position: relative;
         border-radius: 8px;
         margin: auto;
         .add {
+          @apply bg-primary;
           display: flex;
           justify-content: center;
           position: absolute;
@@ -45,7 +45,6 @@
           left: 0;
           margin: auto;
           line-height: 58px;
-          background: #FF6848;
           color: #fff;
           border-radius: 50%;
           cursor: pointer;
@@ -60,7 +59,7 @@
         }
       }
       h3 {
-        @apply text-secondary-100;
+        @apply text-secondary;
       }
     }
   }

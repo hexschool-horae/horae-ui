@@ -7,24 +7,24 @@
 }
 
 .swiper-pagination-bullet {
+  @apply bg-secondary-2;
   width: 10px;
   height: 10px;
-  background-color: #F8E1E1;
   opacity: 1;
 }
 .swiper-pagination-bullet-active {
+  @apply bg-secondary;
   position: relative;
   width: 8px;
   height: 8px;
-  background-color: #FD1414;
   &::after {
+    @apply border-secondary;
     position: absolute;
     display: block;
     content: "";
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    border: 1px solid #FD1414;
     top: -6px;
     left: -6px;
   }

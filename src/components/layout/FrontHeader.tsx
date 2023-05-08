@@ -48,7 +48,7 @@ export default function FrontHeader() {
 						</ul>
 					</nav>
 					<div className={styles.right_panel}>
-						<Link href="#" className="text-secondary-100 px-5 sm:text-base text-sm">登入</Link>
+						<Link href="#" className="text-secondary px-5 sm:text-base text-sm">登入</Link>
 						<Button label="立即免費註冊" severity="secondary" rounded/>
 					</div>
 				</div>

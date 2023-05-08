@@ -41,7 +41,7 @@ interface List {
   return <>
     <section className={styles.section}>
       <div className={`${styles.container} front-max-container`}>
-       <h3 className={`${homeStyles.h3} text-secondary-300 ${styles.h3}`}>可彈性應用於各種工作流程</h3>
+       <h3 className={`${homeStyles.h3} text-secondary-3 ${styles.h3}`}>可彈性應用於各種工作流程</h3>
         <div className={styles.card_area}>
           {list.map((item, index) => (  
             <div className={`${styles.card} w-1/3`} key={index}>

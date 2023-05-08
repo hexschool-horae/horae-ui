@@ -19,10 +19,9 @@
       border-top-right-radius: 6px;
       border-top-left-radius: 6px;
       .p-dialog-header-icon {
+        @apply bg-secondary-3 text-white;
         width: 48px;
         height: 48px;
-        background: #CC3A3A;
-        color: #fff;
         border-radius: 0px 6px;
       }
     }
@@ -42,16 +41,16 @@
     .p-carousel-indicator {
       margin-right: 25px;
       button {
-        background-color: #F8E1E1;
+        @apply border-secondary-2;
         width: 10px;
         height: 10px;
         border-radius: 50%;
       }
       &.p-highlight {
+        @apply border-secondary;
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        border: 1px solid #FD1414;
         button {
           width: 8px;
           height: 8px;

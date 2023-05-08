@@ -21,7 +21,7 @@
     font-size: 14px;
     line-height: 150%;
     letter-spacing: 1px;
-    color: #1A1A1A;
+    @apply text-black;
   }
   .icon_box {
     display: flex;
@@ -30,8 +30,16 @@
       &:last-child {
         margin-right: 0;
       }
+      &:hover {
+        cursor: pointer;
+        rect {
+          @apply fill-primary;
+        }
+        path {
+          @apply fill-white;
+        }
+      }
     }
-    
   }
 }
 

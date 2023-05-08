@@ -1,22 +1,14 @@
 .section {
-  background: white;
+  @apply bg-white;
   position: relative;
 }
 .container {
   padding: 80px 40px 75px;
   h2 {
-    font-weight: 500;
-    font-size: 50px;
-    line-height: 120%;
-    text-align: center;
-    color: #1A1A1A;
+    @apply text-black;
   }
  h4 {
-    font-weight: 500;
-    font-size: 30px;
-    line-height: 120%; 
-    text-align: center;
-    color: #FF6848;
+    @apply text-primary;
     margin-bottom: 8px;
   }
 }
@@ -62,11 +54,7 @@
   .container {
     padding: 40px 12px;
     h2 {
-      font-size: 40px;
       margin-bottom: 12px;
-    }
-    h4 {
-      font-size: 24px;
     }
   }
   .content {

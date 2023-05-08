@@ -12,20 +12,16 @@
 .container {
   padding: 80px 40px 75px;
   h2 {
-    font-weight: 500;
-    font-size: 50px;
-    line-height: 120%;
-    text-align: center;
-    color: #FFFFFF;
+    @apply text-white;
     margin-bottom: 24px;
   }
   .subtitle {
+    @apply text-secondary-2;
     font-weight: 500;
     font-size: 20px;
     line-height: 120%;
     text-align: center;
     letter-spacing: 1px;
-    color: #F8E1E1;
   }
 }
 .content {
@@ -33,11 +29,11 @@
   padding: 40px 0 0;
 }
 .img_box {
+  @apply bg-primary;
   position: relative;
   width: 33.33%;
   height: 0;
-  padding-bottom: 31%; /* 使用padding-top創建正方形容器 */
-  background: #FF6848;
+  padding-bottom: 31%;
   border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
   animation: go 450s infinite;
   img {
@@ -63,27 +59,27 @@
     border-radius: 50%;
   }
   &::before {
+    @apply bg-secondary;
     width: 14px;
     height: 14px;
     top: 50%;
     left: -27.28px;
-    background: #FD1414;
   }
   
   &::after {
+    @apply bg-primary;
     width: 10px;
     height: 10px;
     top: 65%;
     left: -15.82px;
-    background: #FF6848;
   }
   
   span {
+    @apply bg-primary;
     width: 16px;
     height: 16px;
     top: 10%;
     right: -15.82px;
-    background: #FF6848;
   }
 }
 .describe {
@@ -97,10 +93,10 @@
   height: 100%;
   z-index: 2;
   p {
+    @apply text-white;
     font-size: 24px;
     line-height: 120%;
     text-align: justify;
-    color: #FFFFFF;
     z-index: 2;
   }
   .icon {
@@ -116,7 +112,6 @@
   .container {
     padding: 40px 12px;
     h2 {
-      font-size: 40px;
       margin-bottom: 12px;
     }
     .subtitle {

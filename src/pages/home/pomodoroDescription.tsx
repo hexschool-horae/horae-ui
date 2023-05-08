@@ -1,5 +1,5 @@
-import { useState } from "react";
 import Image from 'next/image';
+import homeStyles from './home.module.scss';
 import styles from './pomodoroDescription.module.scss';
 
 export default function PomodoroDescription() {
@@ -7,7 +7,7 @@ export default function PomodoroDescription() {
   return <>
     <section className={styles.section}>
       <div className={`${styles.container} front-max-container`}>
-        <h2>使用過番茄鐘和看板工具的使用者</h2>
+        <h2 className={homeStyles.h2}>使用過番茄鐘和看板工具的使用者</h2>
         <p className={styles.subtitle}>您已經熟悉看板工具的強大功能和番茄鐘的高效專注方法，</p>
         <p className={styles.subtitle}>但是，想象一下，如果將它們結合在一起，您將獲得怎樣的協同效應？</p>
         <div className={styles.content}> 

@@ -26,13 +26,13 @@
       position: relative;
       z-index: 2;
       &::after {
+        @apply bg-primary;
         content: '';
         position: absolute;
         width: 100%;
         height: 12px;
         left: 0;
         bottom: 3px;
-        background: #FF6848;
         z-index: -1;
       }
     }

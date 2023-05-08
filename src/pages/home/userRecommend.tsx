@@ -86,7 +86,7 @@ const template = (item: Item) => {
   return <>
     <section className={styles.section}>
       <div className={`${styles.container} front-max-container`}>
-        <h4 className={`${homeStyles.h3} text-secondary-300 ${styles.h3}`}>團隊愛上Horae的理由</h4>
+        <h4 className={`${homeStyles.h3} text-secondary-3 ${styles.h3}`}>團隊愛上Horae的理由</h4>
           {/* <Carousel value={list} numVisible={1} numScroll={1} itemTemplate={template} /> */}
           <Swiper
           slidesPerView={1}
