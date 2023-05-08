@@ -3,15 +3,86 @@
 @import "./primeTheme.css";
 @import "primereact/resources/primereact.min.css";
 @import "./primeCustom.scss";
+@import 'primeicons/primeicons.css';
 @import "./tailwind.css";
+// Import Swiper styles
+@import "swiper/css";
+@import "swiper/css/pagination";
+@import "swiper/css/navigation";
+@import "./swiperCustom.scss";
+@import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
 
 body {
-  font-family: 'Roboto,Noto Sans TC,arial,sans-serif';
+  font-family: 'Noto Sans TC', '微軟正黑體', sans-serif;
 }
-
+main {
+  min-height: calc(100vh - 232.8px);
+}
 .front-max-container {
   max-width: 1280px;
   width: 100%;
   padding: 1.25rem 40px;
   margin: 0 auto;
+  overflow: hidden;
+}
+section {
+  position: relative;
+}
+.p-decorative-circle {
+  position: absolute;
+  border-radius: 560px 0 0 560px;
+  width: 280px;
+  height: 560px;
+  line-height: 560px;
+  background: #FD1414;
+  opacity: 0.1;
+  filter: blur(100px);
+}
+.p-left-decorative-circle-1 {
+  left: 0px;
+  top: 500px;
+  border-radius: 0 560px 560px 0;
+}
+.p-right-decorative-circle-1 {
+  right: 0px;
+  top: 200px;
+}
+.p-right-decorative-circle-2 {
+  right: 0px;
+  top: 950px;
+  
+}
+.t-decorative-circle {
+  position: absolute;
+  border-radius: 265.5px 0 0 0;
+  width: 200px;
+  height: 265.5px;
+  background: #FD1414;
+  opacity: 0.1;
+  filter: blur(57px);
+}
+
+.t-left-decorative-circle {
+  width: 673px;
+  height: 673px;
+  border-radius: 50%;
+  top: -600px;
+   z-index: 1;
+}
+.t-right-decorative-circle-1 {
+  right: 0px;
+  bottom: -20px;
+}
+
+.t-right-decorative-circle-2 {
+  right: 125px;
+  bottom: -191px;
+}
+@media (max-width: 640px) {
+  main {
+    min-height: calc(100vh - 64px - 194px);
+  }
+  .p-decorative-circle, .t-decorative-circle {
+    display: none;
+  }
 }

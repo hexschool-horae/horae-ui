@@ -1,0 +1,46 @@
+
+// font
+.h3 {
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 120%;
+  text-align: center;
+  // color: #FFFFFF;
+  margin-bottom: 24px;
+}
+
+.section {
+  background: linear-gradient(143.71deg, #FF6848 21.23%, #FFBBBB 78.89%);
+  position: relative;
+}
+
+.container {
+  padding: 80px 40px 75px;
+  position: relative;
+}
+
+.form_group {
+  width: 100%;
+  input {
+    width: 70%;
+  }
+  button {
+    width: calc(30% - 12px);
+    max-width: 332px;
+  }
+}
+
+@media (max-width: 640px) {
+  .h3 {
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+
+  .container {
+    padding: 40px 12px;
+   
+  }
+  
+}
+
+

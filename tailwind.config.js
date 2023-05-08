@@ -12,6 +12,7 @@ module.exports = {
                 secondary:  {
                     100: '#FD1414',
                     200: '#F8E1E1',
+                    300: '#CC3A3A'
                   },
             },
         },

@@ -1,0 +1,126 @@
+.h3 {
+  margin-top: 68px;
+  margin-bottom: 40px;
+}
+.section {
+  @apply bg-secondary-200;
+}
+.container {
+  padding: 12px 12px 80px;
+}
+.card_area {
+  display: flex;
+  .card {
+    @apply w-1/3;
+    background: white;
+    padding: 24px;
+    box-shadow: 0px 8px 60px rgba(171, 19, 19, 0.1);
+    border-radius: 6px;
+    &:not(:first-child):not(:last-child) {
+      margin: 0 24px;
+    }
+    .img_box {
+      .add {
+        display: none;
+      }
+    }
+    
+    &:hover {
+      background: #FFF1F1;
+      .img_box {
+        position: relative;
+        border-radius: 8px;
+        margin: auto;
+        .add {
+          display: flex;
+          justify-content: center;
+          position: absolute;
+          font-size: 30px;
+          width: 60px;
+          height: 60px;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          margin: auto;
+          line-height: 58px;
+          background: #FF6848;
+          color: #fff;
+          border-radius: 50%;
+          cursor: pointer;
+        }
+        &::before {
+          position: absolute;
+          content: "";
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 8px;
+        }
+      }
+      h3 {
+        @apply text-secondary-100;
+      }
+    }
+  }
+
+
+  .header {
+    padding: 16px 0 8px;
+  }
+
+  .describe {
+    @apply text-base;
+    color: #606060;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+} 
+.dialog_right_panel {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 0 0 40px;
+}
+.dialog_describe {
+  @apply text-base;
+  color: #606060;
+}
+@media (max-width: 640px) { 
+  .container {
+    padding: 12px 12px 40px;
+  }
+  .card_area {
+    flex-direction: column;
+    .card {
+      @apply w-full;
+      padding: 12px;
+      &:not(:first-child):not(:last-child) {
+        margin: 0 auto 12px;
+      }
+      &:last-child {
+        margin: 0 auto;
+      }
+      margin: 0 auto 12px;
+    }
+    .header {
+      padding: 8px 0 4px;
+    }
+    .describe {
+      @apply text-sm;
+    }
+  }
+  .dialog_describe {
+    @apply text-sm;
+  }
+
+  .dialog_right_panel {
+    width: 100%;
+    padding: 20px 0 0;
+  }
+}
