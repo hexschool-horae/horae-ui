@@ -6,6 +6,7 @@ export default function Document() {
       {/* <Head /> */}
       <Head>
         <meta name="description" content="horae-ui" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

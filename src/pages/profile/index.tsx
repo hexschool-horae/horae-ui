@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import Head from "next/head";
 
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -90,6 +91,10 @@ export default function Profile() {
 
   return (
     <>
+      <Head>
+        <title>Horae - 個人資訊</title>
+      </Head>
+
       <div className="flex flex-col mb-5">
         <h2 className="text-2xl font-bold mb-6">
           <span>{username} 的個人資訊</span>
