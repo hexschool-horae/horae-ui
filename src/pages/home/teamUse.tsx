@@ -13,7 +13,7 @@ export default function TeamUse() {
     <div className="t-decorative-circle  t-right-decorative t-right-decorative-circle-1"></div>
     <div className="t-decorative-circle  t-right-decorative t-right-decorative-circle-2"></div>
       <div className={`${styles.container} front-max-container`}>
-        <h4 className={homeStyles.h4}>協助世界各地團隊</h4>
+        <h4 className={`${homeStyles.h4} text-center`}>協助世界各地團隊</h4>
         <h2 className={homeStyles.h2}>打造完美管理計畫</h2>    
         <div className={styles.content}>   
             <div className={styles.top_row}>

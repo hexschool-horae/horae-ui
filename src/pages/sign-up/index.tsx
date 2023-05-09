@@ -11,6 +11,7 @@ import { classNames } from "primereact/utils";
 import { useAppDispatch } from "@/hooks/useAppStore";
 import { setIsLogin, setToken } from "@/slices/userSlice";
 import axiosFetcher from "@/apis/axios";
+import { useRouter } from "next/router";
 
 const { post } = axiosFetcher;
 
@@ -36,8 +37,12 @@ interface IRegisterResponse {
 type TFieldName = "email" | "password" | undefined;
 
 export default function Register() {
+  const router = useRouter();
+  // 取首頁輸入註冊email
+  const login_hint = router.query.login_hint as string;
+
   const defaultValues = {
-    email: "",
+    email: login_hint ?? "",
     password: "",
   };
 
