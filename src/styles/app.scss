@@ -1,10 +1,16 @@
 // Primereact styles
-//theme
-@import "primereact/resources/themes/lara-light-indigo/theme.css";
+@import "./primeTheme.css";
 //core
 @import "primereact/resources/primereact.min.css";
 // icon
 @import "primeicons/primeicons.css";
+@import "./tailwind.css";
+@import "swiper/css";
+@import "swiper/css/pagination";
+@import "swiper/css/navigation";
+
+@import "./primeCustom.scss";
+@import "./swiperCustom.scss";
 
 // 基本設定
 html,
@@ -13,5 +19,76 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Noto Sans TC", sans-serif;
-  overflow: auto;
+  position: relative;
+}
+main {
+  min-height: calc(100vh - 232.8px);
+}
+.front-max-container {
+  max-width: 1280px;
+  width: 100%;
+  padding: 1.25rem 40px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+section {
+  position: relative;
+}
+.p-decorative-circle {
+  @apply bg-secondary;
+  position: absolute;
+  border-radius: 560px 0 0 560px;
+  width: 280px;
+  height: 560px;
+  line-height: 560px;
+  opacity: 0.1;
+  filter: blur(100px);
+}
+.p-left-decorative-circle-1 {
+  left: 0px;
+  top: 500px;
+  border-radius: 0 560px 560px 0;
+}
+.p-right-decorative-circle-1 {
+  right: 0px;
+  top: 200px;
+}
+.p-right-decorative-circle-2 {
+  right: 0px;
+  top: 950px;
+}
+.t-decorative-circle {
+  @apply bg-secondary;
+  position: absolute;
+  border-radius: 265.5px 0 0 0;
+  width: 200px;
+  height: 265.5px;
+  opacity: 0.1;
+  filter: blur(57px);
+}
+
+.t-left-decorative-circle {
+  width: 673px;
+  height: 673px;
+  border-radius: 50%;
+  top: -600px;
+  z-index: 1;
+}
+.t-right-decorative-circle-1 {
+  right: 0px;
+  bottom: -20px;
+}
+
+.t-right-decorative-circle-2 {
+  right: 125px;
+  bottom: -191px;
+}
+@media (max-width: 640px) {
+  main {
+    min-height: calc(100vh - 64px - 194px);
+  }
+  .p-decorative-circle,
+  .t-decorative-circle {
+    display: none;
+  }
 }

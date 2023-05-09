@@ -1,0 +1,68 @@
+// font
+.h2 {
+  font-weight: 500;
+  font-size: 50px;
+  line-height: 120%;
+  text-align: center;
+}
+
+.h3 {
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 120%;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.h4 {
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 120%;
+  text-align: center;
+}
+
+.h5 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 120%;
+}
+
+.section {
+  background: linear-gradient(143.71deg, #ff6848 21.23%, #ffbbbb 78.89%);
+  position: relative;
+}
+
+.container {
+  padding: 80px 40px 75px;
+  position: relative;
+}
+
+.form_group {
+  width: 100%;
+  input {
+    width: 70%;
+  }
+  button {
+    width: calc(30% - 12px);
+    max-width: 332px;
+  }
+}
+
+@media (max-width: 640px) {
+  .h2 {
+    font-size: 40px;
+  }
+  .h3 {
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+  .h4 {
+    font-size: 24px;
+  }
+  .h5 {
+    font-size: 20px;
+  }
+  .container {
+    padding: 40px 12px;
+  }
+}

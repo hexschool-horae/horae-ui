@@ -1,0 +1,65 @@
+.p-button {
+  padding: 12px 24px;
+  font-weight: 500;
+  font-size: 16px;
+  &.p-button-rounded {
+    border-radius: 24px;
+  }
+}
+
+.home-dialog {
+  &.p-dialog {
+    max-width: 1076px;
+    .p-dialog-header {
+      padding: 0;
+      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
+      .p-dialog-header-icon {
+        @apply bg-secondary-3 text-white;
+        width: 48px;
+        height: 48px;
+        border-radius: 0px 6px;
+      }
+    }
+    .p-dialog-content {
+      padding: 0 40px 48px;
+      &:last-of-type {
+        border-bottom-right-radius: 6px;
+        border-bottom-left-radius: 6px;
+      }
+    }
+  }
+}
+
+.p-carousel {
+  .p-carousel-indicators {
+    align-items: center;
+    .p-carousel-indicator {
+      margin-right: 25px;
+      button {
+        @apply border-secondary-2;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      &.p-highlight {
+        @apply border border-secondary;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        button {
+          width: 8px;
+          height: 8px;
+          margin: 5px auto;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .p-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}

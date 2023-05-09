@@ -1,0 +1,174 @@
+.section {
+  background: linear-gradient(143.71deg, #FF6848 21.23%, #FFBBBB 78.89%);
+  position: relative;
+  .icon {
+    position: absolute;
+    top: 40%;
+    right: 10%;
+    opacity: .4;
+    z-index: 1;
+  }
+}
+.container {
+  padding: 80px 40px 75px;
+  h2 {
+    @apply text-white;
+    margin-bottom: 24px;
+  }
+  .subtitle {
+    @apply text-secondary-2;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 120%;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+}
+.content {
+  display: flex;
+  padding: 40px 0 0;
+}
+.img_box {
+  @apply bg-primary;
+  position: relative;
+  width: 33.33%;
+  height: 0;
+  padding-bottom: 31%;
+  border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
+  animation: go 450s infinite;
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    object-fit: cover;
+    transition: border-radius 3s linear;
+    border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
+    animation: go 40s infinite;
+  }
+  &::before,
+  &::after,
+  span {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+  }
+  &::before {
+    @apply bg-secondary;
+    width: 14px;
+    height: 14px;
+    top: 50%;
+    left: -27.28px;
+  }
+  
+  &::after {
+    @apply bg-primary;
+    width: 10px;
+    height: 10px;
+    top: 65%;
+    left: -15.82px;
+  }
+  
+  span {
+    @apply bg-primary;
+    width: 16px;
+    height: 16px;
+    top: 10%;
+    right: -15.82px;
+  }
+}
+.describe {
+  @apply text-base;
+  position: relative;
+  max-width: 620px;
+  padding-left: 75px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  z-index: 2;
+  p {
+    @apply text-white;
+    font-size: 24px;
+    line-height: 120%;
+    text-align: justify;
+    z-index: 2;
+  }
+  .icon {
+    position: absolute;
+    top: 10%;
+    right: -5%;
+    opacity: .4;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 40px 12px;
+    h2 {
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      font-size: 18px;
+    }
+  }
+  .content {
+    display: block;
+    padding: 20px 28px 0;
+  }
+  .describe {
+    @apply text-sm;
+    padding-left: 0;
+    margin-top: 25px;
+    p {
+      font-size: 20px;
+      &:last-child {
+        margin-top: 20px;
+      }
+    }
+    .icon {
+      width: 25%;
+      top: -5%;
+    }
+  }
+
+  .img_box {
+    width: 100%;
+    padding-bottom: 95%;
+    &::before {
+      width: 9.34px;
+      height: 9.34px;
+    }
+    
+    &::after {
+      width: 6.67px;
+      height: 6.67px;
+    }
+    
+    span {
+      width: 10.68px;
+      height: 10.68px;
+    }
+  }
+}
+
+@keyframes go {
+  0% {
+      border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
+  }
+  25% {
+      border-radius: 45% 55% 37% 63% / 56% 36% 54% 44%;
+  }
+  50% {
+      border-radius: 59% 41% 68% 32% / 48% 52% 48% 62%;
+  }
+  75% {
+      border-radius: 50% 50% 39% 61% / 61% 69% 31% 39%;
+  }
+}

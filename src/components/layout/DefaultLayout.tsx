@@ -1,11 +1,16 @@
-import { ReactNode } from "react";
-import Header from "@/components/common/Header";
+import { ReactNode, useEffect } from "react";
+import FrontHeader from "@/components/common/FrontHeader";
+import FrontFooter from "../common/FrontFooter";
+import { useRouter } from "next/router";
 
 export default function DefaultLayout({ children }: { children?: ReactNode }) {
+  const router = useRouter();
+  const showFrontHeader = router.pathname === '/';
   return (
     <>
-      <Header />
-      <div className="main mt-5 container mx-auto">{children}</div>
+      {showFrontHeader && <FrontHeader/>}
+      <main className="main">{children}</main>
+      <FrontFooter />
     </>
   );
 }
