@@ -37,41 +37,40 @@ section {
 .p-decorative-circle {
   @apply bg-secondary;
   position: absolute;
-  border-radius: 560px 0 0 560px;
-  width: 280px;
-  height: 560px;
-  line-height: 560px;
+  width: 20vw;
+  height: 40vw;
+  border-radius: 40vw 0 0 40vw;
   opacity: 0.1;
   filter: blur(100px);
 }
 .p-left-decorative-circle-1 {
   left: 0px;
-  top: 500px;
-  border-radius: 0 560px 560px 0;
+  top: 30%;
+  border-radius: 0 40vw 40vw 0;
 }
 .p-right-decorative-circle-1 {
   right: 0px;
-  top: 200px;
+  top: 10%;
 }
 .p-right-decorative-circle-2 {
   right: 0px;
-  top: 950px;
+  top: 60%;
 }
 .t-decorative-circle {
   @apply bg-secondary;
   position: absolute;
-  border-radius: 265.5px 0 0 0;
-  width: 200px;
-  height: 265.5px;
+  width: 10vw;
+  height: 20vw;
+  border-radius: 20vw 0 0 20vw;
   opacity: 0.1;
   filter: blur(57px);
 }
 
 .t-left-decorative-circle {
-  width: 673px;
-  height: 673px;
-  border-radius: 50%;
-  top: -600px;
+  width: 50vw;
+  height: 25vw;
+  border-radius: 0 0 50vw 50vw;
+  top: -250px;
   z-index: 1;
 }
 .t-right-decorative-circle-1 {
@@ -80,8 +79,11 @@ section {
 }
 
 .t-right-decorative-circle-2 {
-  right: 125px;
-  bottom: -191px;
+  width: 20vw;
+  height: 10vw;
+  border-radius: 20vw 20vw 0 0;
+  right: 0;
+  bottom: 0;
 }
 @media (max-width: 640px) {
   main {
