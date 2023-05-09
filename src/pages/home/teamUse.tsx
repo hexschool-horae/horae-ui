@@ -19,14 +19,14 @@ export default function TeamUse() {
             <div className={styles.top_row}>
               { companyList.map((item, index) => ( 
                 <div className={styles.icon} key={index}>
-                  <Image src={`/images/teamUse/${item}.png`} alt={item}  width={80} height={80} layout="responsive"/>
+                  <Image src={`/images/teamUse/${item}.png`} alt={item}  width={80} height={80} style={{objectFit: 'cover', objectPosition: 'center center'}}/>
                 </div>
               ))}
             </div>
             <div  className={styles.bottom_row}>
               { companyList2.map((item, index) => ( 
                 <div className={styles.icon} key={index}>
-                  <Image src={`/images/teamUse/${item}.png`} alt={item}  width={80} height={80}  layout="responsive"/> 
+                  <Image src={`/images/teamUse/${item}.png`} alt={item}  width={80} height={80}  style={{objectFit: 'cover', objectPosition: 'center center'}}/> 
                 </div>
               ))}
               </div>

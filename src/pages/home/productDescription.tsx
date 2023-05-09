@@ -48,7 +48,7 @@ export default function ProductDescription() {
               </div>
             </div>
             <div className="sm:w-1/2 w-full">
-              <Image src={`/images/${item.img}.png`} alt={item.img} layout="responsive" width={600} height={400} />
+              <Image src={`/images/${item.img}.png`} alt={item.img} style={{objectFit: 'cover', objectPosition: 'center center'}} width={600} height={400} />
             </div>
             
           </div>

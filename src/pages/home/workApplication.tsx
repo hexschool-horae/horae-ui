@@ -46,7 +46,7 @@ interface List {
           {list.map((item, index) => (  
             <div className={`${styles.card} w-1/3`} key={index}>
               <div className={styles.img_box}>
-                <Image src={`/images/${item.img}.png`} alt={item.img} layout="responsive" width={600} height={400} />
+                <Image src={`/images/${item.img}.png`} alt={item.img} style={{objectFit: 'cover', objectPosition: 'center center'}} width={600} height={400} />
                 <div className={styles.add} onClick={() =>  handleClick(item)}>+</div>
               </div>
               <div>
@@ -65,7 +65,7 @@ interface List {
       <Dialog className="home-dialog" visible={visible} style={{margin: '24px' }} draggable={false} onHide={() => setVisible(false)}>
         <div className="m-0 sm:flex block">
           <div className="sm:w-1/2 w-full">
-            <Image src={`/images/${selectItem.img}.png`} alt={selectItem.img} layout="responsive" width={600} height={400} />
+            <Image src={`/images/${selectItem.img}.png`} alt={selectItem.img} style={{objectFit: 'cover', objectPosition: 'center center'}} width={600} height={400} />
           </div>
           <div className={styles.dialog_right_panel}>
             <div className="pb-3">

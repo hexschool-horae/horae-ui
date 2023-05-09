@@ -21,8 +21,8 @@ export default function Banner() {
           </div>
         </div>
         <div className="section-right sm:w-1/2 w-full">
-           <Image src="/images/home-banner.png" alt="home-banner" className='sm:flex hidden' layout="responsive" width={746} height={497} />
-           <Image src="/images/home-banner-mobile.png" alt="home-banner"  className='sm:hidden flex' layout="responsive" width={527} height={353} />
+           <Image src="/images/home-banner.png" alt="home-banner" className='sm:flex hidden' style={{objectFit: 'cover', objectPosition: 'center center'}} width={746} height={497} />
+           <Image src="/images/home-banner-mobile.png" alt="home-banner"  className='sm:hidden flex m-auto' style={{objectFit: 'cover', objectPosition: 'center center'}} width={527} height={353} />
         </div>
       </section>
   </div>;
