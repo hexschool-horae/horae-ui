@@ -1,3 +1,5 @@
+import { useReducer } from 'react';
+
 import style from './card.module.scss';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -6,13 +8,41 @@ import { FileUpload } from 'primereact/fileupload';
 import { Checkbox } from 'primereact/checkbox';
 import { ProgressBar } from 'primereact/progressbar';
 
+import { CardContext } from '@/contexts/cardContext';
 import CardSidebar from '@/components/card/CardSidebar';
 
+interface ICardDetail {
+  member: string
+}
+
+// from api
+const initialState = {
+  member: ''
+}
+
+const enum REDUCER_ACTION_TYPE {
+  ADD_MEMBER,
+}
+
+type TReducerAction = {
+  type: REDUCER_ACTION_TYPE,
+  payload?: any
+}
+
+const reducer = (state:ICardDetail, action: TReducerAction): ICardDetail => {
+  switch(action.type) {
+    case REDUCER_ACTION_TYPE.ADD_MEMBER:
+      return {...state}
+
+    default:
+      return state;
+  }
+}
 
 export default function Card() {
-
+  const cardReducer = useReducer(reducer, initialState) 
   return (
-    <>
+    <CardContext.Provider value={cardReducer}>
       <div 
         className="
           flex 
@@ -46,7 +76,7 @@ export default function Card() {
               min-h-full
               px-3
               py-4
-            bg-white
+            bg-slate-200
               shadow-lg
               rounded-lg
             "
@@ -87,6 +117,8 @@ export default function Card() {
               className="
                 grow
                 flex
+                flex-wrap
+                md:flex-nowrap
                 gap-2
               "
             >
@@ -231,7 +263,7 @@ export default function Card() {
                         上傳於 2023/03/30 14:20
                       </div>
                     </div>
-                    <button>
+                    <button className="px-3">
                       <i className="pi pi-trash"></i>
                     </button>
                   </div>
@@ -291,9 +323,8 @@ export default function Card() {
               {/* sidebar */}
               <div 
                 className="
-                  hidden
-                  md:block
-                  w-[192px]
+                  w-full
+                  md:w-[192px]
                 "
               >
                 <CardSidebar />
@@ -304,6 +335,6 @@ export default function Card() {
           </div>
         </div>
       </div>
-    </>
+    </CardContext.Provider>
   )
 }

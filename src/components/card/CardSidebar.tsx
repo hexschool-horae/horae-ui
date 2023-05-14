@@ -1,17 +1,26 @@
 
+import { useState } from 'react';
 import style from './cardSidebar.module.scss';
 import { Button } from 'primereact/button';
+
+import CardPopupMember from './CardPopupMember';
+
         
 export default function CardSidebar() {
-   
+    const [memberIsOpen, setMemberIsOpen] = useState(false);
 
     return (
        <>
         <div className="pb-3">
             <div className={`${style.card_sidebar_title}`}>新增至卡片</div>
-            <Button label="成員" icon="pi pi-user"
-                className={`${style.card_sidebar_btn}`}
-            />
+            <div className="relative">
+                <Button label="成員" icon="pi pi-user"
+                    onClick={() => setMemberIsOpen(prev => !prev)}
+                    className={`${style.card_sidebar_btn}`}
+                />
+                <CardPopupMember isOpen={memberIsOpen} setIsOpen={setMemberIsOpen}/>
+            </div>
+           
             <Button label="優先權" icon="pi pi-user"
                 className={`${style.card_sidebar_btn}`}
             />
