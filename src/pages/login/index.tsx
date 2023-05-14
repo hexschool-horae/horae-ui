@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 
 import { useState } from "react";
@@ -61,100 +62,125 @@ export default function Register() {
 	const [visible, setVisible] = useState(false);
 
 	const onSubmit = async (submitData: IRegisterForm) => {
-		console.log(submitData);
-		// setVisible(true);
+		setVisible(true);
 
-		// const result = await post<IRegisterResponse>("user/login", submitData, false);
+		const result = await post<IRegisterResponse>(
+			"user/login",
+			submitData,
+			false
+		);
 
-		// setVisible(false);
+		setVisible(false);
 
-		// if (result === undefined) return;
-		// const { token } = result?.user;
+		if (result === undefined) return;
+		const { token } = result?.user;
 
-		// dispatch(setToken(token));
-		// dispatch(setIsLogin(true));
-		// // 重置表單
-		// reset();
+		dispatch(setToken(token));
+		dispatch(setIsLogin(true));
+		// 重置表單
+		reset();
 	};
 
 	// 取得表單驗證錯誤訊息
 	const getFormErrorMessage = (name: TFieldName) => {
 		if (name === undefined) return;
 
-		return errors[name] ? <small className="p-error">{errors[name]?.message}</small> : <small className="p-error">&nbsp;</small>;
+		return errors[name] ? (
+			<small className="p-error">{errors[name]?.message}</small>
+		) : (
+			<small className="p-error">&nbsp;</small>
+		);
 	};
 
 	return (
-		<div className="flex flex-col items-center">
-			<h1 className="text-2xl font-bold mb-5">登入</h1>
+		<>
+			<Head>
+				<title>Horae - 看板</title>
+			</Head>
 
-			<FormWrapper name="username" label="使用者名稱" className="mb-5" control={control}>
-				<InputText />
-			</FormWrapper>
+			<div className="flex flex-col items-center">
+				<h1 className="text-2xl font-bold mb-5">登入</h1>
 
-			<div className="flex flex-col">
-				<Controller
-					name="email"
-					control={control}
-					render={({ field, fieldState }) => (
-						<>
-							<label htmlFor={field.name} className={classNames({ "p-error": errors.email })}>
-								電子信箱
-							</label>
+				<div className="flex flex-col">
+					<Controller
+						name="email"
+						control={control}
+						render={({ field, fieldState }) => (
+							<>
+								<label
+									htmlFor={field.name}
+									className={classNames({ "p-error": errors.email })}
+								>
+									電子信箱
+								</label>
 
-							<InputText
-								id={field.name}
-								value={field.value}
-								className={classNames({ "p-invalid": fieldState.error })}
-								onChange={(e) => field.onChange(e.target.value)}
-							/>
+								<InputText
+									id={field.name}
+									value={field.value}
+									className={classNames({ "p-invalid": fieldState.error })}
+									onChange={(e) => field.onChange(e.target.value)}
+								/>
 
-							{getFormErrorMessage(field.name)}
-						</>
-					)}
-				/>
+								{getFormErrorMessage(field.name)}
+							</>
+						)}
+					/>
+				</div>
+
+				<div className="flex flex-col mb-5">
+					<Controller
+						name="password"
+						control={control}
+						render={({ field, fieldState }) => (
+							<>
+								<label
+									htmlFor={field.name}
+									className={classNames({ "p-error": errors.email })}
+								>
+									密碼
+								</label>
+
+								<InputText
+									id={field.name}
+									value={field.value}
+									className={classNames({ "p-invalid": fieldState.error })}
+									onChange={(e) => field.onChange(e.target.value)}
+								/>
+
+								{getFormErrorMessage(field.name)}
+							</>
+						)}
+					/>
+				</div>
+
+				<Button
+					className="bg-red-600 px-10 mb-6"
+					onClick={handleSubmit(onSubmit)}
+					rounded
+				>
+					登入
+				</Button>
+
+				<div>
+					還沒有註冊帳號？
+					<Link href="sign-up">
+						<Button className="text-red-600 p-0" link>
+							註冊
+						</Button>
+					</Link>
+				</div>
+
+				{/* 登入中 loading */}
+				<Dialog
+					header={<>載入中</>}
+					visible={visible}
+					focusOnShow={false}
+					style={{ width: "50vw" }}
+					onHide={() => setVisible(false)}
+				>
+					<p className="text-center text-lg">登入中，請稍候</p>
+				</Dialog>
 			</div>
-
-			<div className="flex flex-col mb-5">
-				<Controller
-					name="password"
-					control={control}
-					render={({ field, fieldState }) => (
-						<>
-							<label htmlFor={field.name} className={classNames({ "p-error": errors.email })}>
-								密碼
-							</label>
-
-							<InputText
-								id={field.name}
-								value={field.value}
-								className={classNames({ "p-invalid": fieldState.error })}
-								onChange={(e) => field.onChange(e.target.value)}
-							/>
-
-							{getFormErrorMessage(field.name)}
-						</>
-					)}
-				/>
-			</div>
-
-			<Button className="bg-red-600 px-10 mb-6" onClick={handleSubmit(onSubmit)} rounded>
-				登入
-			</Button>
-
-			<div>
-				還沒有註冊帳號？
-				<Link href="sign-up">
-					<Button className="text-red-600 p-0" link>
-						註冊
-					</Button>
-				</Link>
-			</div>
-
-			{/* 登入中 loading */}
-			<Dialog header={<>載入中</>} visible={visible} focusOnShow={false} style={{ width: "50vw" }} onHide={() => setVisible(false)}>
-				<p className="text-center text-lg">登入中，請稍候</p>
-			</Dialog>
-		</div>
+		</>
 	);
 }
