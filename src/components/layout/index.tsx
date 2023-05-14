@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, ReactNode } from "react";
 
 import { useAppSelector } from "@/hooks/useAppStore";
 import DefaultLayout from "@/components/layout/DefaultLayout";
-import BackLayout from "@/components/layout/BackLayout";
+import AdminLayout from "@/components/layout/AdminLayout";
 
 interface ComponentSelectorProps {
   children: ReactNode;
@@ -17,7 +17,7 @@ const Layout: FC<PropsWithChildren<ComponentSelectorProps>> = ({
   if (!isLogin) {
     return <DefaultLayout>{children}</DefaultLayout>;
   } else {
-    return <BackLayout>{children}</BackLayout>;
+    return <AdminLayout>{children}</AdminLayout>;
   }
 };
 
