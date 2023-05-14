@@ -1,11 +1,25 @@
+import Image from "next/image";
+import Link from "next/link";
+import { InputText } from "primereact/inputtext";
+
 export default function BackHeader() {
-  return <div className="header flex">
-    <h1>Horae</h1>
-    <nav>
-      <ul className="flex">
-        <li>工作區</li>
-        <li>建立</li>
-      </ul>
-    </nav>
-  </div>;
+  return (
+    <div className="h-[72px] px-12 bg-primary flex items-center">
+      <Image src="/images/logo.png" alt="logo.png" width={148} height={48} />
+      <Link href="/board" className="text-white ml-8">
+        工作區
+      </Link>
+      <Link href="/board" className="text-white ml-5">
+        最近的
+      </Link>
+      <Link href="/board" className="text-white ml-5">
+        已標記
+      </Link>
+      <span className="p-input-icon-left ml-[200px]">
+        <i className="pi pi-search" />
+        <InputText placeholder="Search" />
+      </span>
+      <div className="w-[48px] h-[48px] rounded-full bg-black ml-auto"></div>
+    </div>
+  );
 }
