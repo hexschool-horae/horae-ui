@@ -57,6 +57,21 @@
   }
 }
 
+.work-space-overlay-panel {
+  &.p-overlaypanel{
+    max-width: 304px;
+    min-width: 250px;
+    &:before, &:after {
+      display: none;
+    }
+    .p-overlaypanel-close {
+      top: 0;
+      right: 0;
+      border-radius: 0 6px 0 6px;
+    }
+  }
+}
+
 @media (max-width: 640px) {
   .p-button {
     font-size: 14px;

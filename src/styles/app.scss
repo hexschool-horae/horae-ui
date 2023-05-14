@@ -4,7 +4,7 @@
 @import "primereact/resources/primereact.min.css";
 // icon
 @import "primeicons/primeicons.css";
-@import "./tailwind.css";
+// swiper
 @import "swiper/css";
 @import "swiper/css/pagination";
 @import "swiper/css/navigation";
@@ -23,6 +23,9 @@ body {
 }
 main {
   min-height: calc(100vh - 232.8px);
+}
+.back-main {
+  width: calc(100vw - 332px);
 }
 .front-max-container {
   max-width: 1280px;

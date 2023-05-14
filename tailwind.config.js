@@ -20,5 +20,5 @@ module.exports = {
   plugins: [],
   //拉高tailwind的權重
   // https://tailwindcss.com/docs/configuration#important
-  important: "#__next",
+  important: "body", // 因dialog並不在#__next內導致無法使用樣式，改成body
 };
