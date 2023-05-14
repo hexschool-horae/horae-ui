@@ -1,0 +1,53 @@
+.setting_item {
+	padding: 0;
+	margin: 0.375rem 1.5rem;
+	text-align: left;
+
+	cursor: pointer;
+
+	&:hover {
+		.setting_item_label,
+		.setting_item_des {
+			color: #cc3a3a;
+		}
+	}
+}
+
+.setting_item_title {
+	letter-spacing: 1px;
+	text-align: center;
+	padding: 0.5rem 1.25rem;
+}
+
+.setting_item_label {
+	font-size: 14px;
+	margin-bottom: 0.25rem;
+	color: #1a1a1a;
+}
+
+.setting_item_shared {
+	padding: 0.5rem 0.75rem;
+	margin: 0.5rem 0.5rem;
+	text-align: left;
+	cursor: pointer;
+}
+
+.setting_item,
+.setting_item_shared {
+	* {
+		letter-spacing: 1px;
+	}
+}
+
+.activity_item {
+	display: flex;
+	padding: 0;
+	margin: 0.375rem 1.5rem;
+	font-size: 14px;
+	letter-spacing: 1px;
+	cursor: pointer;
+}
+
+.activity_item_time {
+	font-size: 0.75rem;
+}

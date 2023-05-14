@@ -1,0 +1,44 @@
+.permission_item {
+	display: flex;
+	flex-direction: column;
+	// align-items: start;
+
+	padding: 0.5rem 0.75rem;
+	margin: 0.5rem 0.5rem;
+	text-align: left;
+	cursor: pointer;
+
+	* {
+		letter-spacing: 1px;
+	}
+
+	&:hover {
+		background-color: #fff1f1;
+
+		.permission_item_label,
+		.permission_item_des {
+			color: #cc3a3a;
+		}
+	}
+
+	:not(:nth-last-child) {
+		margin-bottom: 1.25rem;
+	}
+}
+
+.permission_item_title {
+	letter-spacing: 1px;
+	text-align: center;
+	padding: 0.5rem 1.25rem;
+}
+
+.permission_item_label {
+	font-size: 1rem;
+	margin-bottom: 0.25rem;
+	color: #1a1a1a;
+}
+
+.permission_item_des {
+	font-size: 0.75rem;
+	color: #606060;
+}

@@ -1,20 +1,29 @@
 import { useRouter } from "next/router";
 
-import { Button } from "primereact/button";
+import { MenuBar, CardList, AddCardListButton } from "@/components/board";
+import { classNames } from "primereact/utils";
 
 export default function Board() {
   const router = useRouter();
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">歡迎！</h2>
+      <MenuBar />
 
-      <Button
+      <div className="flex px-16 py-12">
+        <div className="mr-5">
+          <CardList />
+        </div>
+
+        <AddCardListButton />
+      </div>
+
+      {/* <Button
         className="p-0"
         label="前往個人頁面"
         onClick={() => router.push("/profile")}
         link
-      />
+      /> */}
     </div>
   );
 }
