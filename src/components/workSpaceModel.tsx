@@ -5,7 +5,7 @@ import styles from '@/pages/home/workApplication.module.scss';
 import { Controller, useForm } from 'react-hook-form';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputTextarea'
+import { InputTextarea } from 'primereact/inputtextarea'
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';

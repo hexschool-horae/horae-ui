@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputTextarea';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { classNames } from 'primereact/utils';
