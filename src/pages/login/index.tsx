@@ -95,7 +95,7 @@ export default function Register() {
 	return (
 		<>
 			<Head>
-				<title>Horae - 看板</title>
+				<title>Horae - 登入</title>
 			</Head>
 
 			<div className="flex flex-col items-center">

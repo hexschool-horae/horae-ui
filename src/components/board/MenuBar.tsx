@@ -4,6 +4,7 @@ import BoardPermissionMenu from "./BoardPermissionMenu";
 import BoardTitle from "./BoardTitle";
 import MemberAvatarGroup from "./MemberAvatarGroup";
 import FiltersMenu from "./FiltersMenu";
+import InviteBoard from "./InviteBoard";
 import InviteButton from "./InviteButton";
 import ListSettingMenu from "./ListSettingMenu";
 
@@ -28,6 +29,8 @@ export default function MenuBar() {
 					<FiltersMenu />
 					{/* 邀請成員彈窗按鈕 */}
 					<InviteButton />
+					{/* 邀請成員彈窗 */}
+					<InviteBoard />
 
 					{/* 設定選單按鈕 */}
 					<ListSettingMenu />
