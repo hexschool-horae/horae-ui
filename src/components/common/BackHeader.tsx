@@ -1,8 +1,13 @@
+import { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { InputText } from "primereact/inputtext";
 
-export default function BackHeader() {
+interface IHeaderProps {
+  className: string;
+}
+
+const BackHeader: FC<IHeaderProps> = ({ className }) => {
   return (
     <div className="h-[72px] px-12 bg-primary flex items-center">
       <Image src="/images/logo.png" alt="logo.png" width={148} height={48} />
@@ -22,4 +27,6 @@ export default function BackHeader() {
       <div className="w-[48px] h-[48px] rounded-full bg-black ml-auto"></div>
     </div>
   );
-}
+};
+
+export default BackHeader;
