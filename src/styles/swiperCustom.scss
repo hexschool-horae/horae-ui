@@ -34,6 +34,7 @@
 .swiper-button-next,
 .swiper-button-prev {
   @apply text-primary;
+  top: var(--swiper-navigation-top-offset, 43%);
 }
 
 @media (max-width: 640px) {

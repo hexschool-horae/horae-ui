@@ -24,7 +24,6 @@ const schema = yup
 	.object({
 		email: yup.string().email().required(),
 		password: yup.string().required().min(8).max(12),
-		username: yup.string().required().min(1).max(2),
 	})
 	.required();
 
@@ -32,7 +31,6 @@ const schema = yup
 interface IRegisterForm {
 	email: string;
 	password: string;
-	username: string;
 }
 
 interface IRegisterResponse {
@@ -41,7 +39,7 @@ interface IRegisterResponse {
 	};
 }
 
-type TFieldName = "email" | "password" | "username" | undefined;
+type TFieldName = "email" | "password" | undefined;
 
 export default function Register() {
 	const {
@@ -53,7 +51,6 @@ export default function Register() {
 		defaultValues: {
 			email: "",
 			password: "",
-			username: "",
 		},
 		resolver: yupResolver(schema),
 	});
@@ -143,6 +140,7 @@ export default function Register() {
 								<InputText
 									id={field.name}
 									value={field.value}
+									type="password"
 									className={classNames({ "p-invalid": fieldState.error })}
 									onChange={(e) => field.onChange(e.target.value)}
 								/>

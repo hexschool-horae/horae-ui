@@ -6,25 +6,25 @@ import { useAppSelector } from "@/hooks/useAppStore";
 const nonAuthPaths = ["/login", "/sign-up"];
 
 const RouterGuard = ({ children }: { children?: ReactNode }) => {
-  const router = useRouter();
-  const { pathname } = router;
-  const isLogin = useAppSelector((state) => state.user.isLogin);
+	const router = useRouter();
+	const { pathname } = router;
+	const isLogin = useAppSelector((state) => state.user.isLogin);
 
-  // 路由權限驗證
-  useEffect(() => {
-    // if (isLogin) {
-    //   if (pathname === "/login" || pathname === "/sign-up") {
-    //     router.push("/board");
-    //   }
-    // } else {
-    //   console.log(pathname);
-    //   if (!nonAuthPaths.includes(pathname) && pathname !== "/") {
-    //     router.push("/login");
-    //   }
-    // }
-  }, [router, pathname, isLogin]);
+	// 路由權限驗證
+	useEffect(() => {
+		if (isLogin) {
+			if (pathname === "/login" || pathname === "/sign-up") {
+				router.push("/board");
+			}
+		} else {
+			console.log(pathname);
+			if (!nonAuthPaths.includes(pathname) && pathname !== "/") {
+				router.push("/login");
+			}
+		}
+	}, [router, pathname, isLogin]);
 
-  return <>{children}</>;
+	return <>{children}</>;
 };
 
 export default RouterGuard;

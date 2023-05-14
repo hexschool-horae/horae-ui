@@ -4,7 +4,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 
 export default function InviteBoard() {
-	const [visible, setVisible] = useState<boolean>(true);
+	const [visible, setVisible] = useState<boolean>(false);
 
 	return (
 		<div className="card flex justify-content-center">

@@ -62,7 +62,7 @@ interface List {
         </div> 
       </div>
       <div>
-        <Dialog className="home-dialog" visible={visible} style={{margin: '24px' }} draggable={false} onHide={() => setVisible(false)}>
+        <Dialog className="home-dialog" visible={visible} style={{margin: '24px' }} draggable={false} modal={false} onHide={() => setVisible(false)}>
           <div className={styles.dialog_panel}>
             <div className={styles.dialog_left_panel}>
               <Image src={`/images/${selectItem.img}.png`} alt={selectItem.img} style={{objectFit: 'cover', objectPosition: 'center center'}} width={600} height={400} />
