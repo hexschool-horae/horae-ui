@@ -66,7 +66,7 @@ export default function RegisterEmailForm({ label, severity }: Props) {
             <InputText
               id={field.name}
               value={field.value}
-              className={`${classNames({ "p-invalid": fieldState.error })} w-full ${fieldState.error ? '' : 'border-transparent'}`}
+              className={`${classNames({ "p-invalid": fieldState.error })} !w-full ${fieldState.error ? '' : 'border-transparent'}`}
               placeholder="電子郵件"
               onChange={(e) => field.onChange(e.target.value)}
             />
@@ -77,7 +77,7 @@ export default function RegisterEmailForm({ label, severity }: Props) {
       />
       </div>
       <div className={`${homeStyles.btn_box} max-w-[115px]`}>
-        <Button label={label} severity={severity} rounded className="sm:ml-3 ml-2 w-full" onClick={handleSubmit(onSubmit)} />
+        <Button label={label} severity={severity} rounded className="sm:ml-3 ml-2 !w-full" onClick={handleSubmit(onSubmit)} />
       </div>
     </div>
   )
