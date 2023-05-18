@@ -7,7 +7,7 @@
   h2 {
     @apply text-black;
   }
- h4 {
+  h4 {
     @apply text-primary;
     margin-bottom: 8px;
   }
@@ -47,9 +47,6 @@
   }
 }
 
-
-
-
 @media (max-width: 640px) {
   .container {
     padding: 40px 12px;
@@ -60,17 +57,16 @@
   .content {
     margin-top: 40px;
   }
-  
+
   .icon {
     width: 40px;
     height: 40px;
     margin: 0 5px;
-      &:first-child {
-        margin: 0 5px 0 0;
-      }
-      &:last-child {
-        margin: 0 0 0 5px;
-      }
+    &:first-child {
+      margin: 0 5px 0 0;
+    }
+    &:last-child {
+      margin: 0 0 0 5px;
+    }
   }
-  
 }
