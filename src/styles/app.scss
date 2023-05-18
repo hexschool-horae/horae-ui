@@ -1,16 +1,16 @@
 // Primereact styles
-@import "./primeTheme.css";
+@import './primeTheme.css';
 //core
-@import "primereact/resources/primereact.min.css";
+@import 'primereact/resources/primereact.min.css';
 // icon
-@import "primeicons/primeicons.css";
+@import 'primeicons/primeicons.css';
 // swiper
-@import "swiper/css";
-@import "swiper/css/pagination";
-@import "swiper/css/navigation";
+@import 'swiper/css';
+@import 'swiper/css/pagination';
+@import 'swiper/css/navigation';
 
-@import "./primeCustom.scss";
-@import "./swiperCustom.scss";
+@import './primeCustom.scss';
+@import './swiperCustom.scss';
 
 // 基本設定
 html,
@@ -18,7 +18,7 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family: "Noto Sans TC", sans-serif;
+  font-family: 'Noto Sans TC', sans-serif;
   position: relative;
 }
 main {

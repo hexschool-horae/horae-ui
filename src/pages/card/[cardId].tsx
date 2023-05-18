@@ -1,15 +1,15 @@
-import { useReducer } from 'react';
+import { useReducer } from 'react'
 
-import style from './card.module.scss';
-import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
-import { Checkbox } from 'primereact/checkbox';
-import { ProgressBar } from 'primereact/progressbar';
+import style from './card.module.scss'
+import { InputText } from 'primereact/inputtext'
+import { InputTextarea } from 'primereact/inputtextarea'
+import { Button } from 'primereact/button'
+import { FileUpload } from 'primereact/fileupload'
+import { Checkbox } from 'primereact/checkbox'
+import { ProgressBar } from 'primereact/progressbar'
 
-import { CardContext } from '@/contexts/cardContext';
-import CardSidebar from '@/components/card/CardSidebar';
+import { CardContext } from '@/contexts/cardContext'
+import CardSidebar from '@/components/card/CardSidebar'
 
 interface ICardDetail {
   member: string
@@ -17,33 +17,34 @@ interface ICardDetail {
 
 // from api
 const initialState = {
-  member: ''
+  member: '',
 }
 
 const enum REDUCER_ACTION_TYPE {
   ADD_MEMBER,
 }
 
+/* eslint-enable */
 type TReducerAction = {
-  type: REDUCER_ACTION_TYPE,
+  type: REDUCER_ACTION_TYPE
   payload?: any
 }
 
-const reducer = (state:ICardDetail, action: TReducerAction): ICardDetail => {
-  switch(action.type) {
+const reducer = (state: ICardDetail, action: TReducerAction): ICardDetail => {
+  switch (action.type) {
     case REDUCER_ACTION_TYPE.ADD_MEMBER:
-      return {...state}
+      return { ...state }
 
     default:
-      return state;
+      return state
   }
 }
 
 export default function Card() {
-  const cardReducer = useReducer(reducer, initialState) 
+  const cardReducer = useReducer(reducer, initialState)
   return (
     <CardContext.Provider value={cardReducer}>
-      <div 
+      <div
         className="
           flex 
           justify-center
@@ -57,7 +58,7 @@ export default function Card() {
           bg-neutral-800/70
         "
       >
-        <div 
+        <div
           className="
             relative
             w-full
@@ -68,7 +69,7 @@ export default function Card() {
           "
         >
           {/* content */}
-          <div 
+          <div
             className="
               flex
               flex-col
@@ -82,21 +83,23 @@ export default function Card() {
             "
           >
             {/* header */}
-            <div 
+            <div
               className="
                 relative
                 flex
                 items-start
-            ">
+            "
+            >
               <div className="grow">
                 <div>
-                  在列表 
+                  在列表
                   <span className="pl-1 underline decoration-1 cursor-pointer">
                     代辦事項 <i className="pi pi-angle-down"></i>
                   </span>
                 </div>
 
-                <InputText  placeholder="卡片標題"
+                <InputText
+                  placeholder="卡片標題"
                   className="
                     w-full
                     my-2
@@ -106,14 +109,13 @@ export default function Card() {
               </div>
 
               <button className="pl-10">
-                <i className="pi pi-times" ></i>
+                <i className="pi pi-times"></i>
               </button>
-
             </div>
 
             {/* body  */}
 
-            <div 
+            <div
               className="
                 grow
                 flex
@@ -123,120 +125,114 @@ export default function Card() {
               "
             >
               {/* main col */}
-              <div 
+              <div
                 className={`
                   ${style.card_main_col}
                   grow
                 `}
               >
                 {/* card detail list*/}
-                <div className="
+                <div
+                  className="
                   flex
                   flex-wrap
                   gap-2
-                ">
+                "
+                >
                   {/* priority */}
-                  <div className={`
+                  <div
+                    className={`
                     ${style.detail_item_wrapper}
-                  `}>
-                    <i className="pi pi-flag-fill" 
-                      style={{ color: '#5C7878' }}
-                    >
-                    </i>
+                  `}
+                  >
+                    <i className="pi pi-flag-fill" style={{ color: '#5C7878' }}></i>
                   </div>
 
                   {/* member */}
-                  <div className={`
+                  <div
+                    className={`
                     ${style.detail_item_wrapper}
-                  `}>
-                    <div 
-                     className={`${style.member}`}>
-                      <div className={`${style.name}`}>
-                        Na
-                      </div>
+                  `}
+                  >
+                    <div className={`${style.member}`}>
+                      <div className={`${style.name}`}>Na</div>
                     </div>
-                    <div 
-                      className={`${style.member}`}>
-                      <div className={`${style.name}`}>
-                        Na
-                      </div>
+                    <div className={`${style.member}`}>
+                      <div className={`${style.name}`}>Na</div>
                     </div>
 
                     <button className={`${style.detail_item_btn}`}>
-                      <i className="pi pi-plus" 
-                        style={{ color: '#ffffff' }}
-                      ></i>
+                      <i className="pi pi-plus" style={{ color: '#ffffff' }}></i>
                     </button>
                   </div>
 
-                   {/* tags */}
-                  <div className={`
+                  {/* tags */}
+                  <div
+                    className={`
                     ${style.detail_item_wrapper}
-                  `}>
-                    <div 
+                  `}
+                  >
+                    <div
                       className="
                         px-6
                         py-1
                        bg-slate-500
                         rounded-md
-                    ">
+                    "
+                    >
                       <span className="text-sm text-white">Tag 001</span>
                     </div>
 
-                    <div 
+                    <div
                       className="
                         px-6
                         py-1
                        bg-slate-500
                         rounded-md
-                    ">
+                    "
+                    >
                       <span className="text-sm text-white">Tag 002</span>
                     </div>
-                    <div 
+                    <div
                       className="
                         px-6
                         py-1
                        bg-slate-500
                         rounded-md
-                    ">
+                    "
+                    >
                       <span className="text-sm text-white">Tag 002</span>
                     </div>
-                   
+
                     {/* <Button icon="pi pi-plus" rounded aria-label="Plus" /> */}
                     <button className={`${style.detail_item_btn}`}>
-                      <i className="pi pi-plus" 
-                        style={{ color: '#ffffff' }}
-                      ></i>
+                      <i className="pi pi-plus" style={{ color: '#ffffff' }}></i>
                     </button>
-
                   </div>
 
                   {/* due date */}
-                  <div className={`
+                  <div
+                    className={`
                     ${style.detail_item_wrapper}
-                  `}>
+                  `}
+                  >
                     <div>
-                      <Checkbox onChange={e => {}} checked={true}></Checkbox>
+                      <Checkbox checked={true}></Checkbox>
                       <span className="px-2"> 3/20 - 6/18 18:00</span>
-                      <i className="pi pi-angle-down" 
-                        style={{ color: '#ffffff' }}
-                      ></i>
+                      <i className="pi pi-angle-down" style={{ color: '#ffffff' }}></i>
                     </div>
-                  
                   </div>
                 </div>
-                
+
                 {/* description */}
                 <div>
-                  <InputTextarea  rows={5} cols={30} placeholder="描述"
-                    className="w-full"
-                  />
+                  <InputTextarea rows={5} cols={30} placeholder="描述" className="w-full" />
                 </div>
 
                 {/* attachment */}
                 <div>
                   <h4 className="mb-3 text-lg">附件</h4>
-                  <div 
+                  <div
                     className="
                       mb-3
                       flex
@@ -244,7 +240,7 @@ export default function Card() {
                       gap-3
                     "
                   >
-                    <div 
+                    <div
                       className="
                         w-[140px]
                         h-[90px]
@@ -252,28 +248,27 @@ export default function Card() {
                       "
                     ></div>
                     <div className="grow">
-                      <div 
-                        className="
-                          text-lg
-                        "
-                      >
-                        Image.jpg
-                      </div>
-                      <div className="text-sm text-slate-500">
-                        上傳於 2023/03/30 14:20
-                      </div>
+                      <div className="text-lg">Image.jpg</div>
+                      <div className="text-sm text-slate-500">上傳於 2023/03/30 14:20</div>
                     </div>
                     <button className="px-3">
                       <i className="pi pi-trash"></i>
                     </button>
                   </div>
 
-                  <FileUpload mode="basic" chooseLabel="增加附件" name="attachment[]" url="/api/upload" accept="image/*" maxFileSize={1000000} onUpload={()=>{}} />
+                  <FileUpload
+                    mode="basic"
+                    chooseLabel="增加附件"
+                    name="attachment[]"
+                    url="/api/upload"
+                    accept="image/*"
+                    maxFileSize={1000000}
+                  />
                 </div>
 
                 {/* todo list */}
                 <div>
-                  <div 
+                  <div
                     className="
                       flex
                       items-center
@@ -281,47 +276,40 @@ export default function Card() {
                   >
                     <h5 className="grow">待辦事項標題</h5>
                     <div>
-                      <Button label="隱藏完成項目" size="small" className="mx-1"/>
-                      <Button label="刪除" size="small" className="mx-1"/>
+                      <Button label="隱藏完成項目" size="small" className="mx-1" />
+                      <Button label="刪除" size="small" className="mx-1" />
                     </div>
-
                   </div>
-                  <ProgressBar value={50} className='mt-2 mb-4'></ProgressBar>
+                  <ProgressBar value={50} className="mt-2 mb-4"></ProgressBar>
                   <ul>
                     <li className="flex items-center gap-3 mb-3">
-                      <Checkbox onChange={e => {}} checked={true}></Checkbox>
+                      <Checkbox checked={true}></Checkbox>
                       <p className="text-slate-400 line-through">User story</p>
                     </li>
                     <li className="flex items-center gap-3 mb-3">
-                      <Checkbox onChange={e => {}} checked={false}></Checkbox>
+                      <Checkbox checked={false}></Checkbox>
                       <p className="">User story</p>
                     </li>
                   </ul>
                 </div>
 
                 {/* comment */}
-                <div 
+                <div
                   className="
                     flex
                     items-center
                     gap-3
                   "
                 >
-                   <div 
-                     className={`${style.member}`}>
-                      <div className={`${style.name}`}>
-                        Na
-                      </div>
-                    </div>
-                    <InputText onChange={(e) => {}} 
-                      className="w-full"
-                      placeholder="撰寫評論"
-                    />
+                  <div className={`${style.member}`}>
+                    <div className={`${style.name}`}>Na</div>
+                  </div>
+                  <InputText className="w-full" placeholder="撰寫評論" />
                 </div>
               </div>
 
               {/* sidebar */}
-              <div 
+              <div
                 className="
                   w-full
                   md:w-[192px]
@@ -329,9 +317,7 @@ export default function Card() {
               >
                 <CardSidebar />
               </div>
-
             </div>
-            
           </div>
         </div>
       </div>

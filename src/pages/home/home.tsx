@@ -1,13 +1,14 @@
-import Banner from './banner';
-import PomodoroDescription from './pomodoroDescription';
-import ProductDescription from './productDescription';
-import RegisterZone from './registerZone';
-import TeamUse from './teamUse';
-import UserRecommend from './userRecommend';
-import WorkApplication from './workApplication';
+import Banner from './banner'
+import PomodoroDescription from './pomodoroDescription'
+import ProductDescription from './productDescription'
+import RegisterZone from './registerZone'
+import TeamUse from './teamUse'
+import UserRecommend from './userRecommend'
+import WorkApplication from './workApplication'
 
 export default function home() {
-  return <>
+  return (
+    <>
       <Banner></Banner>
       <ProductDescription></ProductDescription>
       <WorkApplication></WorkApplication>
@@ -15,5 +16,6 @@ export default function home() {
       <UserRecommend></UserRecommend>
       <TeamUse></TeamUse>
       <RegisterZone></RegisterZone>
-  </>;
+    </>
+  )
 }

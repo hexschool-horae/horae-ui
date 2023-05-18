@@ -1,13 +1,13 @@
-import { FC } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { InputText } from "primereact/inputtext";
+import { FC } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { InputText } from 'primereact/inputtext'
 
 interface IHeaderProps {
-  className: string;
+  className: string
 }
 
-const BackHeader: FC<IHeaderProps> = ({ className }) => {
+const BackHeader: FC<IHeaderProps> = () => {
   return (
     <div className="h-[72px] px-12 bg-primary flex items-center">
       <Image src="/images/logo.png" alt="logo.png" width={148} height={48} />
@@ -26,7 +26,7 @@ const BackHeader: FC<IHeaderProps> = ({ className }) => {
       </span>
       <div className="w-[48px] h-[48px] rounded-full bg-black ml-auto"></div>
     </div>
-  );
-};
+  )
+}
 
-export default BackHeader;
+export default BackHeader

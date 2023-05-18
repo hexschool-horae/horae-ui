@@ -4,12 +4,12 @@
   position: relative;
   max-width: 355px;
   min-height: 120px;
-  border: 1px solid #F8E1E1;
+  border: 1px solid #f8e1e1;
   border-radius: 6px;
   margin: 0 12px 24px;
   padding: 20px;
   width: calc(25% - 18px);
-  &:nth-child(4n+1){
+  &:nth-child(4n + 1) {
     margin: 0 12px 24px 0;
   }
   &:nth-child(4n) {
@@ -23,7 +23,7 @@
   &::before {
     @apply text-primary;
     position: absolute;
-    content: "建立看板";
+    content: '建立看板';
     width: 100%;
     bottom: 24px;
     text-align: center;

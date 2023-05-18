@@ -9,7 +9,7 @@
     padding: 0 40px;
   }
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     width: 200%;
     background: linear-gradient(261.74deg, #ffdfd9 0%, #f8f4f3 71.34%);
@@ -27,7 +27,7 @@
       z-index: 2;
       &::after {
         @apply bg-primary;
-        content: "";
+        content: '';
         position: absolute;
         width: 100%;
         height: 12px;
