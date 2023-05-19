@@ -1,18 +1,31 @@
 import { Button } from 'primereact/button'
 import ListSettingMenu from './BoardSettingMenu'
+import Card from './Card'
 
-export default function CardList() {
+export default function CardList({ title }: { title: string }) {
+  const cardDataList = [
+    { title: '洗衣服', labels: ['待辦', '優先'] },
+    { title: '洗衣服', labels: ['待辦', '優先'] },
+    { title: '洗衣服', labels: ['待辦', '優先'] },
+  ]
+
   return (
-    <div className="bg-secondary-4 flex flex-col justify-center px-4 py-5">
-      <div className="flex items-center mb-3">
-        <h6 className="text-lg text-secondary-3 mr-auto ">列表名稱</h6>
-        <ListSettingMenu />
+    <div className="w-[286px] row-span-full">
+      <div className="bg-secondary-4 h-auto px-4 py-5">
+        <div className="flex mb-3 ">
+          <h6 className="text-lg !text-secondary-3 mr-auto ">{title}</h6>
+          <ListSettingMenu />
+        </div>
+
+        {cardDataList.map((item, i) => (
+          <Card key={i} title={item.title} labels={item.labels} />
+        ))}
+        <Button
+          className="!w-full !tracking-[1px] !text-sm !text-secondary-3 !text-center p-0"
+          label="+ 新增卡片"
+          text
+        />
       </div>
-
-      {/* 卡片本體 */}
-      <div className="bg-white p-4 mb-3">Card</div>
-
-      <Button className="text-secondary-3 p-0" label="+ 新增卡片" text />
     </div>
   )
 }

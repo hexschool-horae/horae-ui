@@ -2,18 +2,21 @@ import { MenuBar, CardList, AddCardListButton } from '@/components/board'
 import Head from 'next/head'
 
 export default function Board() {
+  const listDataList = [{ title: '家居' }, { title: '教學' }, { title: '學習' }, { title: '文章' }]
   return (
-    <div>
+    <>
       <Head>
         <title>Horae - 看板</title>
       </Head>
 
-      <MenuBar />
+      <div className="mb-6">
+        <MenuBar />
+      </div>
 
-      <div className="flex px-16 py-12">
-        <div className="mr-5">
-          <CardList />
-        </div>
+      <div className="grid gap-4 px-4 h-full">
+        {listDataList.map((item, i) => (
+          <CardList key={i} title={item.title} />
+        ))}
 
         <AddCardListButton />
       </div>
@@ -24,6 +27,6 @@ export default function Board() {
         onClick={() => router.push("/profile")}
         link
       /> */}
-    </div>
+    </>
   )
 }

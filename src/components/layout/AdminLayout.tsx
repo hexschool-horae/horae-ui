@@ -8,7 +8,7 @@ export default function Admin({ children }: { children?: ReactNode }) {
       <BackHeader className="h-full overflow-y-auto" />
       <div className="flex flex-1 overflow-y-auto">
         <BackSideBar className="h-full overflow-y-auto" />
-        <main className="main back-main bg-secondary-4 p-12 h-full overflow-y-auto">{children}</main>
+        <main className="main back-main p-12 h-full overflow-y-auto">{children}</main>
       </div>
     </div>
   )

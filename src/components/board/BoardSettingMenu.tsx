@@ -27,7 +27,7 @@ export default function SettingMenu() {
     <>
       <Menu model={items} popup ref={menu} />
       <Button
-        className="text-secondary-3 p-0 leading-none"
+        className="!text-secondary-3 !w-4 !p-0 !leading-none"
         icon="pi pi-ellipsis-v"
         text
         aria-label="MenuToggle"
