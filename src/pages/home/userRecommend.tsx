@@ -4,6 +4,7 @@ import homeStyles from './home.module.scss'
 import styles from './userRecommend.module.scss'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination, Navigation } from 'swiper'
+import IconDoubleComma from '@/assets/icons/icon_double_comma.svg'
 
 export default function UserRecommend() {
   const [list] = useState([
@@ -54,12 +55,7 @@ export default function UserRecommend() {
         <div className={styles.content}>
           <div className={styles.describe}>{item.describe}</div>
           <div className={styles.quotation_mark_box}>
-            <svg width="37.16" height="31.03" viewBox="0 0 187 156" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M104.305 132.167L117.5 155.389C152.861 139.028 186.111 102.083 186.111 53C186.111 22.9167 167.111 0.222229 142.305 0.222229C117.5 0.222229 104.305 18.1667 104.305 36.1111C104.305 56.6945 118.028 72.5278 139.139 72.5278C144.417 72.5278 149.167 70.4167 152.333 68.8334C151.805 88.8889 134.389 117.389 104.305 132.167ZM0.861029 132.167L13.5277 155.389C49.4166 139.028 82.1388 102.083 82.1388 53C82.1388 22.9167 63.1388 0.222229 38.3333 0.222229C14.0555 0.222229 0.333252 18.1667 0.333252 36.1111C0.333252 56.6945 14.0555 72.5278 35.1666 72.5278C40.4444 72.5278 45.7221 70.4167 48.361 68.8334C47.8333 88.8889 30.4166 117.389 0.861029 132.167Z"
-                fill="#F8E1E1"
-              />
-            </svg>
+            <IconDoubleComma />
           </div>
         </div>
         <div className="flex justify-end items-center">
@@ -73,7 +69,6 @@ export default function UserRecommend() {
                 ></i>
               ))}
             </div>
-
             <div className={styles.user_info}>
               <h5 className="">{item.name}</h5>
               <h6 className="">{item.position}</h6>

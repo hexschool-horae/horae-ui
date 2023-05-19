@@ -1,14 +1,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
-
 import { Button } from 'primereact/button'
 import axiosFetcher from '@/apis/axios'
 import { setIsLogin, setToken } from '@/slices/userSlice'
-
 import Image from 'next/image'
 import styles from './frontHeader.module.scss'
 import { useEffect, useState } from 'react'
+import IconChevronDown from '@/assets/icons/icon_chevron_down.svg'
 
 const { post } = axiosFetcher
 
@@ -73,13 +72,7 @@ export default function FrontHeader() {
             <ul className="sm:flex block text-base font-medium">
               <li className="flex items-center">
                 功能介紹
-                <svg className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    fillRule="evenodd"
-                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <IconChevronDown className="ml-1" />
               </li>
               <li>使用者推薦</li>
             </ul>
