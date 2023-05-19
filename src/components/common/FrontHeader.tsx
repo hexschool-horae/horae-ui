@@ -1,15 +1,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
-
 import { Button } from 'primereact/button'
 import axiosFetcher from '@/apis/axios'
 import { setIsLogin, setToken } from '@/slices/userSlice'
-
 import Image from 'next/image'
 import styles from './frontHeader.module.scss'
 import { useEffect, useState } from 'react'
-import IconChevronDown from '@/assets/icons/icon-chevron-down.svg'
+import IconChevronDown from '@/assets/icons/icon_chevron_down.svg'
 
 const { post } = axiosFetcher
 
