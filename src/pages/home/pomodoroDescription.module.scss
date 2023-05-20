@@ -1,11 +1,11 @@
 .section {
-  background: linear-gradient(143.71deg, #FF6848 21.23%, #FFBBBB 78.89%);
+  background: linear-gradient(143.71deg, #ff6848 21.23%, #ffbbbb 78.89%);
   position: relative;
   .icon {
     position: absolute;
     top: 40%;
     right: 10%;
-    opacity: .4;
+    opacity: 0.4;
     z-index: 1;
   }
 }
@@ -53,7 +53,7 @@
   &::before,
   &::after,
   span {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     border-radius: 50%;
@@ -65,7 +65,7 @@
     top: 50%;
     left: -27.28px;
   }
-  
+
   &::after {
     @apply bg-primary;
     width: 10px;
@@ -73,7 +73,7 @@
     top: 65%;
     left: -15.82px;
   }
-  
+
   span {
     @apply bg-primary;
     width: 16px;
@@ -103,7 +103,7 @@
     position: absolute;
     top: 10%;
     right: -5%;
-    opacity: .4;
+    opacity: 0.4;
     z-index: 1;
   }
 }
@@ -145,12 +145,12 @@
       width: 9.34px;
       height: 9.34px;
     }
-    
+
     &::after {
       width: 6.67px;
       height: 6.67px;
     }
-    
+
     span {
       width: 10.68px;
       height: 10.68px;
@@ -160,15 +160,15 @@
 
 @keyframes go {
   0% {
-      border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
+    border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
   }
   25% {
-      border-radius: 45% 55% 37% 63% / 56% 36% 54% 44%;
+    border-radius: 45% 55% 37% 63% / 56% 36% 54% 44%;
   }
   50% {
-      border-radius: 59% 41% 68% 32% / 48% 52% 48% 62%;
+    border-radius: 59% 41% 68% 32% / 48% 52% 48% 62%;
   }
   75% {
-      border-radius: 50% 50% 39% 61% / 61% 69% 31% 39%;
+    border-radius: 50% 50% 39% 61% / 61% 69% 31% 39%;
   }
 }

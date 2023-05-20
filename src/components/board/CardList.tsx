@@ -1,5 +1,5 @@
-import { Button } from "primereact/button";
-import ListSettingMenu from "./BoardSettingMenu";
+import { Button } from 'primereact/button'
+import ListSettingMenu from './BoardSettingMenu'
 
 export default function CardList() {
   return (
@@ -14,5 +14,5 @@ export default function CardList() {
 
       <Button className="text-secondary-3 p-0" label="+ 新增卡片" text />
     </div>
-  );
+  )
 }

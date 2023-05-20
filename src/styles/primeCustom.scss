@@ -58,10 +58,11 @@
 }
 
 .work-space-overlay-panel {
-  &.p-overlaypanel{
+  &.p-overlaypanel {
     max-width: 304px;
     min-width: 250px;
-    &:before, &:after {
+    &:before,
+    &:after {
       display: none;
     }
     .p-overlaypanel-close {

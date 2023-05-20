@@ -1,9 +1,9 @@
 function NotFoundPage() {
-    return (
-        <div>
-            <h1>Page Not Found!</h1>
-        </div>
-    );
+  return (
+    <div>
+      <h1>Page Not Found!</h1>
+    </div>
+  )
 }
 
-export default NotFoundPage;
+export default NotFoundPage

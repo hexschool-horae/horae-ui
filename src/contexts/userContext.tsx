@@ -1,43 +1,43 @@
-import { createContext, useState, FC, ReactNode } from "react";
+import { createContext, useState, FC, ReactNode } from 'react'
 
 // 定義default state
 interface IStateType {
-  isLogin: boolean;
-  token: string;
+  isLogin: boolean
+  token: string
 }
 
 // 定義 context type
 interface IUserContextType {
-  state: IStateType;
-  setUserIsLogin: (isLogin: boolean) => void;
-  setUserToken: (token: string) => void;
+  state: IStateType
+  setUserIsLogin: (isLogin: boolean) => void
+  setUserToken: (token: string) => void
 }
 
 type UserProviderProps = {
-  children?: ReactNode;
-};
+  children?: ReactNode
+}
 
-export const UserContext = createContext({} as IUserContextType);
+export const UserContext = createContext({} as IUserContextType)
 
 export const UserProvider: FC<UserProviderProps> = ({ children }) => {
-  const [isLogin, setIsLogin] = useState(false);
-  const [token, setToken] = useState("");
+  const [isLogin, setIsLogin] = useState(false)
+  const [token, setToken] = useState('')
 
   // 設置是否登入
   const setUserIsLogin = (isLogin: boolean) => {
-    setIsLogin(isLogin);
-  };
+    setIsLogin(isLogin)
+  }
 
   // 設置token
   const setUserToken = (token: string) => {
-    setToken(token);
-  };
+    setToken(token)
+  }
 
   const value = {
     state: { isLogin, token },
     setUserIsLogin,
     setUserToken,
-  };
+  }
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
-};
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>
+}

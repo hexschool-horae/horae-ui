@@ -1,4 +1,4 @@
-import { Button } from "primereact/button";
+import { Button } from 'primereact/button'
 
 export default function AddCardListButoon() {
   return (
@@ -6,5 +6,5 @@ export default function AddCardListButoon() {
       新增其他列表
       <span className="ml-auto">+</span>
     </Button>
-  );
+  )
 }
