@@ -1,21 +1,18 @@
+import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import CardPopupWrapper from "./CardPopupWrapper";
 
-interface ICardPopupMemberProps {
-    isOpen: boolean;
-    setIsOpen: (toggle: boolean) => void;
-}
 
-export default function CardPopupMember({ isOpen, setIsOpen }: ICardPopupMemberProps) {
-    const handleOnClose = () => {
-        setIsOpen(false);
-    }
 
-    if(!isOpen) return null;
+
+export default function CardPopupMember() {
+    const modalLabel = "member";
+
+    return null
     
     return (
         <>
-            <CardPopupWrapper title="成員" onClose={handleOnClose}>
+            <Dialog header="成員" modal={false} visible={false} 
+                style={{ width: '50vw' }} onHide={() => {}}>
                 <InputText  placeholder="搜尋成員"
                     className="
                         w-full
@@ -23,8 +20,7 @@ export default function CardPopupMember({ isOpen, setIsOpen }: ICardPopupMemberP
                         mr-10
                     "
                     />
-            </CardPopupWrapper>
-            
+            </Dialog>
         </>
     )
 }

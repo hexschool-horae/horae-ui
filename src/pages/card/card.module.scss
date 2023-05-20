@@ -1,34 +1,3 @@
-@mixin circle($wh: 30px) {
-    @apply bg-slate-500 rounded-full;
-    width: $wh;
-    height: $wh;
-    text-align: center;
-    line-height: $wh;
+.sidebar_title {
+    @apply col-span-2 text-sm;
 }
-
-.card_main_col {
-    > div{
-        @apply py-4
-    }
-}
-
-.detail_item_wrapper {
-   @apply flex items-center gap-1 px-3 py-1 rounded-full bg-slate-300;
-
-   
-    .detail_item_btn {
-        @include circle(24px);
-    }
-}
-
-.member {
-    @include circle;
-    .name {
-        font-size: 14px;
-        color: white;
-        list-style: 30px;
-    }
-}
-
-
-
