@@ -1,4 +1,4 @@
-import { MenuBar, CardList, AddCardListButton } from '@/components/board'
+import { MenuBar, List, AddListButton } from '@/components/board'
 import Head from 'next/head'
 
 export default function Board() {
@@ -13,20 +13,13 @@ export default function Board() {
         <MenuBar />
       </div>
 
-      <div className="grid gap-4 px-4 h-full">
+      <div className="grid gap-4 px-4 h-full overflow-scroll">
         {listDataList.map((item, i) => (
-          <CardList key={i} title={item.title} />
+          <List key={i} title={item.title} />
         ))}
 
-        <AddCardListButton />
+        <AddListButton />
       </div>
-
-      {/* <Button
-        className="p-0"
-        label="前往個人頁面"
-        onClick={() => router.push("/profile")}
-        link
-      /> */}
     </>
   )
 }

@@ -4,7 +4,7 @@ import { Button } from 'primereact/button'
 import { Menu } from 'primereact/menu'
 import { MenuItem } from 'primereact/menuitem'
 
-import Style from './BoardPermissionMenu.module.scss'
+import Style from './MenuItem.module.scss'
 
 const permissionDataItems = [
   {

@@ -1,8 +1,8 @@
 import { Button } from 'primereact/button'
-import ListSettingMenu from './BoardSettingMenu'
+import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
 
-export default function CardList({ title }: { title: string }) {
+export default function List({ title }: { title: string }) {
   const cardDataList = [
     { title: '洗衣服', labels: ['待辦', '優先'] },
     { title: '洗衣服', labels: ['待辦', '優先'] },
