@@ -73,6 +73,39 @@
   }
 }
 
+.p-button {
+  &.p-button-sm {
+    font-size: 16px;
+    padding: 8px 16px;
+    line-height: 140%;
+    .p-button-icon {
+      margin-top: 4px;
+    }
+  }
+}
+.member-setting {
+  .p-dropdown {
+    @apply bg-primary;
+    border: none;
+    min-width: 90px;
+    .p-dropdown-trigger {
+      width: 2rem;
+      color: white;
+    }
+    .p-dropdown-label {
+      color: white;
+      &.p-placeholder {
+        color: white;
+      }
+    }
+    .p-inputtext {
+      @apply text-sm;
+      text-align: center;
+      line-height: 1.35rem;
+      padding: 0.5rem 0 0.5rem 0.5rem;
+    }
+  }
+}
 @media (max-width: 640px) {
   .p-button {
     font-size: 14px;

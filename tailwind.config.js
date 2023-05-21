@@ -22,5 +22,5 @@ module.exports = {
   plugins: [],
   //拉高tailwind的權重
   // https://tailwindcss.com/docs/configuration#important
-  important: 'body',
+  important: '#body',
 }

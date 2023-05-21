@@ -10,10 +10,12 @@ import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
 import { classNames } from 'primereact/utils'
 import axiosFetcher from '@/apis/axios'
-import { IUserBoardDataRes } from '@/apis/models/res/i-user-board-data-res'
-import router from 'next/router'
 
-const { post, get } = axiosFetcher
+import router from 'next/router'
+import { GET_WORK_SPACE } from '@/apis/axios-service'
+import { IUserBoardDataRes } from '@/apis/interface/api'
+
+const { post } = axiosFetcher
 
 const schema = Yup.object().shape({
   title: Yup.string().required(),
@@ -30,19 +32,6 @@ type IWorkspaceFormReq = {
   discribe: string
   viewSet: string
   workSpaceId: string
-}
-
-interface dataRes {
-  data: {
-    boards: Array<IUserBoardDataRes>
-    discribe: string
-    status: string
-    title: string
-    viewSet: string
-    yourPermission: string
-    yourRole: string
-    _id: string
-  }
 }
 
 interface IBoardRes {
@@ -106,25 +95,20 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
     handleGetBard(dataResList)
   }, [dataResList])
 
-  /** B02-5 取得單一工作區 --暫時用--*/
+  /** B02-5 取得單一工作區 */
   const handleGetWorkSpaceData = async () => {
-    const result = await get<dataRes>(`/work-space/${workSpaceId}`)
+    const result = await GET_WORK_SPACE(workSpaceId)
     if (!result) return
-    // console.log('result', result)
-    // console.log('result.data', result.data);
     setDataResList(result.data)
     setBoardList(result.data.boards)
   }
 
   const handleCreateBoard = async (reqData: IWorkspaceFormReq) => {
     reqData.viewSet = selectedViewSet
-    // console.log('reqData', reqData);
 
     const result = await post('/board', reqData)
     if (!result) return
     handleHide()
-    // 呼叫祖頁面 取得資料方法
-    // handleAddWorkSpaceSuccess();
     handleGetWorkSpaceData()
   }
 
@@ -145,9 +129,9 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
     <div>
       {/* 既有看版 */}
       <div className="flex w-full flex-wrap">
-        {boardList.map(item => (
+        {boardList.map((item, index) => (
           <>
-            <div key={item._id} className={styles.card} onClick={() => goBoard(item._id)}>
+            <div key={index} className={styles.card} onClick={() => goBoard(item._id)}>
               <p>{item.title}</p>
             </div>
           </>
@@ -198,7 +182,7 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
                 control={control}
                 render={({ field, fieldState }) => (
                   <>
-                    <label htmlFor={field.name}>看板描述(選填)</label>
+                    <label htmlFor={field.name}>看板描述</label>
                     <InputTextarea
                       id={field.name}
                       value={field.value}

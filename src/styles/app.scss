@@ -12,6 +12,33 @@
 @import './primeCustom.scss';
 @import './swiperCustom.scss';
 
+// font
+h2 {
+  font-weight: 500;
+  font-size: 50px;
+  line-height: 120%;
+}
+
+h3 {
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 120%;
+
+  margin-bottom: 24px;
+}
+
+h4 {
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 120%;
+}
+
+h5 {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 120%;
+}
+
 // 基本設定
 html,
 body {
@@ -89,6 +116,20 @@ section {
   bottom: 0;
 }
 @media (max-width: 640px) {
+  // font
+  h2 {
+    font-size: 40px;
+  }
+  h3 {
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+  h4 {
+    font-size: 24px;
+  }
+  h5 {
+    font-size: 20px;
+  }
   main {
     min-height: calc(100vh - 193.8px);
   }

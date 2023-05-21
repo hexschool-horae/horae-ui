@@ -11,15 +11,17 @@ import * as Yup from 'yup'
 import { Button } from 'primereact/button'
 import { classNames } from 'primereact/utils'
 import axiosFetcher from '@/apis/axios'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
+import { POST_WORKSPACE_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
 
-const { post, get } = axiosFetcher
+const { post } = axiosFetcher
 
 interface Props {
   visible: boolean
   onHide: () => void
   setVisible: React.Dispatch<React.SetStateAction<boolean>>
-  handleGetWorkSpaceTitleData: () => void
+  handleGetWorkSpaceTitleData?: () => void
 }
 
 type IWorkspaceFormReq = {
@@ -32,9 +34,9 @@ type IInvitationWorkspaceFormReq = {
   userEmail: string
 }
 
-// type IWorkspaceId = {
-//   data: string
-// }
+type IWorkspaceId = {
+  data: string
+}
 
 const schema = Yup.object().shape({
   title: Yup.string().required(),
@@ -44,7 +46,8 @@ const schemaInvitation = Yup.object().shape({
 })
 
 export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetWorkSpaceTitleData }: Props) {
-  const [workspaceId] = useState('')
+  const { handleGetUserBoardsData } = useContext(AdminLayoutContext)
+  const [workspaceId, setWorkspaceId] = useState('')
   const [invitationStep, setInvitationStep] = useState('1')
 
   const handleHide = () => {
@@ -65,16 +68,19 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
     userEmail: '',
   }
 
-  const handleCreateWorkspace = async () => {
-    // console.log('reqData', reqData);
-    //  const result = await post<IWorkspaceId>(
-    //   "/work-space",
-    //   reqData,
-    // );
-    // if (!result) return;
-    handleGetWorkSpaceTitleData()
-    // setInvitationStep("2");
-    // setWorkspaceId(result.data);
+  const handleCreateWorkspace = async (reqData: IWorkspaceFormReq) => {
+    console.log('reqData', reqData)
+    const result = await post<IWorkspaceId>('/work-space', reqData)
+    if (!result) return
+
+    // 重取側邊欄工作區資料
+    if (handleGetWorkSpaceTitleData) {
+      handleGetWorkSpaceTitleData()
+    }
+    // 重取個人所有工作區看板資料
+    handleGetUserBoardsData()
+    setInvitationStep('2')
+    setWorkspaceId(result.data)
     console.log('handleCreateWorkspace')
   }
 
@@ -87,12 +93,9 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
   }
 
   const handleInvitationLikeWorkspace = async () => {
-    const result = await get(
-      `/work-space/${workspaceId}/invitation-link`
-      // reqData,
-    )
-    if (!result) return
-    console.log('取得連結', result)
+    const response = await POST_WORKSPACE_INVITATION_LINK_BY_ID(workspaceId)
+    if (!response) return
+    navigator.clipboard.writeText(response.data.invitationLink) // 複製連結
   }
 
   const {
@@ -167,7 +170,7 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
                       control={control}
                       render={({ field, fieldState }) => (
                         <>
-                          <label htmlFor={field.name}>工作區描述(選填)</label>
+                          <label htmlFor={field.name}>工作區描述</label>
                           <InputTextarea
                             id={field.name}
                             value={field.value}
@@ -265,7 +268,7 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
           <div className={styles.dialog_right_panel}>
             <Image
               className="min-h-[480px]"
-              src={'/images/home-remote.png'}
+              src={invitationStep === '1' ? '/images/workspace-new.png' : '/images/workspace-invitation.png'}
               alt="remote"
               style={{ objectFit: 'cover', objectPosition: 'center center' }}
               width={600}

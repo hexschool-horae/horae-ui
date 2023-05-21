@@ -1,9 +1,10 @@
 import axiosFetcher from '@/apis/axios'
-import { IUserBoardDataRes } from '@/apis/models/res/i-user-board-data-res'
+
 import { useRouter } from 'next/router'
 import { Button } from 'primereact/button'
 import { useEffect, useState, FC } from 'react'
-import WorkSpaceModel from '@/components/workSpaceModel'
+import WorkSpaceModel from '../workSpace/WorkSpaceModel'
+import { IUserBoardDataRes } from '@/apis/interface/api'
 
 const { get } = axiosFetcher
 
@@ -28,12 +29,16 @@ const BackSideBar: FC<IBackSidebarProps> = ({ className }) => {
     setVisible(false)
   }
 
-  /** B02-2 取得登入者所有工作區標題清單 header sidebar 使用 --暫時取工作區使用--*/
+  /** B02-2 取得登入者所有工作區標題清單  */
   const handleGetWorkSpaceTitleData = async () => {
     console.log('--側邊攔--')
     const result = await get<dataRes>('/work-space')
     if (!result) return
     setUserBoardList(result.data)
+  }
+
+  const getShortName = (name: string) => {
+    return name.charAt(0)
   }
 
   useEffect(() => {
@@ -46,7 +51,7 @@ const BackSideBar: FC<IBackSidebarProps> = ({ className }) => {
         <ul>
           <li>
             <Button
-              className="text-secondary px-5 sm:text-base text-sm focus:border-transparent"
+              className="text-gray-500 px-5 sm:text-base text-sm focus:border-transparent"
               label="看板"
               onClick={() => router.push('/board')}
               link
@@ -56,37 +61,47 @@ const BackSideBar: FC<IBackSidebarProps> = ({ className }) => {
           <li>
             <div className="flex items-center justify-between">
               <Button
-                className="text-secondary px-5 sm:text-base text-sm focus:border-transparent"
+                className="text-black px-5 sm:text-base text-sm focus:border-transparent"
                 label="工作區"
                 link
                 severity="info"
+                disabled
               />
               <div className="mr-5 text-secondary-3 cursor-pointer text-lg" onClick={showDialog}>
                 +
               </div>
             </div>
 
-            <ul className="ml-3">
+            <ul className="ml-0">
               {userBoardList.map((item, index) => (
                 <li key={index}>
-                  <Button label={item.title} link />
-                  <ul className="ml-3">
-                    <li>
-                      <Button label="看板" onClick={() => router.push(`/workspace/${item._id}`)} size="small" link />
-                    </li>
+                  <Button link disabled>
+                    <span className="bg-primary text-white rounded py-1.5 px-[10px] mr-3">
+                      {getShortName(item.title)}
+                    </span>
+                    {item.title}
+                  </Button>
+                  <ul className="ml-14">
                     <li>
                       <Button
-                        label="成員"
-                        onClick={() => router.push(`/workspace/${item._id}/account`)}
+                        label="看板"
+                        onClick={() => router.push(`/workspace/${item._id}/home`)}
                         size="small"
                         link
                       />
                     </li>
                     <li>
                       <Button
-                        className="text-primary px-5 sm:text-base text-sm focus:border-transparent"
+                        label="成員"
+                        onClick={() => router.push(`/workspace/${item._id}/member`)}
+                        size="small"
+                        link
+                      />
+                    </li>
+                    <li>
+                      <Button
                         label="設定"
-                        onClick={() => router.push('/workspace/members')}
+                        onClick={() => router.push(`/workspace/${item._id}/setting`)}
                         size="small"
                         link
                       />

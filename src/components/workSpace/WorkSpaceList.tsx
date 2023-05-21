@@ -1,23 +1,17 @@
 import { useEffect, useState } from 'react'
-import WorkSpaceCard from './workSpaceCard'
-import { IUserBoardDataRes } from '@/apis/models/res/i-user-board-data-res'
+
 import { Button } from 'primereact/button'
 import { useRouter } from 'next/router'
+import IconBoard from '@/assets/icons/icon_layout.svg'
+import IconMembers from '@/assets/icons/icon_users.svg'
+import IconSetting from '@/assets/icons/icon_settings.svg'
+import WorkSpaceCard from './WorkSpaceCard'
+import { IUserBoardDataRes } from '@/apis/interface/api'
 
 interface Props {
   userBoardItem: IUserBoardDataRes
   handleGetUserBoardsData: () => Promise<void>
 }
-
-// interface IBoardRes {
-//   discribe: string
-//   status: string
-//   title: string
-//   viewSet: string
-//   yourPermission: string
-//   yourRole: string
-//   _id: string
-// }
 
 export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }: Props) {
   const router = useRouter()
@@ -29,13 +23,26 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
     },
     {
       name: '成員',
-      value: 'account',
+      value: 'members',
     },
     {
       name: '設定',
-      value: 'members',
+      value: 'setting',
     },
   ])
+
+  const getIconComponent = (value: string) => {
+    switch (value) {
+      case 'board':
+        return <IconBoard />
+      case 'members':
+        return <IconMembers />
+      case 'setting':
+        return <IconSetting />
+      default:
+        return null
+    }
+  }
 
   useEffect(() => {
     setWorkSpaceName(userBoardItem.title.charAt(0))
@@ -52,7 +59,11 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
   const handleSettings = (value: string) => {
     // console.log("value", value)
     if (value === 'board') {
-      router.push(`/workspace/${userBoardItem._id}`)
+      router.push(`/workspace/${userBoardItem._id}/home`)
+    } else if (value === 'members') {
+      router.push(`/workspace/${userBoardItem._id}/member/home`)
+    } else if (value === 'setting') {
+      router.push(`/workspace/${userBoardItem._id}/setting`)
     }
   }
 
@@ -66,7 +77,7 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
         <div className="right">
           {settings.map((item, index) => (
             <Button
-              className="bg-secondary-2 text-secondary-3 ml-4"
+              className="bg-secondary-4 text-secondary-3 border-secondary-2 ml-4"
               size="small"
               key={index}
               rounded
@@ -75,19 +86,19 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
                 handleSettings(item.value)
               }}
             >
-              <span>{item.name}</span>
+              {getIconComponent(item.value)}
+              <span className="pl-1 text-secondary-3">{item.name}</span>
             </Button>
           ))}
         </div>
       </div>
       {/* 看板卡片 */}
-      <div key={userBoardItem._id}>
-        <WorkSpaceCard
-          workSpaceId={userBoardItem._id}
-          handleAddWorkSpaceSuccess={handleAddWorkSpaceSuccess}
-          handleGetBard={handleGetBard}
-        ></WorkSpaceCard>
-      </div>
+      <WorkSpaceCard
+        workSpaceId={userBoardItem._id}
+        key={userBoardItem._id}
+        handleAddWorkSpaceSuccess={handleAddWorkSpaceSuccess}
+        handleGetBard={handleGetBard}
+      ></WorkSpaceCard>
     </div>
   )
 }
