@@ -61,7 +61,7 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
     if (value === 'board') {
       router.push(`/workspace/${userBoardItem._id}/home`)
     } else if (value === 'members') {
-      router.push(`/workspace/${userBoardItem._id}/member/home`)
+      router.push(`/workspace/${userBoardItem._id}/member`)
     } else if (value === 'setting') {
       router.push(`/workspace/${userBoardItem._id}/setting`)
     }
