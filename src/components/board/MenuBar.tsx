@@ -3,12 +3,9 @@ import BoardTitle from './BoardTitle'
 import MemberAvatarGroup from './MemberAvatarGroup'
 import FiltersMenu from './FiltersMenu'
 import InviteBoard from './InviteBoard'
-import InviteButton from './InviteButton'
-import ListSettingMenu from './ListSettingMenu'
+import BoardSettingMenu from './BoardSettingMenu'
 
 export default function MenuBar() {
-  //const router = useRouter();
-
   return (
     <>
       <section>
@@ -25,13 +22,12 @@ export default function MenuBar() {
 
           {/* 篩選條件選單按鈕 */}
           <FiltersMenu />
-          {/* 邀請成員彈窗按鈕 */}
-          <InviteButton />
+
           {/* 邀請成員彈窗 */}
           <InviteBoard />
 
           {/* 設定選單按鈕 */}
-          <ListSettingMenu />
+          <BoardSettingMenu />
         </div>
       </section>
     </>
