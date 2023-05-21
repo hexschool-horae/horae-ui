@@ -38,6 +38,7 @@ type IInvitationWorkspaceFormReq = {
 
 export default function Members() {
   const router = useRouter()
+  const workId = router.query.workId as string
   const [workspaceId, setworkspaceId] = useState('')
   const [members, setMembers] = useState<IWorkSpaceMembersByIdResponse[]>([])
   const roles = [
@@ -135,15 +136,13 @@ export default function Members() {
     if (!response) return
     handlerCallGetWorkPaceMembers(workspaceId)
   }
-
   useEffect(() => {
-    const urlValue = router.query.workId as string
-    if (urlValue) {
-      setworkspaceId(urlValue)
-      handlerCallGetWorkPace(urlValue)
-      handlerCallGetWorkPaceMembers(urlValue)
+    if (workId) {
+      setworkspaceId(workId)
+      handlerCallGetWorkPace(workId)
+      handlerCallGetWorkPaceMembers(workId)
     }
-  }, [])
+  }, [workId])
   return (
     <div>
       {boardData.title ? <WorkSpaceTitle boardData={boardData}></WorkSpaceTitle> : ''}
