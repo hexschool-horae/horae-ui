@@ -1,7 +1,7 @@
 import { useRef, MouseEvent } from 'react'
 
 import { Button } from 'primereact/button'
-
+import { Chip } from 'primereact/chip'
 import { Dropdown } from 'primereact/dropdown'
 import { Menu } from 'primereact/menu'
 import { MenuItem } from 'primereact/menuitem'
@@ -9,10 +9,9 @@ import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { TieredMenu } from 'primereact/tieredmenu'
 
-import Style from './BoardSettingMenu.module.scss'
-import { classNames } from 'primereact/utils'
-
 import MemberInfoGroup from './MemberInfoGroup'
+
+import Style from './BoardSettingMenu.module.scss'
 
 const BoardAboutTemplate = () => (
   <div className="p-4" style={{ fontSize: '14px' }}>
@@ -66,14 +65,9 @@ const LabelListTemplate = () => (
 
     <hr className="my-5" />
 
-    <div className="w-full bg-yellow-100 flex items-center p-3 rounded-s mb-2">
-      <div className={classNames('w-[13px]', 'h-[13px]', 'rounded-full', 'bg-yellow-400')}></div>
-    </div>
-    <div className="w-full bg-red-100 flex items-center p-3 rounded-s mb-2">
-      <div className={classNames('w-[13px]', 'h-[13px]', 'rounded-full', 'bg-red-400')}></div>
-    </div>
-    <div className="w-full bg-blue-100 flex items-center p-3 rounded-s">
-      <div className={classNames('w-[13px]', 'h-[13px]', 'rounded-full', 'bg-blue-400')}></div>
+    <div className="mb-2">標籤</div>
+    <div className="flex">
+      <Chip label="標籤" className="!border-secondary-2 !text-secondary-3 !bg-secondary-4 mr-2"></Chip>
     </div>
 
     <hr className="my-5" />

@@ -5,7 +5,7 @@ export default function Card({ title = '', labels = [] }: { title: string; label
 
   return (
     <div className="w-[254px] flex flex-col rounded-md  bg-white p-4 mb-3">
-      <h6 className="mb-10">{title}</h6>
+      <h6 className="text-start mb-10">{title}</h6>
       {/* 卡片標籤 */}
       <div className="flex">
         {labels.map((label, i) => (
