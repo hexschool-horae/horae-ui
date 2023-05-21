@@ -1,88 +1,100 @@
+import { useEffect } from 'react'
 
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import style from './card.module.scss'
+import { Dialog } from 'primereact/dialog'
 
-import style from './card.module.scss';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
+import { CardDetailProvider, useCardDetail } from '@/contexts/cardDetailContext'
+import CardSidebarButton from '@/components/card/CardSidebarButton'
+import CardDetailTitle from '@/components/card/CardDetailTitle'
+import CardDetailMember from '@/components/card/CardDetailMember'
+import CardDetailTags from '@/components/card/CardDetailTags'
+import CardDetailDescribe from '@/components/card/CardDetailDescribe'
+import CardDetailTodoList from '@/components/card/CardDetailTodoList'
+import CardDetailComments from '@/components/card/CardDetailComments'
 
-import { CardDetailProvider, useCardDetail} from '@/contexts/cardDetailContext';
-import CardSidebarButton from '@/components/card/CardSidebarButton';
+import CardPopupMember from '@/components/card/CardPopupMember'
+import CardPopupTodoList from '@/components/card/CardPopupTodoList'
+import CardPopupTags from '@/components/card/CardPopupTags'
 
-    
-
-export default function Card() {
-  return (
-   <CardDetailProvider>
-      <CardInternal />
-    </CardDetailProvider>
-  )
+const popupLabels = {
+  member: 'memberPopup',
+  todoList: 'todoListPopup',
+  tags: 'tagsPopup',
 }
 
-
-function CardInternal() {
-  const router = useRouter();
-  const cardId = router.query.cardId;
-  const { state, dispatch } = useCardDetail();
+const CardInternal = () => {
+  const { dispatch } = useCardDetail()
 
   useEffect(() => {
     // 測試用
     const timer = setTimeout(() => {
       dispatch({
-        type: "INITIALIZE_CARD",
+        type: 'INITIALIZE_CARD',
         payload: {
           cardDetail: {
-            title: "test",
+            title: '測試卡片',
+            describe: '卡片描述文字',
+            comments: [{ content: '測試文字', date: '2023/10/20' }],
           },
         },
-      });
-    }, 1000);
+      })
+    }, 500)
 
     return () => {
-      clearTimeout(timer);
-    };
-  }, []);
-
-
-
+      clearTimeout(timer)
+    }
+  }, [])
 
   return (
-
-    <Dialog visible={true} onHide={() => {}}
-        className="w-full md:w-[800px] mx-3"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-          {/* main col */}
-          <div className="md:col-span-5">
-            <div className="text-[14px] mb-3">
-              在列表<span className="pl-1">待辦事項</span>
-            </div>
-
-            <InputText value={state.cardDetail.title} 
-              onChange={(e) => {
-                dispatch({
-                  type: "EDIT_TITLE",
-                  payload: {
-                    cardDetail: {
-                      title: e.target.value,
-                    },
-                  },
-                })
-              }} 
-              placeholder="卡片標題"
-              className="w-full"
-            />
-
-   
+    <Dialog
+      visible={true}
+      onHide={() => {
+        console.log('hide')
+      }}
+      className="w-full md:w-[800px] mx-3"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
+        {/* main col */}
+        <div className="md:col-span-5">
+          <div className="text-[14px] mb-3">
+            在列表<span className="pl-1 text-primary cursor-pointer">測試列表</span>
           </div>
-          {/* sidebar */}
-          <div className="grid grid-cols-2 gap-4 md:gap-2 md:grid-cols-1 md:col-span-2">
-            <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
-            <CardSidebarButton name="成員" label="member"/>
-            {/* <CardSidebarButton name="代辦清單" label="todos"/> */}
-          
-          </div>
+
+          <CardDetailTitle />
+          <CardDetailMember label={popupLabels.member} />
+          <CardDetailTags label={popupLabels.tags} />
+          <CardDetailDescribe />
+          <CardDetailTodoList />
+          <CardDetailComments />
         </div>
+
+        {/* sidebar */}
+        <div className="md:col-span-2">
+          <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
+          <div
+            className="grid grid-cols-2 gap-4 
+              md:grid-cols-1 md:gap-2"
+          >
+            <CardSidebarButton name="成員" label={popupLabels.member} />
+            <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
+            <CardSidebarButton name="標籤" label={popupLabels.tags} />
+          </div>
+
+          <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
+        </div>
+      </div>
     </Dialog>
+  )
+}
+
+export default function Card() {
+  return (
+    <CardDetailProvider>
+      <CardInternal />
+
+      <CardPopupMember label={popupLabels.member} />
+      <CardPopupTodoList label={popupLabels.todoList} />
+      <CardPopupTags label={popupLabels.tags} />
+    </CardDetailProvider>
   )
 }
