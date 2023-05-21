@@ -2,29 +2,13 @@ import { InputText } from 'primereact/inputtext'
 import CardPopupWrapper from './CardPopupWrapper'
 
 interface ICardPopupMemberProps {
-  isOpen: boolean
-  setIsOpen: (toggle: boolean) => void
+  label: string
 }
 
-export default function CardPopupMember({ isOpen, setIsOpen }: ICardPopupMemberProps) {
-  const handleOnClose = () => {
-    setIsOpen(false)
-  }
-
-  if (!isOpen) return null
-
+export default function CardPopupMember({ label }: ICardPopupMemberProps) {
   return (
-    <>
-      <CardPopupWrapper title="成員" onClose={handleOnClose}>
-        <InputText
-          placeholder="搜尋成員"
-          className="
-                        w-full
-                        my-2
-                        mr-10
-                    "
-        />
-      </CardPopupWrapper>
-    </>
+    <CardPopupWrapper title="成員" label={label}>
+      <InputText placeholder="搜尋成員" className="w-full my-2" />
+    </CardPopupWrapper>
   )
 }
