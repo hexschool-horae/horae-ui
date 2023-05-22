@@ -1,6 +1,5 @@
-const SOCKET_SERVER = process.env.NEXT_PUBLIC_SOCKET_SERVER
 export default {
-  BOARD: `${SOCKET_SERVER}/BOARD`,
-  LISTS: `${SOCKET_SERVER}/LISTS`,
-  CARD: `${SOCKET_SERVER}/CARD`,
+  BOARD: '/BOARD',
+  LISTS: '/LISTS',
+  CARD: '/CARD',
 }
