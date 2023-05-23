@@ -1,4 +1,4 @@
-import namespace from '@/socketService/namespace'
+import namespace from '@/socketService/sockets.namespace'
 import socketService from '@/socketService/service'
 
 export const useBoardService = () => socketService.useBoardService(namespace.BOARD)
