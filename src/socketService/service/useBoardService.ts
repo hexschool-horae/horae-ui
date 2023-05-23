@@ -1,11 +1,19 @@
+import { useEffect } from 'react'
 import manager from '@/hooks/useSocketIO'
-let boardSocket = null
+import { Socket } from 'socket.io-client'
+import * as interfaces from '@/socketService/types/board.d'
+import events from '@/socketService/sockets.events'
+let boardSocket: Socket
 export const useBoardService = (namespace: string) => {
-  boardSocket = manager.socket(namespace)
-  boardSocket.on('connect', () => {
-    console.log('board connect')
-  })
-
+  useEffect(() => {
+    boardSocket = manager.socket(namespace)
+    boardSocket.on('connect', () => {
+      console.log('board connect')
+    })
+    return () => {
+      boardSocket?.disconnect()
+    }
+  }, [])
   return {
     createCard,
     moveCard,
@@ -19,7 +27,9 @@ export const useBoardService = (namespace: string) => {
 const createCard = () => undefined
 const moveCard = () => undefined
 const deleteCard = () => undefined
-const createList = () => undefined
+const createList = (payload: interfaces.ICreateListPayload) => {
+  boardSocket.emit(events.BOARD_CREATE_LIST, payload)
+}
 const moveList = () => undefined
 const deleteList = () => undefined
 

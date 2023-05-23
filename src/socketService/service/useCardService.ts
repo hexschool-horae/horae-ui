@@ -1,10 +1,17 @@
+import { useEffect } from 'react'
+import { Socket } from 'socket.io-client'
 import manager from '@/hooks/useSocketIO'
-let cardSocket = null
+let cardSocket: Socket
 export const useCardService = (namespace: string) => {
-  cardSocket = manager.socket(namespace)
-  cardSocket.on('connect', () => {
-    console.log('board connect')
-  })
+  useEffect(() => {
+    cardSocket = manager.socket(namespace)
+    cardSocket.on('connect', () => {
+      console.log('board connect')
+    })
+    return () => {
+      cardSocket?.disconnect()
+    }
+  }, [])
   return {
     createComment,
     updateComment,
