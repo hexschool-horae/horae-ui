@@ -10,6 +10,9 @@ export const useBoardService = (namespace: string) => {
     boardSocket.on('connect', () => {
       console.log('board connect')
     })
+    boardSocket.on(events.BOARD_CREATE_LIST_SUCCESS, data => {
+      console.log('events.BOARD_CREATE_LIST_SUCCESS = ', data)
+    })
     return () => {
       boardSocket?.disconnect()
     }
