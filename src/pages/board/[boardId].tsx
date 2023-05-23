@@ -3,9 +3,11 @@ import Head from 'next/head'
 import { useState } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
+import { useBoardService } from '@/socketService'
 
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
+import { useRouter } from 'next/router'
 
 const listCardList = [
   {
@@ -31,6 +33,9 @@ const listCardList = [
 
 export default function Board() {
   const [list, setIsList] = useState(listCardList)
+  const router = useRouter()
+  const boardId = router.query.boardId as string
+  const boardService = useBoardService()
   /* eslint-disable */
   function handleDragEnd(event: any) {
     console.log(event)
@@ -48,6 +53,13 @@ export default function Board() {
     }
   }
 
+  const onCreateList = (title: string = '') => {
+    const payload = {
+      boardId,
+      title,
+    }
+    boardService.createList(payload)
+  }
   return (
     <>
       <Head>
@@ -69,7 +81,7 @@ export default function Board() {
             </div>
           ))}
         </DndContext>
-        <AddListButton />
+        <AddListButton onCreateList={onCreateList} />
       </div>
     </>
   )
