@@ -4,23 +4,31 @@ import { Controller } from 'react-hook-form'
 import { classNames } from 'primereact/utils'
 
 /**
- * label: 標籤名稱
+ * @name ValidateController
+ * @description React Hook Form Controller 為基底的驗證用元件，包含錯誤訊息以及標籤
  *
- * name: HTML Attribute Name
+ *  @param  label - HTML Label 內容
  *
- * control: React Hook Form control
+ *  @param  name - HTML Attribute Name
  *
+ *  @param  className - HTML Attribute class
+ *
+ *  @param  control - React Hook Form control
+ *
+ *  @param children - 需要驗證的 input UI 元件
+ *
+ *  @returns 回傳包含 Label、輸入框和錯誤訊息的 React Element
  */
 /* eslint-enable */
-export default function FormWrapper({
-  name,
+export default function ValidateController({
   label,
+  name,
   className,
   control,
   children,
 }: {
-  name: string
   label: string
+  name: string
   className?: string
   children: ReactNode
   control: any //型別怎麼定義有待研究

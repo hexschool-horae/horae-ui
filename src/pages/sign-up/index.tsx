@@ -1,18 +1,19 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
 
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
-import { classNames } from 'primereact/utils'
 
 import { useAppDispatch } from '@/hooks/useAppStore'
 import { setIsLogin, setToken } from '@/slices/userSlice'
 import axiosFetcher from '@/apis/axios'
 import { useRouter } from 'next/router'
+
+import ValidateController from '@/components/common/ValidateController'
 
 const { post } = axiosFetcher
 
@@ -35,8 +36,6 @@ interface IRegisterResponse {
   }
 }
 
-type TFieldName = 'email' | 'password' | undefined
-
 export default function Register() {
   const router = useRouter()
   // 取首頁輸入註冊email
@@ -47,12 +46,7 @@ export default function Register() {
     password: '',
   }
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm({ defaultValues, resolver: yupResolver(schema) })
+  const { control, handleSubmit, reset } = useForm({ defaultValues, resolver: yupResolver(schema) })
 
   const dispatch = useAppDispatch()
 
@@ -68,17 +62,6 @@ export default function Register() {
     reset()
   }
 
-  // 取得表單驗證錯誤訊息
-  const getFormErrorMessage = (name: TFieldName) => {
-    if (name === undefined) return
-
-    return errors[name] ? (
-      <small className="p-error">{errors[name]?.message}</small>
-    ) : (
-      <small className="p-error">&nbsp;</small>
-    )
-  }
-
   return (
     <>
       <Head>
@@ -89,49 +72,15 @@ export default function Register() {
         <h1 className="text-2xl font-bold mb-5">註冊</h1>
 
         <div className="flex flex-col">
-          <Controller
-            name="email"
-            control={control}
-            render={({ field, fieldState }) => (
-              <>
-                <label htmlFor={field.name} className={classNames({ 'p-error': errors.email })}>
-                  電子信箱
-                </label>
-
-                <InputText
-                  id={field.name}
-                  value={field.value}
-                  className={classNames({ 'p-invalid': fieldState.error })}
-                  onChange={e => field.onChange(e.target.value)}
-                />
-
-                {getFormErrorMessage(field.name)}
-              </>
-            )}
-          />
+          <ValidateController name="email" label="電子信箱" control={control}>
+            <InputText />
+          </ValidateController>
         </div>
 
         <div className="flex flex-col mb-5">
-          <Controller
-            name="password"
-            control={control}
-            render={({ field, fieldState }) => (
-              <>
-                <label htmlFor={field.name} className={classNames({ 'p-error': errors.email })}>
-                  密碼
-                </label>
-
-                <InputText
-                  id={field.name}
-                  value={field.value}
-                  className={classNames({ 'p-invalid': fieldState.error })}
-                  onChange={e => field.onChange(e.target.value)}
-                />
-
-                {getFormErrorMessage(field.name)}
-              </>
-            )}
-          />
+          <ValidateController name="password" label="密碼" control={control}>
+            <InputText />
+          </ValidateController>
         </div>
 
         <Button className=" bg-red-600 px-10 mb-6" onClick={handleSubmit(onSubmit)} rounded>
