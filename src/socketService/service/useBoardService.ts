@@ -14,6 +14,7 @@ export const useBoardService = (namespace: string) => {
       console.log('events.BOARD_CREATE_LIST_SUCCESS = ', data)
     })
     return () => {
+      boardSocket?.off()
       boardSocket?.disconnect()
     }
   }, [])

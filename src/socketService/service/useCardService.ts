@@ -9,6 +9,7 @@ export const useCardService = (namespace: string) => {
       console.log('board connect')
     })
     return () => {
+      cardSocket?.off()
       cardSocket?.disconnect()
     }
   }, [])
