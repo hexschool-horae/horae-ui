@@ -1,4 +1,5 @@
 import style from './cardDetail.module.scss'
+import tagStyle from './tags.module.scss'
 import { Chip } from 'primereact/chip'
 import { Button } from 'primereact/button'
 import { useCardDetail } from '@/contexts/cardDetailContext'
@@ -8,10 +9,16 @@ interface ICardDetailTagsProps {
 }
 
 export default function CardDetailTags({ label }: ICardDetailTagsProps) {
-  const { dispatch } = useCardDetail()
+  const { state, dispatch } = useCardDetail()
+  // console.log('tag', state)
 
-  const handleRemove = () => {
-    console.log('remove tag')
+  const handleRemove = (tagId: string) => {
+    dispatch({
+      type: 'REMOVE_TAG',
+      payload: {
+        tagId: tagId,
+      },
+    })
   }
 
   return (
@@ -29,10 +36,19 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
           })
         }}
       />
-      <ul>
-        <li className="flex items-center">
-          <Chip label="標籤" removable onRemove={handleRemove} />
-        </li>
+      <ul className="flex items-center gap-2">
+        {state.cardDetail.tags.map(tag => (
+          <li key={tag.id}>
+            <Chip
+              label={tag.title}
+              className={`cursor-pointer  ${tagStyle.tag}`}
+              style={{ backgroundColor: tag.color }}
+              removeIcon="pi pi-times"
+              removable
+              onRemove={() => handleRemove(tag.id)}
+            />
+          </li>
+        ))}
       </ul>
     </div>
   )

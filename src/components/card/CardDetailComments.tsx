@@ -29,33 +29,39 @@ export default function CardDetailComments() {
 
   return (
     <div>
-      <ul>
-        {state.cardDetail.comments.length > 0 &&
-          state.cardDetail.comments.map((comment, i) => (
-            <li
-              key={i}
-              className="flex gap-4 items-center p-2 mb-2
-                border-solid border-[1px] border-gray-200"
-            >
-              <div className="w-[42px] h-[42px] rounded-full  bg-black"></div>
-              <div className="grow">{comment.content}</div>
-            </li>
-          ))}
-      </ul>
-      <div className="border-solid border-[1px] border-gray-200 p-3 flex gap-4 items-center rounded">
-        <div className="w-[42px] h-[42px] rounded-full  bg-black"></div>
+      <div className="relative mb-2">
+        <div className="w-[42px] h-[42px] rounded-full  bg-black absolute left-2 top-1/2 translate-y-[-50%]"></div>
         <div className="grow">
           <InputText
             placeholder="撰寫評論..."
             ref={inputRef}
             value={comment}
-            className="w-full border-0"
+            className="w-full h-[58px] pl-[60px]"
             onBlur={updateComment}
             onChange={e => setComment(e.target.value)}
             onKeyDown={handleKeyDown}
           />
         </div>
       </div>
+      <ul>
+        {state.cardDetail.comments.length > 0 &&
+          state.cardDetail.comments.map((comment, i) => (
+            <li
+              key={i}
+              className="flex gap-4 items-center p-2 mb-2
+                border-solid border-b-[1px] border-gray-200"
+            >
+              <div className="w-[42px] h-[42px] rounded-full  bg-black"></div>
+              <div className="grow">
+                <div className="flex items-center mb-1">
+                  UserName
+                  <span className="ml-4 text-xs text-gray-500">2023/10/22 10:22</span>
+                </div>
+                <div>{comment.content}</div>
+              </div>
+            </li>
+          ))}
+      </ul>
     </div>
   )
 }

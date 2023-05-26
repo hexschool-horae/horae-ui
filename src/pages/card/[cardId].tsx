@@ -23,7 +23,7 @@ const popupLabels = {
 }
 
 const CardInternal = () => {
-  const { dispatch } = useCardDetail()
+  const { state, dispatch } = useCardDetail()
 
   useEffect(() => {
     // 測試用
@@ -34,6 +34,18 @@ const CardInternal = () => {
           cardDetail: {
             title: '測試卡片',
             describe: '卡片描述文字',
+            tags: [
+              {
+                id: '001',
+                title: '標籤001',
+                color: '#ffe4e2',
+              },
+              {
+                id: '003',
+                title: 'Tag003',
+                color: '#fce8f7',
+              },
+            ],
             comments: [{ content: '測試文字', date: '2023/10/20' }],
           },
         },
@@ -46,44 +58,50 @@ const CardInternal = () => {
   }, [])
 
   return (
-    <Dialog
-      visible={true}
-      onHide={() => {
-        console.log('hide')
-      }}
-      className="w-full md:w-[800px] mx-3"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
-        {/* main col */}
-        <div className="md:col-span-5">
-          <div className="text-[14px] mb-3">
-            在列表<span className="pl-1 text-primary cursor-pointer">測試列表</span>
+    <>
+      <Dialog
+        visible={true}
+        onHide={() => {
+          console.log('hide')
+        }}
+        className="w-full md:w-[800px] mx-3"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
+          {/* main col */}
+          <div className="md:col-span-5">
+            <div className="text-[14px] mb-3">
+              在列表<span className="pl-1 text-primary cursor-pointer">測試列表</span>
+            </div>
+
+            <CardDetailTitle />
+            <CardDetailMember label={popupLabels.member} />
+            <CardDetailTags label={popupLabels.tags} />
+            <CardDetailDescribe />
+            <CardDetailTodoList />
+            <CardDetailComments />
           </div>
 
-          <CardDetailTitle />
-          <CardDetailMember label={popupLabels.member} />
-          <CardDetailTags label={popupLabels.tags} />
-          <CardDetailDescribe />
-          <CardDetailTodoList />
-          <CardDetailComments />
-        </div>
+          {/* sidebar */}
+          <div className="md:col-span-2">
+            <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
+            <div
+              className="grid grid-cols-2 gap-4 
+                md:grid-cols-1 md:gap-2"
+            >
+              <CardSidebarButton name="成員" label={popupLabels.member} />
+              <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
+              <CardSidebarButton name="標籤" label={popupLabels.tags} />
+            </div>
 
-        {/* sidebar */}
-        <div className="md:col-span-2">
-          <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
-          <div
-            className="grid grid-cols-2 gap-4 
-              md:grid-cols-1 md:gap-2"
-          >
-            <CardSidebarButton name="成員" label={popupLabels.member} />
-            <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
-            <CardSidebarButton name="標籤" label={popupLabels.tags} />
+            <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
           </div>
-
-          <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
         </div>
-      </div>
-    </Dialog>
+      </Dialog>
+
+      <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} />
+      <CardPopupTodoList label={popupLabels.todoList} key={popupLabels.todoList + state.popupKey} />
+      <CardPopupTags label={popupLabels.tags} key={popupLabels.tags + state.popupKey + 2} />
+    </>
   )
 }
 
@@ -91,10 +109,6 @@ export default function Card() {
   return (
     <CardDetailProvider>
       <CardInternal />
-
-      <CardPopupMember label={popupLabels.member} />
-      <CardPopupTodoList label={popupLabels.todoList} />
-      <CardPopupTags label={popupLabels.tags} />
     </CardDetailProvider>
   )
 }

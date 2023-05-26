@@ -14,6 +14,7 @@ export default function CardSidebarButton({ name, label }: ICardSidebarButtonPro
     <Button
       label={name}
       icon="pi pi-user"
+      outlined
       className="w-full"
       onClick={() => {
         dispatch({

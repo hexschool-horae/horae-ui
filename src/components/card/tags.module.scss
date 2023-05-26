@@ -1,0 +1,21 @@
+.tag_color_item {
+  &:hover {
+    label {
+      transition: 0.15s ease-in-out;
+      box-shadow: 1px 3px 4px rgba(black, 0.23);
+    }
+  }
+}
+
+.selected_tag {
+  border: 1px solid;
+}
+
+.tag {
+  @apply text-sm min-w-[54px] h-[33px];
+  transition: 0.15s ease-in-out;
+
+  &:hover {
+    box-shadow: 1px 3px 4px rgba(black, 0.23);
+  }
+}

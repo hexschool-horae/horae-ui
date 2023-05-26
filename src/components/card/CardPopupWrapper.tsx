@@ -19,7 +19,14 @@ export default function CardPopupWrapper({ title, label, children }: ICardPopupW
   }
 
   return (
-    <Dialog header={title} modal={false} visible={state.popups[label]} style={{ width: '50vw' }} onHide={onClose}>
+    <Dialog
+      header={title}
+      modal={false}
+      visible={state.popups[label]}
+      style={{ width: '50vw' }}
+      onHide={onClose}
+      headerStyle={{ textAlign: 'center' }}
+    >
       {children}
     </Dialog>
   )
