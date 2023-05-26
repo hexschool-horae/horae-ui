@@ -1,16 +1,7 @@
 import { Button } from 'primereact/button'
+import { IListData } from '@/types/pages'
 import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
-
-interface ICardData {
-  title: string
-  labels: string[]
-}
-
-interface IListData {
-  title: string
-  cardData: ICardData[]
-}
 
 export default function List({ data }: { data: IListData }) {
   return (
@@ -21,8 +12,8 @@ export default function List({ data }: { data: IListData }) {
           <ListSettingMenu />
         </div>
 
-        {data.cardData.length &&
-          data.cardData.map((item, i) => <Card key={i} title={item.title} labels={item.labels} />)}
+        {data.cardList.length &&
+          data.cardList.map((item, i) => <Card key={i} title={item.title} labels={item.labels} />)}
         <Button
           className="!w-full !tracking-[1px] !text-sm !text-secondary-3 !text-center p-0"
           label="+ 新增卡片"
