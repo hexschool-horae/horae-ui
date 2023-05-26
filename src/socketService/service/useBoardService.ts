@@ -3,17 +3,38 @@ import manager from '@/hooks/useSocketIO'
 import { Socket } from 'socket.io-client'
 import * as interfaces from '@/socketService/types/board.d'
 import events from '@/socketService/sockets.events'
+
 let boardSocket: Socket
-export const useBoardService = (namespace: string) => {
+
+// 會需要 board id 是要讓 socket 加入房間
+export const useBoardService = (namespace: string, boardId: string) => {
   useEffect(() => {
+    // 跟看板命名空間建立連線
     boardSocket = manager.socket(namespace)
+    console.log('boardId = ', boardId)
+
+    // 監聽連線
     boardSocket.on('connect', () => {
-      console.log('board connect')
+      // 加入看板 room
+      boardSocket.emit(events.BOARD_JOIN, {
+        boardId,
+      })
     })
+
+    // 監聽是否建立看板成功
     boardSocket.on(events.BOARD_CREATE_LIST_SUCCESS, data => {
       console.log('events.BOARD_CREATE_LIST_SUCCESS = ', data)
     })
+    // 監聽是否建立看板失敗
+    boardSocket.on(events.BOARD_CREATE_LIST_FAILED, data => {
+      console.log('events.BOARD_CREATE_LIST_FAILED = ', data)
+    })
+
+    // component 被 destroy 的時候，要離開房間並且斷掉連線
     return () => {
+      boardSocket.emit(events.BOARD_LEAVE, {
+        boardId,
+      })
       boardSocket?.off()
       boardSocket?.disconnect()
     }
