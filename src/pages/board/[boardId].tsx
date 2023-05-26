@@ -10,10 +10,11 @@ import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
 
 import { boardReducer } from '@/contexts/reducers/boardReducer'
-import { IListData } from '@/types/pages'
+// import { IListData } from '@/types/pages'
 
 const listCardList = [
   {
+    id: '12248ce4',
     title: '家居',
     cardList: [
       { title: '洗衣服', labels: ['未執行'] },
@@ -22,6 +23,12 @@ const listCardList = [
   },
   { title: '學習語言', cardList: [{ title: '英文聽力 L1', labels: ['已完成', '優先'] }] },
   {
+    id: 'f1224919e',
+    title: '學習語言',
+    cardData: [{ id: '12249996', title: '英文聽力 L1', labels: ['已完成', '優先'] }],
+  },
+  {
+    id: '122494b4',
     title: '待辦清單',
     cardList: [
       { title: '整理行事曆', labels: ['未執行', '優先'] },
@@ -35,28 +42,49 @@ const listCardList = [
 ]
 
 export default function Board() {
+  // const [list, setIsList] = useState(listCardList)
   const [state] = useReducer(boardReducer, { lists: listCardList })
   const { lists } = state
   const router = useRouter()
   const boardId = router.query.boardId as string
   const boardService = useBoardService()
+  // function handleDragMove(event: any) {
+  //   console.log('moving!')
+  // }
 
-  /** 拖拉事件處理 */
-  /* eslint-disable */
-  const onDragEnd = (event: any) => {
-    if (event.over) {
-      const activeId = parseInt(event.active.id.replace('draggable-list-', ''))
-      const overId = parseInt(event.over.id.replace('droppable-list-', ''))
+  function handleDragEnd(event: any) {
+    if (!event.over) return
 
-      const tempArr = cloneDeep(lists)
-      const temp = tempArr[activeId]
+    const tempArr = cloneDeep(lists)
+    console.log(event.active.data.eventType)
+    if (event.active.data.current.eventType === 'card') {
+      const {
+        current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
+      } = event.active.data
+      const {
+        current: { cardPosition: overCardPosition, listPosition: overListPosition },
+      } = event.over.data
 
-      tempArr[activeId] = tempArr[overId]
-      tempArr[overId] = temp
+      const temp = tempArr[activeListPosition].cardData[activeCardPosition]
+
+      tempArr[activeListPosition].cardData[activeCardPosition] = tempArr[overListPosition].cardData[overCardPosition]
+      tempArr[overListPosition].cardData[overCardPosition] = temp
+    } else {
+      const {
+        current: { listPosition: activeListPosition },
+      } = event.active.data
+      const {
+        current: { listPosition: overListPosition },
+      } = event.over.data
+
+      const temp = tempArr[activeListPosition]
+      tempArr[activeListPosition] = tempArr[overListPosition]
+      tempArr[overListPosition] = temp
     }
+    // setIsList(tempArr)
   }
 
-  const onCreateList = (title: string = '') => {
+  const onCreateList = (title = '') => {
     const payload = {
       boardId,
       title,
@@ -69,23 +97,39 @@ export default function Board() {
         <title>Horae - 看板</title>
       </Head>
 
+      {/* <WebsocketWrpper> */}
       <div className="mb-6">
         <MenuBar />
       </div>
-      <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
-        <DndContext onDragEnd={onDragEnd}>
-          {lists.map((item: IListData, i: number) => (
-            <div className="row-span-full" key={i}>
-              <Droppable id={i}>
-                <Draggable id={i}>
-                  <List data={item} />
+
+      <DndContext onDragEnd={handleDragEnd}>
+        <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
+          {lists.map((item, index) => (
+            <div className="row-span-full" key={index}>
+              <Droppable
+                id={`${item.id}`}
+                data={{
+                  listId: item.id,
+                  listPosition: index,
+                  eventType: 'list',
+                }}
+              >
+                <Draggable
+                  id={`${item.id}`}
+                  data={{
+                    listId: item.id,
+                    listPosition: index,
+                    eventType: 'list',
+                  }}
+                >
+                  <List data={{ ...item, listPosition: index }} />
                 </Draggable>
               </Droppable>
             </div>
           ))}
-        </DndContext>
-        <AddListButton onCreateList={onCreateList} />
-      </div>
+          <AddListButton onCreateList={onCreateList} />
+        </div>
+      </DndContext>
     </>
   )
 }

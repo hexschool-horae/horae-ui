@@ -1,9 +1,19 @@
 import { ReactNode } from 'react'
 import { useDraggable } from '@dnd-kit/core'
 
-export default function Draggable({ id, children }: { id: string | number; children: ReactNode }) {
+export default function Draggable({
+  data = {},
+  id,
+  children,
+}: {
+  /**要讓Dragg End時帶出的資料 */
+  data?: { [key: string]: string | number }
+  id: string | number
+  children: ReactNode
+}) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: `draggable-list-${id}`,
+    id,
+    data,
   })
   const style = transform
     ? {

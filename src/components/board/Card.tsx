@@ -1,4 +1,6 @@
 import { Chip } from 'primereact/chip'
+// import Draggable from './Draggable'
+// import Droppable from './Droppable'
 
 export default function Card({ title = '', labels = [] }: { title: string; labels: string[] }) {
   /* 卡片本體 */
