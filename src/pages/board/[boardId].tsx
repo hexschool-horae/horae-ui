@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useReducer } from 'react'
+import { useState } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
 import { useBoardService } from '@/socketService'
@@ -9,42 +9,30 @@ import { MenuBar, List, AddListButton } from '@/components/board'
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
 
-import { boardReducer } from '@/contexts/reducers/boardReducer'
+// import { boardReducer } from '@/contexts/reducers/boardReducer'
 // import { IListData } from '@/types/pages'
 
 const listCardList = [
   {
     id: '12248ce4',
     title: '家居',
-    cardList: [
-      { title: '洗衣服', labels: ['未執行'] },
-      { title: '洗碗', labels: ['未執行'] },
+    cardData: [
+      { id: '12249496', title: '洗衣服', labels: ['未執行'] },
+      { id: '12349998', title: '洗碗', labels: ['未執行'] },
     ],
   },
-  { title: '學習語言', cardList: [{ title: '英文聽力 L1', labels: ['已完成', '優先'] }] },
+  { title: '學習語言', cardData: [{ id: '12279396', title: '英文聽力 L1', labels: ['已完成', '優先'] }] },
   {
     id: 'f1224919e',
     title: '學習語言',
     cardData: [{ id: '12249996', title: '英文聽力 L1', labels: ['已完成', '優先'] }],
   },
-  {
-    id: '122494b4',
-    title: '待辦清單',
-    cardList: [
-      { title: '整理行事曆', labels: ['未執行', '優先'] },
-      { title: '匯款', labels: ['未執行', '優先'] },
-      { title: '買水果', labels: ['未執行'] },
-      { title: '整理舊衣服', labels: ['未執行', '中等'] },
-    ],
-  },
-  { title: '讀書進度', cardList: [{ title: '原子習慣 ch1', labels: ['進行中', '優先'] }] },
-  { title: '待整理資料', cardList: [{ title: 'React Hook', labels: ['未執行'] }] },
 ]
 
 export default function Board() {
-  // const [list, setIsList] = useState(listCardList)
-  const [state] = useReducer(boardReducer, { lists: listCardList })
-  const { lists } = state
+  const [list, setIsList] = useState(listCardList)
+  // const [state] = useReducer(boardReducer, { lists: listCardList })
+  // const { lists } = state
   const router = useRouter()
   const boardId = router.query.boardId as string
   const boardService = useBoardService()
@@ -55,7 +43,7 @@ export default function Board() {
   function handleDragEnd(event: any) {
     if (!event.over) return
 
-    const tempArr = cloneDeep(lists)
+    const tempArr = cloneDeep(list)
     console.log(event.active.data.eventType)
     if (event.active.data.current.eventType === 'card') {
       const {
@@ -81,7 +69,7 @@ export default function Board() {
       tempArr[activeListPosition] = tempArr[overListPosition]
       tempArr[overListPosition] = temp
     }
-    // setIsList(tempArr)
+    setIsList(tempArr)
   }
 
   const onCreateList = (title = '') => {
@@ -104,17 +92,10 @@ export default function Board() {
 
       <DndContext onDragEnd={handleDragEnd}>
         <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
-          {lists.map((item, index) => (
-            <div className="row-span-full" key={index}>
-              <Droppable
-                id={`${item.id}`}
-                data={{
-                  listId: item.id,
-                  listPosition: index,
-                  eventType: 'list',
-                }}
-              >
-                <Draggable
+          {list.length &&
+            list.map((item: any, index: number) => (
+              <div className="row-span-full" key={index}>
+                <Droppable
                   id={`${item.id}`}
                   data={{
                     listId: item.id,
@@ -122,11 +103,19 @@ export default function Board() {
                     eventType: 'list',
                   }}
                 >
-                  <List data={{ ...item, listPosition: index }} />
-                </Draggable>
-              </Droppable>
-            </div>
-          ))}
+                  <Draggable
+                    id={`${item.id}`}
+                    data={{
+                      listId: item.id,
+                      listPosition: index,
+                      eventType: 'list',
+                    }}
+                  >
+                    <List data={{ ...item, listPosition: index }} />
+                  </Draggable>
+                </Droppable>
+              </div>
+            ))}
           <AddListButton onCreateList={onCreateList} />
         </div>
       </DndContext>
