@@ -48,18 +48,13 @@ export const useBoardService = (namespace: string) => {
       })
 
       // 監聽是否建立卡片成功
-      boardSocket.on(events.BOARD_CREATE_CARD_SUCCESS, data => {
-        console.log('events.BOARD_CREATE_CARD_SUCCESS = ', data)
-        // const { result } = data as ISingleBoardResponse
-        // const { lists } = result
-        // dispatch(setLists(lists))
+      boardSocket.on(events.BOARD_CARD_CREATE_SUCCESS, data => {
+        console.log('events.BOARD_CARD_CREATE_SUCCESS = ', data)
       })
-
       // 監聽是否建立卡片失敗
-      boardSocket.on(events.BOARD_CREATE_CARD_FAILED, data => {
-        console.log('events.BOARD_CREATE_CARD_FAILED = ', data)
+      boardSocket.on(events.BOARD_CARD_CREATE_FAILED, data => {
+        console.log('events.BOARD_CARD_CREATE_FAILED = ', data)
       })
-
       // component 被 destroy 的時候，要離開房間並且斷掉連線
       return () => {
         boardSocket.emit(events.BOARD_LEAVE, {
@@ -80,8 +75,8 @@ export const useBoardService = (namespace: string) => {
   }
 }
 
-const createCard = (payload: interfaces.ICreateListPayload) => {
-  boardSocket.emit(events.BOARD_CREATE_CARD, payload)
+const createCard = (payload: interfaces.ICreateCardPayload) => {
+  boardSocket.emit(events.BOARD_CARD_CREATE, payload)
 }
 const moveCard = () => undefined
 const deleteCard = () => undefined
