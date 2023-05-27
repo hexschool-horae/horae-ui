@@ -5,11 +5,18 @@ import * as interfaces from '@/socketService/types/board.d'
 import events from '@/socketService/sockets.events'
 import { useRouter } from 'next/router'
 
+import { useAppDispatch } from '@/hooks/useAppStore'
+import { setLists } from '@/slices/boardSocketSlice'
+
+import { ISingleBoardResponse } from '@/apis/interface/api'
+
 let boardSocket: Socket
 
 // 會需要 board id 是要讓 socket 加入房間
 export const useBoardService = (namespace: string) => {
   const router = useRouter()
+  const dispatch = useAppDispatch()
+
   useEffect(() => {
     if (router.isReady) {
       const boardId = router.query?.boardId as string
@@ -28,11 +35,31 @@ export const useBoardService = (namespace: string) => {
       // 監聽是否建立看板成功
       boardSocket.on(events.BOARD_CREATE_LIST_SUCCESS, data => {
         console.log('events.BOARD_CREATE_LIST_SUCCESS = ', data)
+        const {
+          result: { lists },
+        } = data as ISingleBoardResponse
+
+        dispatch(setLists(lists))
       })
+
       // 監聽是否建立看板失敗
       boardSocket.on(events.BOARD_CREATE_LIST_FAILED, data => {
         console.log('events.BOARD_CREATE_LIST_FAILED = ', data)
       })
+
+      // 監聽是否建立卡片成功
+      boardSocket.on(events.BOARD_CREATE_CARD_SUCCESS, data => {
+        console.log('events.BOARD_CREATE_CARD_SUCCESS = ', data)
+        // const { result } = data as ISingleBoardResponse
+        // const { lists } = result
+        // dispatch(setLists(lists))
+      })
+
+      // 監聽是否建立卡片失敗
+      boardSocket.on(events.BOARD_CREATE_CARD_FAILED, data => {
+        console.log('events.BOARD_CREATE_CARD_FAILED = ', data)
+      })
+
       // component 被 destroy 的時候，要離開房間並且斷掉連線
       return () => {
         boardSocket.emit(events.BOARD_LEAVE, {
@@ -53,7 +80,9 @@ export const useBoardService = (namespace: string) => {
   }
 }
 
-const createCard = () => undefined
+const createCard = (payload: interfaces.ICreateListPayload) => {
+  boardSocket.emit(events.BOARD_CREATE_CARD, payload)
+}
 const moveCard = () => undefined
 const deleteCard = () => undefined
 const createList = (payload: interfaces.ICreateListPayload) => {

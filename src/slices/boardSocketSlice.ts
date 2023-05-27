@@ -1,24 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-
+import { IBoardListItem } from '@/types'
 interface IUserInitialState {
-  isConnected: boolean
+  boardId: string
+  lists: IBoardListItem[]
 }
 
 const initialState: IUserInitialState = {
-  isConnected: false,
+  boardId: '',
+  lists: [],
 }
 
 export const boardSocketSlice = createSlice({
   name: 'boardSocket',
   initialState,
   reducers: {
-    setIsConnected: (state, action: PayloadAction<boolean>) => {
-      state.isConnected = action.payload
+    setBoardId: (state, action: PayloadAction<string>) => {
+      state.boardId = action.payload
+    },
+    setLists: (state, action: PayloadAction<IBoardListItem[]>) => {
+      state.lists = action.payload
     },
   },
 })
 
-export const { setIsConnected } = boardSocketSlice.actions //給React組件個別使用
+export const { setBoardId, setLists } = boardSocketSlice.actions //給React組件個別使用
 
 export default boardSocketSlice.reducer //給store.js使用

@@ -1,15 +1,19 @@
 import { FC, useState } from 'react'
 import { Button } from 'primereact/button'
-import { InputText } from 'primereact/inputtext'
+import { InputTextarea } from 'primereact/inputtextarea'
+import { classNames } from 'primereact/utils'
+
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
-import { classNames } from 'primereact/utils'
 
 import ValidateController from '../common/ValidateController'
 
-interface IAddListButtonProps {
-  onCreateList: (title: string) => void
+// import { useAppSelector } from '@/hooks/useAppStore'
+// import { useBoardService } from '@/socketService'
+
+interface IAddCardButtonProps {
+  onCreateCard: (title: string) => void
 }
 
 const schema = yup
@@ -19,7 +23,9 @@ const schema = yup
   .required()
 
 /** 新增看板按鈕 */
-const AddListButton: FC<IAddListButtonProps> = ({ onCreateList }) => {
+const AddCardButton: FC<IAddCardButtonProps> = ({ onCreateCard }) => {
+  // const boardId = useAppSelector(state => state.boardSocket.boardId)
+
   const [inputVisible, setInputVisible] = useState(false)
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -28,35 +34,52 @@ const AddListButton: FC<IAddListButtonProps> = ({ onCreateList }) => {
     resolver: yupResolver(schema),
   })
 
+  // const boardService = useBoardService()
+
+  /** 看板新增卡片 */
+  // const onCreateCard = (title = '') => {
+  //   const payload = {
+  //     title,
+  //     boardId,
+  //   }
+  //   boardService?.createCard(payload)
+  // }
+
   const onSubmit = (submitData: { title: string }) => {
     const { title } = submitData
-
-    onCreateList && onCreateList(title)
+    onCreateCard && onCreateCard(title)
     reset()
   }
   return (
     <>
-      {/* 列表標題輸入框 */}
+      {/* 卡片標題輸入框 */}
       <div className={classNames('mb-4', { hidden: !inputVisible })}>
         <ValidateController className="mb-4" label="" name="title" control={control}>
-          <InputText />
+          <InputTextarea />
         </ValidateController>
         <Button size="small" onClick={handleSubmit(onSubmit)}>
-          新增列表
+          新增卡片
         </Button>
       </div>
 
-      {/* 新增列表按鈕 */}
+      {/* 新增卡片按鈕 */}
       <Button
+        className="!w-full !tracking-[1px] !text-sm !text-secondary-3 !text-center p-0"
+        label="+ 新增卡片"
+        text
+        onClick={() => setInputVisible(true)}
+      />
+
+      {/* <Button
         className="w-[286px] border-secondary-2 row-span-full text-secondary-3 flex h-16"
         outlined
         onClick={() => setInputVisible(true)}
       >
         新增其他列表
         <span className="ml-auto">+</span>
-      </Button>
+      </Button> */}
     </>
   )
 }
 
-export default AddListButton
+export default AddCardButton

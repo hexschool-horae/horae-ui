@@ -75,7 +75,7 @@ export interface InvitationLinkDataResponse {
 }
 /** B03-5 取得單一看板 */
 export interface ISingleBoardResponse {
-  data: {
+  [key: string]: {
     _id: string
     title?: string
     discribe?: string

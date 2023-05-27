@@ -1,5 +1,4 @@
-import { Button } from 'primereact/button'
-
+import AddCardButton from '@/components/board/AddCardButton'
 import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
 import Draggable from './Draggable'
@@ -7,7 +6,7 @@ import Droppable from './Droppable'
 
 import { IBoardListItem } from '@/types/pages'
 
-export default function List({ data }: { data: IBoardListItem }) {
+export default function List({ data, onCreateCard }: { data: IBoardListItem; onCreateCard: (title: string) => void }) {
   /** 卡片陣列狀態 */
   const { cards } = data
 
@@ -52,7 +51,7 @@ export default function List({ data }: { data: IBoardListItem }) {
         <></>
       )}
 
-      <Button className="!w-full !tracking-[1px] !text-sm !text-secondary-3 !text-center p-0" label="+ 新增卡片" text />
+      <AddCardButton onCreateCard={onCreateCard} />
     </>
   )
 }

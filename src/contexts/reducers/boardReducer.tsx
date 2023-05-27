@@ -21,12 +21,12 @@ type IBoardAction = IAddBoardList
 
 // 定義reducer函式
 export const boardReducer = (state: IBoardState, { type, payload }: IBoardAction): IBoardState => {
+  // console.log(type, payload)
   switch (type) {
     case 'UPDATE_BOARD_LIST':
-      console.log(state.lists, payload)
       return {
         ...state,
-        lists: payload,
+        lists: [...state.lists, ...payload],
       }
 
     // case 'GET_BOARD_LIST':

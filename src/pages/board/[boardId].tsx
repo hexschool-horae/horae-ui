@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState, useEffect, useReducer } from 'react'
+import { useEffect } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
 
@@ -9,34 +9,41 @@ import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
 import ListContainer from '@/components/board/ListContainer'
 
-import { boardReducer } from '@/contexts/reducers/boardReducer'
 import { GET_BOARD_BY_ID } from '@/apis/axios-service'
 import { useBoardService } from '@/socketService'
 
+import { useAppSelector } from '@/hooks/useAppStore'
+import { useAppDispatch } from '@/hooks/useAppStore'
+import { setBoardId, setLists } from '@/slices/boardSocketSlice'
+
 export default function Board() {
-  const [state, dispatch] = useReducer(boardReducer, { lists: [] })
-  const { lists } = state
+  const lists = useAppSelector(state => state.boardSocket.lists)
+  const boardId = useAppSelector(state => state.boardSocket.boardId)
+  const dispatch = useAppDispatch()
+
   const router = useRouter()
-  const [boardId, setBoardId] = useState('')
+  // const [boardId, setBoardId] = useState('')
   const boardService = useBoardService()
 
   /* eslint-disable */
   function handleDragEnd(event: any) {
     if (!event.over) return
-    console.log(event.active.data.eventType)
+    // console.log(event.active.data.eventType)
 
     const tempArr = cloneDeep(lists)
+    if (!Boolean(tempArr.length)) return
     if (event.active.data.current.eventType === 'card') {
       const {
         current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
-      } = event.active.data
+      } = event.active.data as { current: { cardPosition: number; listPosition: number } }
       const {
         current: { cardPosition: overCardPosition, listPosition: overListPosition },
-      } = event.over.data
-
+      } = event.over.data as { current: { cardPosition: number; listPosition: number } }
+      /* @ts-ignore */
       const temp = tempArr[activeListPosition].cards[activeCardPosition]
-
+      /* @ts-ignore */
       tempArr[activeListPosition].cards[activeCardPosition] = tempArr[overListPosition].cards[overCardPosition]
+      /* @ts-ignore */
       tempArr[overListPosition].cards[overCardPosition] = temp
     } else {
       const {
@@ -51,7 +58,7 @@ export default function Board() {
       tempArr[overListPosition] = temp
     }
 
-    // setIsList(tempArr)
+    dispatch(setLists(tempArr))
   }
 
   /** 看板新增列表 */
@@ -63,28 +70,47 @@ export default function Board() {
     boardService?.createList(payload)
   }
 
+  /** 看板新增卡片 */
+  const onCreateCard = (title = '') => {
+    const payload = {
+      title,
+      boardId,
+    }
+    boardService?.createCard(payload)
+  }
+
   /** 取得單一看板資訊 */
   const handleGetSingleBoard = async () => {
     const result = await GET_BOARD_BY_ID(boardId)
     if (result === undefined) return
     const { lists } = result.data
 
-    dispatch({ type: 'UPDATE_BOARD_LIST', payload: lists })
+    dispatch(setLists(lists))
   }
 
   /** 取得 url query boardID */
   useEffect(() => {
     if (router.isReady) {
       const boardId = router.query?.boardId as string
-      setBoardId(boardId)
+      dispatch(setBoardId(boardId))
+    }
+
+    return () => {
+      dispatch(setBoardId(''))
     }
   }, [router.isReady])
 
   /** 看板初始化
    * B03-5 取得單一看板 */
   useEffect(() => {
-    if (boardId === undefined) return
+    if (boardId === undefined || boardId === '') return
     handleGetSingleBoard()
+
+    return () => {
+      console.log('get')
+
+      dispatch(setLists([]))
+    }
   }, [boardId])
 
   return (
@@ -120,7 +146,7 @@ export default function Board() {
                     }}
                   >
                     <ListContainer>
-                      <List data={item} />
+                      <List data={item} onCreateCard={onCreateCard} />
                     </ListContainer>
                   </Draggable>
                 </Droppable>
