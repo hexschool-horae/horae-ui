@@ -1,9 +1,11 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 
 import { cloneDeep } from 'lodash-es'
+
+import { Toast } from 'primereact/toast'
 
 import { MenuBar, List, AddListButton } from '@/components/board'
 import Draggable from '@/components/board/Draggable'
@@ -20,9 +22,13 @@ import { setBoardId, setLists } from '@/slices/boardSocketSlice'
 export default function Board() {
   const lists = useAppSelector(state => state.boardSocket.lists)
   const boardId = useAppSelector(state => state.boardSocket.boardId)
+  const isErrorMessageVisible = useAppSelector(state => state.boardSocket.isErrorMessageVisible)
+  const errorMessageText = useAppSelector(state => state.boardSocket.errorMessageText)
   const dispatch = useAppDispatch()
   const router = useRouter()
   const boardService = useBoardService()
+
+  const toastBL = useRef<Toast>(null)
 
   /** 讓 draggable、droppable 內的 pointer 事件不會被 prevent */
   const pointerSensor = useSensor(PointerSensor, {
@@ -110,6 +116,17 @@ export default function Board() {
     }
   }, [router.isReady])
 
+  useEffect(() => {
+    if (isErrorMessageVisible) {
+      toastBL.current?.show({
+        severity: 'error',
+        summary: 'Error Message',
+        detail: `${errorMessageText}`,
+        life: 3000,
+      })
+    }
+  }, [isErrorMessageVisible])
+
   /** 看板初始化
    * B03-5 取得單一看板 */
   useEffect(() => {
@@ -169,6 +186,8 @@ export default function Board() {
           </ListContainer>
         </div>
       </DndContext>
+
+      <Toast ref={toastBL} position="bottom-left" />
     </>
   )
 }

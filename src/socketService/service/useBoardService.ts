@@ -6,7 +6,7 @@ import events from '@/socketService/sockets.events'
 import { useRouter } from 'next/router'
 
 import { useAppDispatch } from '@/hooks/useAppStore'
-import { setLists } from '@/slices/boardSocketSlice'
+import { setLists, setIsErrorMessageVisible, setErrorMessageText } from '@/slices/boardSocketSlice'
 
 import { ISingleBoardResponse } from '@/apis/interface/api'
 
@@ -54,6 +54,9 @@ export const useBoardService = (namespace: string) => {
       // 監聽是否建立卡片失敗
       boardSocket.on(events.BOARD_CARD_CREATE_FAILED, data => {
         console.log('events.BOARD_CARD_CREATE_FAILED = ', data)
+        const { message } = data as { message: string; success: boolean }
+        dispatch(setIsErrorMessageVisible(true))
+        dispatch(setErrorMessageText(`更新失敗：${message}`))
       })
       // component 被 destroy 的時候，要離開房間並且斷掉連線
       return () => {
