@@ -65,7 +65,11 @@ export interface IWorkSpaceByIdDataResponse {
 }
 /** B02-6 取得單一工作區成員 */
 export interface IWorkSpaceMembersByIdDataResponse {
-  data: IWorkSpaceMembersByIdResponse[]
+  data: {
+    members: IWorkSpaceMembersByIdResponse[]
+    title: string
+    viewSet: string
+  }
 }
 /** B02-7 單一工作區產生邀請連結 */
 export interface InvitationLinkDataResponse {

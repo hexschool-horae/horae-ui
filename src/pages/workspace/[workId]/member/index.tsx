@@ -1,8 +1,6 @@
 import {
   GET_WORKSPACE_MEMBERS_BY_ID,
-  GET_WORK_SPACE,
   PATCH_WORK_SPACE_MEMBER,
-  POST_WORKSPACE_INVITATION_LINK_BY_ID,
   POST_WORKSPACE_INVITATION_SEND_MAIL,
 } from '@/apis/axios-service'
 import { IWorkSpaceMembersByIdResponse } from '@/apis/interface/api'
@@ -11,25 +9,20 @@ import { useRouter } from 'next/router'
 import { InputText } from 'primereact/inputtext'
 import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import IconLink from '@/assets/icons/icon_link.svg'
 import { classNames } from 'primereact/utils'
 import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
 import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
+import InvitationLink from '@/components/common/InvitationLink'
 
 const schemaInvitation = yup.object().shape({
   userEmail: yup.string().required().email(),
 })
 
-interface IBoardRes {
-  discribe: string
-  status: string
+interface IWorkspaceData {
   title: string
   viewSet: string
-  yourPermission: string
-  yourRole: string
-  _id: string
 }
 
 type IInvitationWorkspaceFormReq = {
@@ -47,14 +40,9 @@ export default function Members() {
   ]
   const [selectedRoles, setSelectedRoles] = useState('')
 
-  const [boardData, setBoardData] = useState<IBoardRes>({
-    discribe: '',
-    status: '',
+  const [workspaceData, setWorkspaceData] = useState<IWorkspaceData>({
     title: '',
     viewSet: '',
-    yourPermission: '',
-    yourRole: '',
-    _id: '',
   })
 
   const WorkspaceInvitationSendMailValues: IInvitationWorkspaceFormReq = {
@@ -75,33 +63,14 @@ export default function Members() {
     try {
       const response = await GET_WORKSPACE_MEMBERS_BY_ID(workId)
       if (!response) return
-      const data = response.data
+      const data = response.data.members ?? []
       console.log('response', response)
       setMembers(data)
+      setWorkspaceData({ title: response.data.title, viewSet: response.data.viewSet })
       console.log('members', members)
     } catch (error) {
       console.error('Error fetching user boards data:', error)
     }
-  }
-
-  /** B02-5 取得單一工作區 */
-  const handlerCallGetWorkPace = async (workId: string) => {
-    try {
-      const response = await GET_WORK_SPACE(workId)
-      if (!response) return
-      const data = response.data
-      console.log('response', response)
-      setBoardData(data)
-      console.log('members', members)
-    } catch (error) {
-      console.error('Error fetching user boards data:', error)
-    }
-  }
-
-  const handleInvitationLikeWorkspace = async () => {
-    const response = await POST_WORKSPACE_INVITATION_LINK_BY_ID(workspaceId)
-    if (!response) return
-    navigator.clipboard.writeText(response.data.invitationLink) // 複製連結
   }
 
   const handleInvitationWorkspaceSendMail = async (reqData: IInvitationWorkspaceFormReq) => {
@@ -139,20 +108,18 @@ export default function Members() {
   useEffect(() => {
     if (workId) {
       setworkspaceId(workId)
-      handlerCallGetWorkPace(workId)
+      // handlerCallGetWorkPace(workId)
       handlerCallGetWorkPaceMembers(workId)
     }
   }, [workId])
   return (
     <div>
-      {boardData.title ? <WorkSpaceTitle boardData={boardData}></WorkSpaceTitle> : ''}
+      {workspaceData.title ? <WorkSpaceTitle boardData={workspaceData}></WorkSpaceTitle> : ''}
 
       <div className="invitation flex justify-between">
         <h5 className="pb-5">邀請成員加入你</h5>
-        <span className="text-secondary flex items-center cursor-pointer" onClick={handleInvitationLikeWorkspace}>
-          <IconLink />
-          以連結邀請
-        </span>
+        {/* 以連結邀請 */}
+        <InvitationLink workspaceId={workspaceId}></InvitationLink>
       </div>
 
       <p>任何擁有邀請連結的人都可以加入此免費工作區。你也可以隨時停用並為此工作區建立新的邀請連結。</p>

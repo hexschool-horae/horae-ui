@@ -5,13 +5,13 @@ interface Props {
 }
 
 interface IBoardRes {
-  discribe: string
-  status: string
+  discribe?: string
+  status?: string
   title: string
   viewSet: string
-  yourPermission: string
-  yourRole: string
-  _id: string
+  yourPermission?: string
+  yourRole?: string
+  _id?: string
 }
 
 export default function WorkSpaceTitle({ boardData }: Props) {
