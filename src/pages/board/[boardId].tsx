@@ -1,10 +1,8 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useReducer } from 'react'
+import { useState, useEffect, useReducer } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
-
-import { useBoardService } from '@/socketService'
 
 import { MenuBar, List, AddListButton } from '@/components/board'
 import Draggable from '@/components/board/Draggable'
@@ -12,17 +10,17 @@ import Droppable from '@/components/board/Droppable'
 import ListContainer from '@/components/board/ListContainer'
 
 import { boardReducer } from '@/contexts/reducers/boardReducer'
-
 import { GET_BOARD_BY_ID } from '@/apis/axios-service'
+import { useBoardService } from '@/socketService'
 
 export default function Board() {
   const [state, dispatch] = useReducer(boardReducer, { lists: [] })
   const { lists } = state
   const router = useRouter()
-  const boardId = router.query.boardId as string
-
+  const [boardId, setBoardId] = useState('')
   const boardService = useBoardService()
 
+  /* eslint-disable */
   function handleDragEnd(event: any) {
     if (!event.over) return
     console.log(event.active.data.eventType)
@@ -56,16 +54,16 @@ export default function Board() {
     // setIsList(tempArr)
   }
 
-  // 看板新增列表
+  /** 看板新增列表 */
   const onCreateList = (title = '') => {
     const payload = {
-      boardId,
       title,
+      boardId,
     }
-    boardService.createList(payload)
+    boardService?.createList(payload)
   }
 
-  //取得單一看板資訊
+  /** 取得單一看板資訊 */
   const handleGetSingleBoard = async () => {
     const result = await GET_BOARD_BY_ID(boardId)
     if (result === undefined) return
@@ -74,11 +72,20 @@ export default function Board() {
     dispatch({ type: 'UPDATE_BOARD_LIST', payload: lists })
   }
 
-  // 看板初始載入
+  /** 取得 url query boardID */
+  useEffect(() => {
+    if (router.isReady) {
+      const boardId = router.query?.boardId as string
+      setBoardId(boardId)
+    }
+  }, [router.isReady])
+
+  /** 看板初始化
+   * B03-5 取得單一看板 */
   useEffect(() => {
     if (boardId === undefined) return
     handleGetSingleBoard()
-  }, [])
+  }, [boardId])
 
   return (
     <>
