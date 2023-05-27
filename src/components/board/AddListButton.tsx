@@ -28,12 +28,18 @@ const AddListButton: FC<IAddListButtonProps> = ({ onCreateList }) => {
     resolver: yupResolver(schema),
   })
 
+  const onClose = () => {
+    reset()
+    setInputVisible(false)
+  }
+
   const onSubmit = (submitData: { title: string }) => {
     const { title } = submitData
 
     onCreateList && onCreateList(title)
     reset()
   }
+
   return (
     <>
       {/* 列表標題輸入框 */}
@@ -41,13 +47,20 @@ const AddListButton: FC<IAddListButtonProps> = ({ onCreateList }) => {
         <ValidateController className="mb-4" label="" name="title" control={control}>
           <InputText />
         </ValidateController>
-        <Button size="small" onClick={handleSubmit(onSubmit)}>
-          新增列表
-        </Button>
+
+        <div className="flex">
+          <Button size="small" onClick={handleSubmit(onSubmit)}>
+            新增列表
+          </Button>
+          <Button className="!w-1/5" size="small" text onClick={onClose}>
+            x
+          </Button>
+        </div>
       </div>
 
       {/* 新增列表按鈕 */}
       <Button
+        name="add-list"
         className="w-[286px] border-secondary-2 row-span-full text-secondary-3 flex h-16"
         outlined
         onClick={() => setInputVisible(true)}

@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
+
 import { cloneDeep } from 'lodash-es'
 
 import { MenuBar, List, AddListButton } from '@/components/board'
@@ -20,11 +21,18 @@ export default function Board() {
   const lists = useAppSelector(state => state.boardSocket.lists)
   const boardId = useAppSelector(state => state.boardSocket.boardId)
   const dispatch = useAppDispatch()
-
   const router = useRouter()
-  // const [boardId, setBoardId] = useState('')
   const boardService = useBoardService()
 
+  /** 讓 draggable、droppable 內的 pointer 事件不會被 prevent */
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 3,
+    },
+  })
+  const sensors = useSensors(pointerSensor)
+
+  /** 暫時的卡片拖拉邏輯 */
   /* eslint-disable */
   function handleDragEnd(event: any) {
     if (!event.over) return
@@ -69,12 +77,14 @@ export default function Board() {
     }
     boardService?.createList(payload)
   }
-
   /** 看板新增卡片 */
-  const onCreateCard = (title = '') => {
+  const onCreateCard = (listId = '', title = '') => {
+    // // console.log(listId, title)
+    // // // if (listId === '' || title === '') return
+    // return
     const payload = {
+      listId,
       title,
-      boardId,
     }
     boardService?.createCard(payload)
   }
@@ -106,9 +116,8 @@ export default function Board() {
     if (boardId === undefined || boardId === '') return
     handleGetSingleBoard()
 
+    /** 看板銷毀，重置 store 裡的 board list */
     return () => {
-      console.log('get')
-
       dispatch(setLists([]))
     }
   }, [boardId])
@@ -124,7 +133,7 @@ export default function Board() {
         <MenuBar />
       </div>
 
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
           {lists.length ? (
             lists.map((item, index: number) => (

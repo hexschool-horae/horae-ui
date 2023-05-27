@@ -1,4 +1,4 @@
-import AddCardButton from '@/components/board/AddCardButton'
+import AddCardButton from './AddCardButton'
 import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
 import Draggable from './Draggable'
@@ -6,7 +6,13 @@ import Droppable from './Droppable'
 
 import { IBoardListItem } from '@/types/pages'
 
-export default function List({ data, onCreateCard }: { data: IBoardListItem; onCreateCard: (title: string) => void }) {
+export default function List({
+  data,
+  onCreateCard,
+}: {
+  data: IBoardListItem
+  onCreateCard: (listId: string, title: string) => void
+}) {
   /** 卡片陣列狀態 */
   const { cards } = data
 
@@ -24,22 +30,22 @@ export default function List({ data, onCreateCard }: { data: IBoardListItem; onC
           return (
             <div key={index}>
               <Droppable
-                id={`${item.id}`}
+                id={`${item._id}`}
                 data={{
-                  cardId: item.id,
+                  cardId: item._id,
                   cardPosition: index,
                   listPosition: data.position,
                   eventType: 'card',
                 }}
               >
                 <Draggable
+                  id={`${item._id}`}
                   data={{
-                    cardId: item.id,
+                    cardId: item._id,
                     cardPosition: index,
                     listPosition: data.position,
                     eventType: 'card',
                   }}
-                  id={`${item.id}`}
                 >
                   <Card key={index} title={item.title} labels={item.labels} />
                 </Draggable>
@@ -51,7 +57,7 @@ export default function List({ data, onCreateCard }: { data: IBoardListItem; onC
         <></>
       )}
 
-      <AddCardButton onCreateCard={onCreateCard} />
+      <AddCardButton listId={data._id} onCreateCard={onCreateCard} />
     </>
   )
 }

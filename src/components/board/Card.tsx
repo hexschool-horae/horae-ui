@@ -3,7 +3,7 @@ import { Chip } from 'primereact/chip'
 export default function Card({ title = '', labels = [] }: { title: string; labels: string[] }) {
   /* 卡片本體 */
   return (
-    <div className="w-[254px] flex flex-col rounded-md  bg-white p-4 mb-3">
+    <div className="w-[254px] h-[152px] flex flex-col rounded-md  bg-white p-4 mb-3">
       <h6 className="text-start mb-10">{title}</h6>
       {/* 卡片標籤 */}
       <div className="flex">
