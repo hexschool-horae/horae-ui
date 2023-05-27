@@ -6,12 +6,14 @@ import { Button } from 'primereact/button'
 import { Divider } from 'primereact/divider'
 import { Chip } from 'primereact/chip'
 
-import { useCardDetail } from '@/contexts/cardDetailContext'
+// import { useCardDetail } from '@/contexts/cardDetailContext'
+import { IInitialState } from '@/contexts/reducers/cardDetailReducer'
 import { ITag } from '@/contexts/reducers/cardDetailReducer'
-import CardPopupWrapper from './CardPopupWrapper'
 
 interface ICardPopupTagsProps {
-  label: string
+  page: string
+  state?: IInitialState
+  dispatch?: React.Dispatch<any>
 }
 
 type TStep = 'list' | 'create' | 'edit'
@@ -41,15 +43,15 @@ const tagListDummy = [
   },
 ]
 
-export default function CardPopupTags({ label }: ICardPopupTagsProps) {
-  const { state, dispatch } = useCardDetail()
+export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsProps) {
+  // const { state, dispatch } = useCardDetail()
   const [currentStep, setCurrentStep] = useState<TStep>('list')
   const [tagList, setTagList] = useState<ITag[]>([])
   const [search, setSearch] = useState('')
 
   const [tagColor, setTagColor] = useState(tagColorList[0])
   const [tagTitle, setTagTitle] = useState('')
-  const [editTagId, setEditTagId] = useState('')
+  // const [editTagId, setEditTagId] = useState('')
 
   const getTags = () => {
     //GET API B03-13 /board/:board-id/tags
@@ -63,7 +65,9 @@ export default function CardPopupTags({ label }: ICardPopupTagsProps) {
   }, [])
 
   const isActiveTag = (tag: string) => {
-    return state.cardDetail.tags.some(cardTag => cardTag.id === tag)
+    if (page !== 'card' || dispatch == undefined) return true
+
+    return state?.cardDetail.tags.some(cardTag => cardTag.id === tag)
   }
 
   const filteredTags = useMemo(() => {
@@ -77,18 +81,18 @@ export default function CardPopupTags({ label }: ICardPopupTagsProps) {
     const ID = new Date().getTime().toString()
 
     // Response
-    dispatch({
-      type: 'ADD_TAG',
-      payload: {
-        tag: {
-          id: ID,
-          title: tagTitle,
-          color: tagColor,
+    if (page === 'card' && dispatch !== undefined) {
+      dispatch({
+        type: 'ADD_TAG',
+        payload: {
+          tag: {
+            id: ID,
+            title: tagTitle,
+            color: tagColor,
+          },
         },
-      },
-    })
-    setTagColor(tagColorList[0])
-    setTagTitle('')
+      })
+    }
 
     setTagList([
       ...tagList,
@@ -99,43 +103,12 @@ export default function CardPopupTags({ label }: ICardPopupTagsProps) {
       },
     ])
 
-    setCurrentStep('list')
-  }
-
-  const EditTag = () => {
-    // PATCH API
-    // Response
-    dispatch({
-      type: 'EDIT_TAG',
-      payload: {
-        tag: {
-          id: editTagId,
-          title: tagTitle,
-          color: tagColor,
-        },
-      },
-    })
-    setTagColor(tagColorList[0])
-    setTagTitle('')
-
-    const tags = [...tagList]
-    const i = tags.findIndex(tag => tag.id === editTagId)
-    tags[i] = {
-      id: editTagId,
-      title: tagTitle,
-      color: tagColor,
-    }
-    setTagList(tags)
-
-    setCurrentStep('list')
-  }
-
-  const goEditTag = (tag: ITag) => {
-    console.log(tag)
-    setTagColor(tag.color)
-    setTagTitle(tag.title)
-    setEditTagId(tag.id)
-    setCurrentStep('edit')
+    setTimeout(function () {
+      setTagColor(tagColorList[0])
+      setTagTitle('')
+      //TieredMenu不用setTimeout會消失
+      setCurrentStep('list')
+    }, 100)
   }
 
   const goCreateTag = () => {
@@ -145,7 +118,59 @@ export default function CardPopupTags({ label }: ICardPopupTagsProps) {
     setCurrentStep('create')
   }
 
+  /*
+  編輯標籤
+
+  const EditTag = () => {
+    // API
+    // Response
+    if(page === "card" && dispatch !== undefined) {
+      dispatch({
+        type: 'EDIT_TAG',
+        payload: {
+          tag: {
+            id: editTagId,
+            title: tagTitle,
+            color: tagColor,
+          },
+        },
+      })
+    } 
+
+    const tags = [...tagList]
+    const i = tags.findIndex(tag => tag.id === editTagId)
+    tags[i] = {
+      id: editTagId,
+      title: tagTitle,
+      color: tagColor,
+    }
+    setTagList(tags)
+    
+
+    setTimeout(function() {
+      setTagColor(tagColorList[0])
+      setTagTitle('')
+      //TieredMenu不用setTimeout會消失
+      setCurrentStep('list')
+    },100)
+  }
+
+  const goEditTag = (tag: ITag) => {
+    console.log(tag)
+    setTagColor(tag.color)
+    setTagTitle(tag.title)
+    setEditTagId(tag.id)
+    setTimeout(function() {
+      //TieredMenu不用setTimeout會消失
+      setCurrentStep('edit')
+    },100)
+    
+  }
+  */
+
   const toggleTag = (tag: ITag) => {
+    if (page !== 'card' || dispatch == undefined) return
+
     if (isActiveTag(tag.id)) {
       dispatch({
         type: 'REMOVE_TAG',
@@ -168,41 +193,56 @@ export default function CardPopupTags({ label }: ICardPopupTagsProps) {
   }
 
   return (
-    <CardPopupWrapper title="標籤" label={label}>
+    <>
       {currentStep === 'list' ? (
         <>
           <InputText placeholder="搜尋標籤" className="w-full my-2" onChange={e => setSearch(e.target.value)} />
           <Divider />
-          <div className="text-xs mb-2">標籤</div>
+          <div className="text-xs mb-2 ">標籤</div>
           <ul className="flex flex-wrap gap-2">
             {filteredTags.map(tag => (
               <li key={tag.id} className="relative">
                 <Chip
                   label={tag.title}
-                  className={`cursor-pointer pr-[40px]  ${style.tag} ${
-                    isActiveTag(tag.id) ? 'opacity-100 border-[1px] border-primary' : 'opacity-60'
+                  className={`cursor-pointer  ${style.tag} ${
+                    isActiveTag(tag.id) ? style.tag_active : 'border-gray-400 text-gray-500'
                   }`}
-                  style={{ backgroundColor: tag.color }}
+                  style={isActiveTag(tag.id) ? { backgroundColor: tag.color } : { backgroundColor: 'white' }}
                   onClick={() => toggleTag(tag)}
                 />
 
-                <Button
+                {/* 標籤編輯 */}
+                {/* <Button
                   icon="pi pi-pencil"
                   rounded
                   aria-label="edit"
                   className="absolute right-0 w-[33px] h-[33px]"
                   onClick={() => goEditTag(tag)}
-                />
+                /> */}
               </li>
             ))}
           </ul>
-          <Button label="建立新標籤" severity="secondary" rounded className="w-full mt-5" onClick={goCreateTag} />
+          {page === 'card' ? (
+            <Button label="建立新標籤" severity="secondary" rounded className="w-full mt-5" onClick={goCreateTag} />
+          ) : (
+            <div
+              className="w-full bg-secondary-4 text-secondary-3 flex items-center mt-5 px-3 py-2 rounded-s cursor-pointer"
+              onClick={goCreateTag}
+            >
+              新增建立標籤
+              <span className="ml-auto">+</span>
+            </div>
+          )}
         </>
       ) : (
         <>
           <div className="h-[120px] mb-5 ">
             <div className="flex justify-center items-center h-[120px] bg-gray-100 absolute left-0 right-0">
-              <Chip label={tagTitle} className={`drop-shadow-md ${style.tag}`} style={{ backgroundColor: tagColor }} />
+              <Chip
+                label={tagTitle}
+                className={`drop-shadow-md text-secondary-3 ${style.tag}`}
+                style={{ backgroundColor: tagColor }}
+              />
             </div>
           </div>
           <label htmlFor="todo-title">標題</label>
@@ -234,23 +274,48 @@ export default function CardPopupTags({ label }: ICardPopupTagsProps) {
               </li>
             ))}
           </ul>
-          <Button
-            label={`${currentStep === 'create' ? '建立' : '儲存'}`}
-            severity="secondary"
-            rounded
-            className="w-full mt-4"
-            onClick={() => (currentStep === 'create' ? creatTag() : EditTag())}
-          />
-          <Button
-            label="返回"
-            severity="secondary"
-            rounded
-            outlined
-            className="w-full mt-3"
-            onClick={() => setCurrentStep('list')}
-          />
+          {page === 'card' ? (
+            <>
+              <Button
+                label={`${currentStep === 'create' ? '建立' : '儲存'}`}
+                severity="secondary"
+                rounded
+                className="w-full mt-4"
+                onClick={() => (currentStep === 'create' ? creatTag() : EditTag())}
+              />
+              <Button
+                label="返回"
+                severity="secondary"
+                rounded
+                outlined
+                className="w-full mt-3"
+                onClick={() => setCurrentStep('list')}
+              />
+            </>
+          ) : (
+            <>
+              <div
+                className="w-full bg-secondary-4 text-secondary-3 flex items-center mt-5 px-3 py-2 rounded-s cursor-pointer"
+                onClick={() => (currentStep === 'create' ? creatTag() : EditTag())}
+              >
+                {currentStep === 'create' ? '建立' : '儲存'}
+                <span className="ml-auto">+</span>
+              </div>
+              <div
+                className="w-full bg-secondary-4 text-secondary-3 flex items-center mt-3 px-3 py-2 rounded-s cursor-pointer"
+                onClick={() => {
+                  setTimeout(function () {
+                    setCurrentStep('list')
+                  }, 100)
+                }}
+              >
+                返回
+                <span className="ml-auto">-</span>
+              </div>
+            </>
+          )}
         </>
       )}
-    </CardPopupWrapper>
+    </>
   )
 }

@@ -15,6 +15,7 @@ import CardDetailComments from '@/components/card/CardDetailComments'
 import CardPopupMember from '@/components/card/CardPopupMember'
 import CardPopupTodoList from '@/components/card/CardPopupTodoList'
 import CardPopupTags from '@/components/card/CardPopupTags'
+import CardPopupWrapper from '@/components/card/CardPopupWrapper'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -100,7 +101,10 @@ const CardInternal = () => {
 
       <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} />
       <CardPopupTodoList label={popupLabels.todoList} key={popupLabels.todoList + state.popupKey} />
-      <CardPopupTags label={popupLabels.tags} key={popupLabels.tags + state.popupKey + 2} />
+      {/* 與board共用 Wrapper放外層*/}
+      <CardPopupWrapper title="標籤" label={popupLabels.tags}>
+        <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />
+      </CardPopupWrapper>
     </>
   )
 }

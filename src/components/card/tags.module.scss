@@ -12,10 +12,14 @@
 }
 
 .tag {
-  @apply text-sm min-w-[54px] h-[33px];
+  @apply text-sm min-w-[54px] h-[33px] border-[1px];
   transition: 0.15s ease-in-out;
 
   &:hover {
     box-shadow: 1px 3px 4px rgba(black, 0.23);
+  }
+
+  &.tag_active {
+    @apply border-[#f7a6a6] text-secondary-3;
   }
 }

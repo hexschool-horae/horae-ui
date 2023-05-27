@@ -41,7 +41,7 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
           <li key={tag.id}>
             <Chip
               label={tag.title}
-              className={`cursor-pointer  ${tagStyle.tag}`}
+              className={`cursor-pointer ${tagStyle.tag} ${tagStyle.tag_active}`}
               style={{ backgroundColor: tag.color }}
               removeIcon="pi pi-times"
               removable
