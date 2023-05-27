@@ -41,3 +41,8 @@ export const POST_WORKSPACE_INVITATION_SEND_MAIL = (workId: string) => {
 export const PATCH_WORK_SPACE_MEMBER = (workId: string, date: interfaces.PatchMembersDataRequest) => {
   return axiosFetcher.patch(`${apiPath.GET_WORK_SPACE}/${workId}/members`, date)
 }
+
+/** B03-5 取得單一看板 */
+export const GET_BOARD_BY_ID = (boardId: string) => {
+  return axiosFetcher.get<interfaces.ISingleBoardResponse>(`${apiPath.GET_BOARD_BY_ID}/${boardId}`)
+}

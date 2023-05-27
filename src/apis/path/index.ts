@@ -24,7 +24,7 @@ export default {
   PATCH_BOARD_BY_ID: '/board/:board-id',
   PATCH_BOARD_VISIBLE_BY_ID: '/board/:board-id/visible',
   DELETE_BOARD_BY_ID: '/board/:board-id/delete',
-  GET_BOARD_BY_ID: '/board/:board-id',
+  GET_BOARD_BY_ID: '/board',
   GET_BOARDS_ALL_MEMBERS_BY_ID: '/board/:board-id/members',
   POST_BOARD_MEMBERS_BY_ID: '/board/:board-id/members',
   PATCH_BOARD_MEMBERS_BY_ID: '/board/:board-id/members',

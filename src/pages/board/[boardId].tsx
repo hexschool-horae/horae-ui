@@ -1,50 +1,33 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
+
 import { useBoardService } from '@/socketService'
 
 import { MenuBar, List, AddListButton } from '@/components/board'
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
+import ListContainer from '@/components/board/ListContainer'
 
-// import { boardReducer } from '@/contexts/reducers/boardReducer'
-// import { IListData } from '@/types/pages'
+import { boardReducer } from '@/contexts/reducers/boardReducer'
 
-const listCardList = [
-  {
-    id: '12248ce4',
-    title: '家居',
-    cardData: [
-      { id: '12249496', title: '洗衣服', labels: ['未執行'] },
-      { id: '12349998', title: '洗碗', labels: ['未執行'] },
-    ],
-  },
-  { title: '學習語言', cardData: [{ id: '12279396', title: '英文聽力 L1', labels: ['已完成', '優先'] }] },
-  {
-    id: 'f1224919e',
-    title: '學習語言',
-    cardData: [{ id: '12249996', title: '英文聽力 L1', labels: ['已完成', '優先'] }],
-  },
-]
+import { GET_BOARD_BY_ID } from '@/apis/axios-service'
 
 export default function Board() {
-  const [list, setIsList] = useState(listCardList)
-  // const [state] = useReducer(boardReducer, { lists: listCardList })
-  // const { lists } = state
+  const [state, dispatch] = useReducer(boardReducer, { lists: [] })
+  const { lists } = state
   const router = useRouter()
   const boardId = router.query.boardId as string
+
   const boardService = useBoardService()
-  // function handleDragMove(event: any) {
-  //   console.log('moving!')
-  // }
 
   function handleDragEnd(event: any) {
     if (!event.over) return
-
-    const tempArr = cloneDeep(list)
     console.log(event.active.data.eventType)
+
+    const tempArr = cloneDeep(lists)
     if (event.active.data.current.eventType === 'card') {
       const {
         current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
@@ -53,10 +36,10 @@ export default function Board() {
         current: { cardPosition: overCardPosition, listPosition: overListPosition },
       } = event.over.data
 
-      const temp = tempArr[activeListPosition].cardData[activeCardPosition]
+      const temp = tempArr[activeListPosition].cards[activeCardPosition]
 
-      tempArr[activeListPosition].cardData[activeCardPosition] = tempArr[overListPosition].cardData[overCardPosition]
-      tempArr[overListPosition].cardData[overCardPosition] = temp
+      tempArr[activeListPosition].cards[activeCardPosition] = tempArr[overListPosition].cards[overCardPosition]
+      tempArr[overListPosition].cards[overCardPosition] = temp
     } else {
       const {
         current: { listPosition: activeListPosition },
@@ -69,9 +52,11 @@ export default function Board() {
       tempArr[activeListPosition] = tempArr[overListPosition]
       tempArr[overListPosition] = temp
     }
-    setIsList(tempArr)
+
+    // setIsList(tempArr)
   }
 
+  // 看板新增列表
   const onCreateList = (title = '') => {
     const payload = {
       boardId,
@@ -79,6 +64,22 @@ export default function Board() {
     }
     boardService.createList(payload)
   }
+
+  //取得單一看板資訊
+  const handleGetSingleBoard = async () => {
+    const result = await GET_BOARD_BY_ID(boardId)
+    if (result === undefined) return
+    const { lists } = result.data
+
+    dispatch({ type: 'UPDATE_BOARD_LIST', payload: lists })
+  }
+
+  // 看板初始載入
+  useEffect(() => {
+    if (boardId === undefined) return
+    handleGetSingleBoard()
+  }, [])
+
   return (
     <>
       <Head>
@@ -92,31 +93,38 @@ export default function Board() {
 
       <DndContext onDragEnd={handleDragEnd}>
         <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
-          {list.length &&
-            list.map((item: any, index: number) => (
+          {lists.length ? (
+            lists.map((item, index: number) => (
               <div className="row-span-full" key={index}>
                 <Droppable
-                  id={`${item.id}`}
+                  id={`${item._id}`}
                   data={{
-                    listId: item.id,
+                    listId: item._id,
                     listPosition: index,
                     eventType: 'list',
                   }}
                 >
                   <Draggable
-                    id={`${item.id}`}
+                    id={`${item._id}`}
                     data={{
-                      listId: item.id,
+                      listId: item._id,
                       listPosition: index,
                       eventType: 'list',
                     }}
                   >
-                    <List data={{ ...item, listPosition: index }} />
+                    <ListContainer>
+                      <List data={item} />
+                    </ListContainer>
                   </Draggable>
                 </Droppable>
               </div>
-            ))}
-          <AddListButton onCreateList={onCreateList} />
+            ))
+          ) : (
+            <div className="row-span-full text-2xl">尚未建立列表</div>
+          )}
+          <ListContainer>
+            <AddListButton onCreateList={onCreateList} />
+          </ListContainer>
         </div>
       </DndContext>
     </>

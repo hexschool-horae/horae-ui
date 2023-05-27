@@ -1,14 +1,19 @@
-// export interface IListData {
-//   title: string
-//   cardList: ICardData[]
-// }
+// export interface
 
-export interface IListData {
+export interface IBoardListItem {
+  _id: string
   title: string
-  cardList: ICardData[]
+  status?: string
+  position: number
+  cards?: ICard[]
 }
 
-export interface ICardData {
+export interface IBoardCardItem {
+  _id: string
   title: string
-  labels: string[]
+  startDate?: string
+  endDate?: string
+  tags?: any[]
+  proiority?: string
+  position: number
 }

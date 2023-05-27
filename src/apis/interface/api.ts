@@ -73,3 +73,38 @@ export interface InvitationLinkDataResponse {
     invitationLink: string
   }
 }
+/** B03-5 取得單一看板 */
+export interface ISingleBoardResponse {
+  data: {
+    _id: string
+    title?: string
+    discribe?: string
+    coverPath?: string
+    viewSet?: string
+    members?: [
+      {
+        userId: {
+          _id: string
+          name: string
+        }
+        role: string
+        _id: string
+      }
+    ]
+    lists: Array<{
+      _id: string
+      title: string
+      status?: string
+      position: number
+      cards: Array<{
+        _id: string
+        title: string
+        startDate?: string
+        endDate?: string
+        tags?: any[]
+        proiority?: string
+        position: number
+      }>
+    }>
+  }
+}
