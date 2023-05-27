@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { MenuBar, List, AddListButton } from '@/components/board'
 import Head from 'next/head'
 import { useState } from 'react'
@@ -6,6 +8,8 @@ import { cloneDeep } from 'lodash-es'
 
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
+
+import CardDetail from '@/components/card/CardDetail'
 
 const listCardList = [
   {
@@ -30,6 +34,8 @@ const listCardList = [
 ]
 
 export default function Board() {
+  const router = useRouter()
+  const [cardDetailIsOpen, setCardDetailIsOpen] = useState(false)
   const [list, setIsList] = useState(listCardList)
   /* eslint-disable */
   function handleDragEnd(event: any) {
@@ -55,6 +61,11 @@ export default function Board() {
       </Head>
 
       <div className="mb-6">
+        {/* 測試開啟卡片 */}
+        <span className="bg-gray-300 p-2" onClick={() => setCardDetailIsOpen(prev => !prev)}>
+          <Link href={`/board/${router.query.boardId}/?cardId=646f5af39acb8cc9cf652cd3`}>測試卡片</Link>
+        </span>
+        {/* 測試開啟卡片 */}
         <MenuBar />
       </div>
       <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
@@ -71,6 +82,13 @@ export default function Board() {
         </DndContext>
         <AddListButton />
       </div>
+
+      {/* key要綁cardId */}
+      <CardDetail
+        cardDetailIsOpen={cardDetailIsOpen}
+        setCardDetailIsOpen={setCardDetailIsOpen}
+        key={new Date().getTime().toString()}
+      />
     </>
   )
 }

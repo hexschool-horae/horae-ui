@@ -39,6 +39,6 @@ export default {
   POST_LIST_CARD_BY_ID: '/list/:list-id/card',
   PUT_CARD_BY_ID: '/card/:card-id',
   PATCH_CARD_VISIBLE_BY_ID: '/card/:card-id/visible',
-  GET_CARD_BY_ID: '/card/:card-id',
+  GET_CARD_BY_ID: '/card',
   POST_CARD_ATTACH_BY_ID: '/card/:card-id/attach',
 }

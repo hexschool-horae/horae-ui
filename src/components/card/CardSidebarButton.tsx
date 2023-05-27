@@ -8,14 +8,16 @@ interface ICardSidebarButtonProps {
 }
 
 export default function CardSidebarButton({ name, label }: ICardSidebarButtonProps) {
-  const { dispatch } = useCardDetail()
+  const { state, dispatch } = useCardDetail()
 
   return (
     <Button
       label={name}
       icon="pi pi-user"
       outlined
-      className="w-full"
+      className={`w-full border-secondary-2 text-secondary-3 ${
+        state.popups[label] ? 'bg-secondary-4 border-secondary-3' : ''
+      }`}
       onClick={() => {
         dispatch({
           type: 'TOTGGLE_POPUP',

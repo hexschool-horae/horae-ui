@@ -41,3 +41,8 @@ export const POST_WORKSPACE_INVITATION_SEND_MAIL = (workId: string) => {
 export const PATCH_WORK_SPACE_MEMBER = (workId: string, date: interfaces.PatchMembersDataRequest) => {
   return axiosFetcher.patch(`${apiPath.GET_WORK_SPACE}/${workId}/members`, date)
 }
+
+/** B05-4 取得單一卡片 */
+export const GET_CARD_BY_ID = (cardId: string) => {
+  return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
+}

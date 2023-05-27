@@ -73,3 +73,24 @@ export interface InvitationLinkDataResponse {
     invitationLink: string
   }
 }
+
+/** B05-4 取得單一卡片 */
+export interface ICardDetailResponse {
+  data: {
+    _id: string
+    title: string
+    discribe: string
+    startDate: null
+    endDate: null
+    // members: [],
+    // comments: [],
+    // tags: [],
+    // todolists: [],
+    // attachments: [],
+    // proiority: ,
+    // coverPath: ,
+    // position: 3,
+    // createdAt: 2023-05-23T15:25:42.918Z,
+    // version: 0
+  }
+}
