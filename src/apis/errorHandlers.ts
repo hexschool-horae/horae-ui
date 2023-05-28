@@ -31,31 +31,31 @@ const httpErrorHandler = (status: number, message: string) => {
 }
 
 const response400 = (message: string) => {
-  alert(message)
+  console.warn(message)
 }
 
 const response401 = (message: string) => {
-  alert(message)
+  console.warn(message)
 }
 
 const response404 = () => {
-  alert('404，訪問的頁面不存在')
+  console.warn('404，訪問的頁面不存在')
 }
 
 const response405 = () => {
-  alert('405，方法錯誤，請求拒絕')
+  console.warn('405，方法錯誤，請求拒絕')
 }
 
 const response451 = () => {
-  alert('451，憑證過期')
+  console.warn('451，憑證過期')
 }
 
 const response500 = () => {
-  alert('500+，伺服器錯誤，請通知系統人員')
+  console.warn('500+，伺服器錯誤，請通知系統人員')
 }
 
 const responseSpecial = () => {
-  alert('請通知系統人員')
+  console.warn('請通知系統人員')
 }
 
 export { httpErrorHandler, response401, response404, response405, response451, response500, responseSpecial }

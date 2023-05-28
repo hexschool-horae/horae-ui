@@ -73,9 +73,10 @@ export const DELETE_WORKSPACE_MEMBER = (workId: string, date: interfaces.DeleteM
 export const GET_INVITATION_DATA = (workId: string) => {
   return axiosFetcher.get<interfaces.InvitationDataResponse>(`${apiPath.GET_WORK_SPACE}/${workId}/invitation-data`)
 }
-/** B05-4 取得單一卡片 */
-export const GET_CARD_BY_ID = (cardId: string) => {
-  return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
+
+/** B03-5 取得單一看板 */
+export const GET_BOARD_BY_ID = (boardId: string) => {
+  return axiosFetcher.get<interfaces.ISingleBoardResponse>(`${apiPath.GET_BOARD_BY_ID}/${boardId}`)
 }
 
 /** B03-13 取得單一看板的所有標籤 */
@@ -96,4 +97,9 @@ export const PUT_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IPutBoard
 /** B03-16 單一看板刪除標籤 */
 export const DELETE_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IDeleteBoardTagsRequest) => {
   return axiosFetcher.DELETE(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
+}
+
+/** B05-4 取得單一卡片 */
+export const GET_CARD_BY_ID = (cardId: string) => {
+  return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
 }

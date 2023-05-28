@@ -1,34 +1,63 @@
-import { Button } from 'primereact/button'
+import AddCardButton from './AddCardButton'
 import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
+import Draggable from './Draggable'
+import Droppable from './Droppable'
 
-interface ICardData {
-  title: string
-  labels: string[]
-}
+import { IBoardListItem } from '@/types/pages'
 
-interface IListData {
-  title: string
-  cardData: ICardData[]
-}
+export default function List({
+  data,
+  onCreateCard,
+}: {
+  data: IBoardListItem
+  onCreateCard: (listId: string, title: string) => void
+}) {
+  /** 卡片陣列狀態 */
+  const { cards } = data
 
-export default function List({ data }: { data: IListData }) {
   return (
-    <div className="w-[286px] row-span-full">
-      <div className="bg-secondary-4 h-auto px-4 py-5">
-        <div className="flex mb-3 ">
-          <h6 className="text-lg !text-secondary-3 mr-auto ">{data.title}</h6>
-          <ListSettingMenu />
-        </div>
-
-        {data.cardData.length &&
-          data.cardData.map((item, i) => <Card key={i} title={item.title} labels={item.labels} />)}
-        <Button
-          className="!w-full !tracking-[1px] !text-sm !text-secondary-3 !text-center p-0"
-          label="+ 新增卡片"
-          text
-        />
+    <>
+      {/* 列表標題 */}
+      <div className="flex mb-3 ">
+        <h6 className="text-lg !text-secondary-3 mr-auto ">{data.title}</h6>
+        <ListSettingMenu />
       </div>
-    </div>
+
+      {/* 卡片 */}
+      {cards?.length ? (
+        cards.map((item, index) => {
+          return (
+            <div key={index}>
+              <Droppable
+                id={`${item._id}`}
+                data={{
+                  cardId: item._id,
+                  cardPosition: index,
+                  listPosition: data.position,
+                  eventType: 'card',
+                }}
+              >
+                <Draggable
+                  id={`${item._id}`}
+                  data={{
+                    cardId: item._id,
+                    cardPosition: index,
+                    listPosition: data.position,
+                    eventType: 'card',
+                  }}
+                >
+                  <Card key={index} title={item.title} labels={item.labels} />
+                </Draggable>
+              </Droppable>
+            </div>
+          )
+        })
+      ) : (
+        <></>
+      )}
+
+      <AddCardButton listId={data._id} onCreateCard={onCreateCard} />
+    </>
   )
 }
