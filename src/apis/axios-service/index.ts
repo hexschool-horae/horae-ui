@@ -41,3 +41,28 @@ export const POST_WORKSPACE_INVITATION_SEND_MAIL = (workId: string) => {
 export const PATCH_WORK_SPACE_MEMBER = (workId: string, date: interfaces.PatchMembersDataRequest) => {
   return axiosFetcher.patch(`${apiPath.GET_WORK_SPACE}/${workId}/members`, date)
 }
+
+/** B05-4 取得單一卡片 */
+export const GET_CARD_BY_ID = (cardId: string) => {
+  return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
+}
+
+/** B03-13 取得單一看板的所有標籤 */
+export const GET_BOARD_TAGS_BY_ID = (boardId: string) => {
+  return axiosFetcher.get<interfaces.IBoardTagsResponse>(`${apiPath.GET_BOARD}/${boardId}/tags`)
+}
+
+/** B03-14 單一看板新增標籤 */
+export const POST_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IPostBoardTagsRequest) => {
+  return axiosFetcher.post<interfaces.IPostBoardTagsResponse>(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
+}
+
+/** B03-15 單一看板設定單一標籤 */
+export const PUT_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IPutBoardTagsRequest) => {
+  return axiosFetcher.put(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
+}
+
+/** B03-16 單一看板刪除標籤 */
+export const DELETE_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IDeleteBoardTagsRequest) => {
+  return axiosFetcher.DELETE(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
+}

@@ -1,24 +1,7 @@
+import { ICardDetail, ITag } from '@/apis/interface/api'
+
 interface IPopups {
   [key: string]: boolean
-}
-
-export interface ITag {
-  id: string
-  title: string
-  color: string
-}
-
-interface IComments {
-  id?: string
-  content: string
-  date: string
-}
-
-interface ICardDetail {
-  title: string
-  describe: string
-  tags: ITag[]
-  comments: IComments[]
 }
 
 export interface IInitialState {
@@ -38,10 +21,19 @@ export const initialState = {
   },
   // from API
   cardDetail: {
+    _id: '',
     title: '',
-    describe: '',
-    tags: [],
+    discribe: '',
+    startDate: null,
+    endDate: null,
+    members: [],
     comments: [],
+    tags: [],
+    todolists: [],
+    attachments: [],
+    proiority: '',
+    coverPath: '',
+    position: 0,
   },
 }
 
@@ -56,8 +48,8 @@ type TReducerAction =
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  console.log(state, type)
-  console.log('payload:', payload)
+  // console.log(state, type)
+  // console.log('payload:', payload)
 
   switch (type) {
     case 'INITIALIZE_CARD': {
@@ -129,9 +121,10 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
     }
     case 'EDIT_TAG': {
       const tags = [...state.cardDetail.tags]
-      const i = tags.findIndex(tag => tag.id === payload.tag.id)
-      // console.log(i)
-      tags[i] = payload.tag
+      const i = tags.findIndex(tag => tag._id === payload.tag._id)
+      if (i >= 0) {
+        tags[i] = payload.tag
+      }
       return {
         ...state,
         cardDetail: {
@@ -141,7 +134,7 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
       }
     }
     case 'REMOVE_TAG': {
-      const tags = state.cardDetail.tags.filter(tag => tag.id !== payload.tagId)
+      const tags = state.cardDetail.tags.filter(tag => tag._id !== payload.tagId)
       return {
         ...state,
         cardDetail: {

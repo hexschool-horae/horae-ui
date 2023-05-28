@@ -13,7 +13,7 @@ export const injectStore = (_store: EnhancedStore) => {
   store = _store
 }
 
-const baseURL = 'https://horae-api.onrender.com/'
+const baseURL = 'https://horae-api-5x0d.onrender.com/'
 
 const instance: AxiosInstance = axios.create({
   baseURL,
@@ -130,6 +130,62 @@ async function get<T>(url: string, isAuth = true) {
   }
 }
 
+async function put<T>(url: string, data: unknown, isAuth = true) {
+  try {
+    if (store === null) throw new Error('data from redux-toolkit store is null!')
+
+    // 取得store中的state
+    const rootState: RootState = store.getState()
+
+    // 取得 store 裡的 token
+    const { user } = rootState
+    const { token } = user
+
+    if (isAuth) {
+      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    } else {
+      delete instance.defaults.headers.common['Authorization']
+    }
+
+    const clarifiedPath = url.replace(/[^ -~]/g, '')
+    const response = await instance.put<T>(clarifiedPath, data)
+
+    const { data: responseData } = response
+    return responseData
+  } catch (error) {
+    console.warn(error)
+  }
+}
+
+async function DELETE<T>(url: string, data: unknown, isAuth = true) {
+  try {
+    if (store === null) throw new Error('data from redux-toolkit store is null!')
+
+    // 取得store中的state
+    const rootState: RootState = store.getState()
+
+    // 取得 store 裡的 token
+    const { user } = rootState
+    const { token } = user
+
+    if (isAuth) {
+      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    } else {
+      delete instance.defaults.headers.common['Authorization']
+    }
+
+    const clarifiedPath = url.replace(/[^ -~]/g, '')
+    const response = await instance.delete<T>(clarifiedPath, {
+      data,
+    })
+
+    const { data: responseData } = response
+    return responseData
+  } catch (error) {
+    console.warn(error)
+  }
+}
+
 const axiosFetcher = Object.assign(
   {},
   {
@@ -137,6 +193,8 @@ const axiosFetcher = Object.assign(
     post,
     patch,
     get,
+    put,
+    DELETE,
   }
 )
 export default axiosFetcher

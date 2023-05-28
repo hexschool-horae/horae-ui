@@ -23,7 +23,7 @@ export default function CardPopupWrapper({ title, label, children }: ICardPopupW
       header={title}
       modal={false}
       visible={state.popups[label]}
-      style={{ width: '50vw' }}
+      style={{ width: '560px' }}
       onHide={onClose}
       headerStyle={{ textAlign: 'center' }}
     >

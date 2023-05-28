@@ -16,7 +16,7 @@ export default function CardDetailMember({ label }: ICardDetailMemberProps) {
         icon="pi pi-plus"
         rounded
         aria-label="add"
-        className="mx-3 !w-[30px] !h-[30px]"
+        className={`${style.detail_list_add_btn}`}
         onClick={() => {
           dispatch({
             type: 'TOTGGLE_POPUP',

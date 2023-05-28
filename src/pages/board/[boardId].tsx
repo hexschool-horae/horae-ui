@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { MenuBar, List, AddListButton } from '@/components/board'
 import Head from 'next/head'
 import { useState } from 'react'
@@ -8,6 +10,8 @@ import { useBoardService } from '@/socketService'
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
 import { useRouter } from 'next/router'
+
+import CardDetail from '@/components/card/CardDetail'
 
 const listCardList = [
   {
@@ -32,6 +36,7 @@ const listCardList = [
 ]
 
 export default function Board() {
+  const router = useRouter()
   const [list, setIsList] = useState(listCardList)
   const router = useRouter()
   const boardId = router.query.boardId as string
@@ -67,6 +72,11 @@ export default function Board() {
       </Head>
 
       <div className="mb-6">
+        {/* 測試開啟卡片 */}
+        <span className="bg-gray-300 p-2">
+          <Link href={`/board/${router.query.boardId}/?cardId=646f5af39acb8cc9cf652cd3`}>測試卡片</Link>
+        </span>
+
         <MenuBar />
       </div>
       <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
@@ -83,6 +93,8 @@ export default function Board() {
         </DndContext>
         <AddListButton onCreateList={onCreateList} />
       </div>
+
+      {router.query.cardId && <CardDetail />}
     </>
   )
 }
