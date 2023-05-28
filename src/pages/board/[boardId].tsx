@@ -88,6 +88,7 @@ export default function Board() {
     const payload = {
       listId,
       title,
+      boardId,
     }
     boardService?.createCard(payload)
   }
