@@ -14,7 +14,7 @@ import { PATCH_WORK_SPACE } from '@/apis/axios-service'
 
 const schema = yup
   .object({
-    title: yup.string().required(),
+    title: yup.string().required().max(10),
     discribe: yup.string().required(),
     viewSet: yup.string().required(),
     status: yup.boolean().required(),
