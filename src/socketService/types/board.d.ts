@@ -5,6 +5,6 @@ export interface ICreateListPayload {
 
 export interface ICreateCardPayload {
   title: string
-  // boardId: string
+  boardId: string
   listId: string
 }
