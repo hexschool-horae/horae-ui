@@ -130,6 +130,40 @@ async function get<T>(url: string, isAuth = true) {
   }
 }
 
+async function deleteApi<T>(url: string, data: unknown, isAuth = true): Promise<T | undefined> {
+  try {
+    // 做你需要的錯誤處理
+    if (store === null) throw new Error('data from redux-toolkit store is null!')
+
+    // 取得store中的state
+    const rootState: RootState = store.getState()
+
+    // 取得 store 裡的 token
+    const { user } = rootState
+    const { token } = user
+
+    if (isAuth) {
+      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    } else {
+      delete instance.defaults.headers.common['Authorization']
+    }
+
+    const clarifiedPath = url.replace(/[^ -~]/g, '')
+
+    // 使用 try-catch 包裹 axios 的 DELETE 請求
+    try {
+      const response: AxiosResponse<T> = await axios.delete<T>(clarifiedPath, { data })
+
+      // 回傳 response.data
+      return response.data
+    } catch (error) {
+      console.warn(error)
+    }
+  } catch (error) {
+    console.warn(error)
+  }
+}
+
 const axiosFetcher = Object.assign(
   {},
   {
@@ -137,6 +171,7 @@ const axiosFetcher = Object.assign(
     post,
     patch,
     get,
+    deleteApi,
   }
 )
 export default axiosFetcher

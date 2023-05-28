@@ -11,6 +11,13 @@ export const POST_USER_LOGIN = (payload: interfaces.IRegisterForm) => {
 }
 
 /**
+ * B01-8 取得使用者個人資訊
+ */
+export const GET_USER_PROFILE = () => {
+  return axiosFetcher.get<interfaces.IProfileData>(apiPath.GET_USER_PROFILE)
+}
+
+/**
  * B01-9 取得使用者所有工作區看板
  */
 export const GET_USER_BOARDS = () => {
@@ -37,7 +44,22 @@ export const POST_WORKSPACE_INVITATION_SEND_MAIL = (workId: string) => {
   return axiosFetcher.post(`${apiPath.GET_WORK_SPACE}/${workId}/invitation-sendMail`)
 }
 
+/** B02-9 單一工作區新增成員 */
+export const POST_WORKSPACE_NEW_MEMBERS = (workId: string, hashData: string) => {
+  return axiosFetcher.post(`${apiPath.GET_WORK_SPACE}/${workId}/members/${hashData}`)
+}
+
 /** B02-10 單一工作區設定單一成員權限 */
 export const PATCH_WORK_SPACE_MEMBER = (workId: string, date: interfaces.PatchMembersDataRequest) => {
   return axiosFetcher.patch(`${apiPath.GET_WORK_SPACE}/${workId}/members`, date)
+}
+
+/** B02-11 單一工作區刪除單一成員 */
+export const DELETE_WORKSPACE_MEMBER = (workId: string, date: interfaces.DeleteMembersDataRequest) => {
+  return axiosFetcher.deleteApi(`${apiPath.GET_WORK_SPACE}/${workId}/members`, date)
+}
+
+/** B02-12 取得工作區邀請資料 */
+export const GET_INVITATION_DATA = (workId: string) => {
+  return axiosFetcher.get<interfaces.InvitationDataResponse>(`${apiPath.GET_WORK_SPACE}/${workId}/invitation-data`)
 }

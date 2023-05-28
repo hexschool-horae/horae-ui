@@ -93,7 +93,7 @@ const BackSideBar: FC<IBackSidebarProps> = ({ className }) => {
                     <li>
                       <Button
                         label="成員"
-                        onClick={() => router.push(`/workspace/${item._id}/member`)}
+                        onClick={() => router.push(`/workspace/${item._id}/members`)}
                         size="small"
                         link
                       />

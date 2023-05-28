@@ -1,9 +1,10 @@
 import {
+  DELETE_WORKSPACE_MEMBER,
   GET_WORKSPACE_MEMBERS_BY_ID,
   PATCH_WORK_SPACE_MEMBER,
   POST_WORKSPACE_INVITATION_SEND_MAIL,
 } from '@/apis/axios-service'
-import { IWorkSpaceMembersByIdResponse } from '@/apis/interface/api'
+import { IWorkSpaceMembersByIdResponse, PatchMembersDataRequest } from '@/apis/interface/api'
 import WorkSpaceTitle from '@/components/workSpace/WorkSpaceTitle'
 import { useRouter } from 'next/router'
 import { InputText } from 'primereact/inputtext'
@@ -14,7 +15,11 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
 import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
+import { ConfirmDialog } from 'primereact/confirmdialog'
 import InvitationLink from '@/components/common/InvitationLink'
+import { setWorkspaceId } from '@/slices/workspaceSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
+import { Fragment } from 'react'
 
 const schemaInvitation = yup.object().shape({
   userEmail: yup.string().required().email(),
@@ -25,6 +30,11 @@ interface IWorkspaceData {
   viewSet: string
 }
 
+interface IRole {
+  name: string
+  role: string
+}
+
 type IInvitationWorkspaceFormReq = {
   userEmail: string
 }
@@ -32,22 +42,35 @@ type IInvitationWorkspaceFormReq = {
 export default function Members() {
   const router = useRouter()
   const workId = router.query.workId as string
-  const [workspaceId, setworkspaceId] = useState('')
+  const dispatch = useAppDispatch()
+  const workspaceId = useAppSelector(state => state.workspace.workspaceId)
   const [members, setMembers] = useState<IWorkSpaceMembersByIdResponse[]>([])
   const roles = [
     { name: '管理員', role: 'admin' },
     { name: '成員', role: 'editor' },
   ]
-  const [selectedRoles, setSelectedRoles] = useState('')
 
   const [workspaceData, setWorkspaceData] = useState<IWorkspaceData>({
     title: '',
     viewSet: '',
   })
 
+  const [selectedRolesMap, setSelectedRolesMap] = useState<{ [memberId: string]: IRole }>({})
+
+  const [addWorkPaceMembersReq, setAddWorkPaceMembersReq] = useState<PatchMembersDataRequest>({
+    userId: '',
+    role: '',
+  })
+
   const WorkspaceInvitationSendMailValues: IInvitationWorkspaceFormReq = {
     userEmail: '',
   }
+
+  const [showAddMembersConfirmation, setShowAddMembersConfirmation] = useState(false)
+  const [confirmConfig, setConfirmConfig] = useState({
+    message: '',
+    type: '',
+  })
 
   const {
     control: controlInvitationSendMail,
@@ -85,35 +108,99 @@ export default function Members() {
     resetInvitationSendMail()
   }
 
-  const handleDeleteMember = async (userId: string) => {
-    console.log('delete', userId)
-    // const response = await DELETE_WORKSPACE_MEMBER(workspaceId, {userId: userId})
-    // if (!response) return
+  // 點擊 退出
+  const handleDeleteMember = async (memberId: string, role: string) => {
+    setAddWorkPaceMembersReq({ role: role, userId: memberId })
+    setShowAddMembersConfirmation(true) // 顯示確認對話框
+    setConfirmConfig({ message: '確定要退出此工作區嗎?', type: 'delete-member' })
+  }
+  // 刪除成員 API
+  const handleCallDeleteMember = async (memberId: string) => {
+    console.log('delete', memberId)
+    const response = await DELETE_WORKSPACE_MEMBER(workspaceId, { userId: memberId })
+    if (!response) return
     handlerCallGetWorkPaceMembers(workspaceId)
   }
 
   const getShortName = (name: string) => {
     return name.charAt(0)
   }
-  const handleSelectMemberOption = async (value: any, userId: string) => {
-    setSelectedRoles(value)
+
+  const handleSelectMemberOption = (value: IRole, memberId: string) => {
     const req = {
       role: value.role,
-      userId: userId,
+      userId: memberId,
     }
-    const response = await PATCH_WORK_SPACE_MEMBER(workspaceId, req)
-    if (!response) return
+    setAddWorkPaceMembersReq(req)
+    setSelectedRolesMap(prevState => ({
+      ...prevState,
+      [memberId]: value,
+    }))
+
+    console.log('req', req)
+    setShowAddMembersConfirmation(true) // 顯示確認對話框
+    setConfirmConfig({ message: '確定要更改成員權限嗎?', type: 'add-member' })
+  }
+
+  const handleCancelModal = () => {
+    const originalRolesMap: { [memberId: string]: IRole } = {}
+    members.forEach(member => {
+      originalRolesMap[member.userId._id] = { name: member.role === 'admin' ? '管理員' : '成員', role: member.role }
+    })
+    setSelectedRolesMap(originalRolesMap)
+  }
+
+  // 調整成員權限 API
+  const handlerCallAddWorkPaceMembers = async (req: PatchMembersDataRequest) => {
+    console.log('req', req)
+    const response = await PATCH_WORK_SPACE_MEMBER(workspaceId, addWorkPaceMembersReq)
+    if (!response) {
+      handleCancelModal()
+      return
+    }
     handlerCallGetWorkPaceMembers(workspaceId)
   }
+
+  const accept = () => {
+    if (confirmConfig.type === 'add-member') {
+      handlerCallAddWorkPaceMembers(addWorkPaceMembersReq) // 傳遞最新的 addWorkPaceMembersReq 值
+    } else if (confirmConfig.type === 'delete-member') {
+      handleCallDeleteMember(addWorkPaceMembersReq.userId)
+    }
+
+    setShowAddMembersConfirmation(false) // 隱藏確認對話框
+    console.log('Accept')
+  }
+
+  const reject = () => {
+    if (confirmConfig.type === 'add-member') {
+      handleCancelModal()
+    }
+    setShowAddMembersConfirmation(false) // 隱藏確認對話框
+  }
+
+  // 檢查管理員數量
+  const isAdminOnly = members.filter(member => member.role === 'admin').length === 1
+
   useEffect(() => {
     if (workId) {
-      setworkspaceId(workId)
+      dispatch(setWorkspaceId(workId))
       // handlerCallGetWorkPace(workId)
       handlerCallGetWorkPaceMembers(workId)
     }
   }, [workId])
+
   return (
-    <div>
+    <div key={workspaceId}>
+      {/* 確認對話框 */}
+      <ConfirmDialog
+        visible={showAddMembersConfirmation}
+        message={confirmConfig.message}
+        header="訊息"
+        icon="pi pi-exclamation-triangle"
+        accept={accept}
+        reject={reject}
+      />
       {workspaceData.title ? <WorkSpaceTitle boardData={workspaceData}></WorkSpaceTitle> : ''}
 
       <div className="invitation flex justify-between">
@@ -163,9 +250,9 @@ export default function Members() {
       <h5 className="pb-5">工作區成員</h5>
       <div>
         {members.map(member => (
-          <>
-            <div className="flex justify-between">
-              <div className="member flex" key={member._id}>
+          <Fragment key={member._id}>
+            <div className="flex justify-between mb-4">
+              <div className="member flex">
                 <div className="member-icon bg-secondary-3 text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3">
                   {getShortName(member.userId.name)}
                 </div>
@@ -175,26 +262,26 @@ export default function Members() {
                 </div>
               </div>
               <div className="member-setting">
-                {/* disabled={members.length === 1 && member.role === 'admin'} */}
                 <Dropdown
+                  disabled={isAdminOnly && member.role === 'admin'}
                   placeholder={member.role === 'admin' ? '管理員' : '成員'}
-                  value={selectedRoles}
+                  value={selectedRolesMap[member.userId._id] || null}
                   onChange={e => handleSelectMemberOption(e.value, member.userId._id)}
                   options={roles}
                   optionLabel="name"
                 />
-                {/* disabled={members.length === 1} */}
                 <Button
+                  disabled={isAdminOnly && member.role === 'admin'}
                   className="ml-4 text-sm"
                   size="small"
                   label="退出"
                   onClick={() => {
-                    handleDeleteMember(member.userId._id)
+                    handleDeleteMember(member.userId._id, member.role)
                   }}
                 />
               </div>
             </div>
-          </>
+          </Fragment>
         ))}
       </div>
     </div>

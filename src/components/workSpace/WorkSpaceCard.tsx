@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import styles from './workSpaceCard.module.scss'
 import { OverlayPanel } from 'primereact/overlaypanel'
 import { Controller, useForm } from 'react-hook-form'
@@ -129,12 +129,12 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
     <div>
       {/* 既有看版 */}
       <div className="flex w-full flex-wrap">
-        {boardList.map((item, index) => (
-          <>
-            <div key={index} className={styles.card} onClick={() => goBoard(item._id)}>
+        {boardList.map(item => (
+          <Fragment key={item._id}>
+            <div className={styles.card} onClick={() => goBoard(item._id)}>
               <p>{item.title}</p>
             </div>
-          </>
+          </Fragment>
         ))}
         {/* 建立看版 */}
         <div className={`${styles.card} ${styles.new_card}`} onClick={e => newWorkSpaceOverlayPanel.current?.toggle(e)}>

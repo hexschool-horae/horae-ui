@@ -39,6 +39,13 @@ export interface PatchMembersDataRequest {
 export interface DeleteMembersDataRequest {
   userId: string
 }
+export interface IProfileData {
+  data: {
+    name: string
+    email: string
+    _id: string
+  }
+}
 /**
  * B02-2 登入者所有工作區標題清單
  */
@@ -73,7 +80,20 @@ export interface IWorkSpaceMembersByIdDataResponse {
 }
 /** B02-7 單一工作區產生邀請連結 */
 export interface InvitationLinkDataResponse {
+  message: string
   data: {
     invitationLink: string
   }
+}
+
+/** B02-12 取得工作區邀請資料 */
+export interface InvitationDataResponse {
+  message: string
+  data: InvitationData
+}
+
+/** 工作區邀請資料 */
+export interface InvitationData {
+  title: string
+  inviter: string
 }
