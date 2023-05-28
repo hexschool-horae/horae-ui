@@ -9,7 +9,6 @@ import { useBoardService } from '@/socketService'
 
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
-import { useRouter } from 'next/router'
 
 import CardDetail from '@/components/card/CardDetail'
 
@@ -38,7 +37,7 @@ const listCardList = [
 export default function Board() {
   const router = useRouter()
   const [list, setIsList] = useState(listCardList)
-  const router = useRouter()
+
   const boardId = router.query.boardId as string
   const boardService = useBoardService()
   /* eslint-disable */
