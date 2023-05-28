@@ -126,7 +126,7 @@ export interface IComment {
 export interface ICardDetail {
   _id: string
   title: string
-  discribe: string
+  describe: string
   startDate: Timestamp
   endDate: Timestamp
   members: []
