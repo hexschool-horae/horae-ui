@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import AddCardButton from './AddCardButton'
 import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
@@ -15,6 +17,7 @@ export default function List({
 }) {
   /** 卡片陣列狀態 */
   const { cards } = data
+  const router = useRouter()
 
   return (
     <>
@@ -47,7 +50,9 @@ export default function List({
                     eventType: 'card',
                   }}
                 >
-                  <Card key={index} title={item.title} labels={item.labels} />
+                  <Link href={`/board/${router.query.boardId}/?cardId=${item._id}`}>
+                    <Card key={index} title={item.title} labels={item.labels} />
+                  </Link>
                 </Draggable>
               </Droppable>
             </div>

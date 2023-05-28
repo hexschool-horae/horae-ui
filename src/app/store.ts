@@ -4,10 +4,12 @@ import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import userReducer from '@/slices/userSlice'
 import boardSocketReducer from '@/slices/boardSocketSlice'
+import workspaceReducer from '@/slices/workspaceSlice'
 
 const reducers = combineReducers({
   user: userReducer,
   boardSocket: boardSocketReducer,
+  workspace: workspaceReducer,
 })
 
 //預設位置 localstorage。說明：https://github.com/rt2zz/redux-persist

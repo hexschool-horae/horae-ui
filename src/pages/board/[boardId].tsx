@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
@@ -150,13 +149,7 @@ export default function Board() {
         <title>Horae - 看板</title>
       </Head>
 
-      {/* <WebsocketWrpper> */}
       <div className="mb-6">
-        {/* 測試開啟卡片 */}
-        <span className="bg-gray-300 p-2">
-          <Link href={`/board/${router.query.boardId}/?cardId=646f5af39acb8cc9cf652cd3`}>測試卡片</Link>
-        </span>
-
         <MenuBar />
       </div>
 
@@ -196,7 +189,9 @@ export default function Board() {
           </ListContainer>
         </div>
       </DndContext>
+      {/* 卡片元件 */}
       {router.query.cardId && <CardDetail />}
+      {/* 錯誤訊息提示 */}
       <Toast ref={toastBL} position="bottom-left" />
     </>
   )
