@@ -129,11 +129,11 @@ export interface ICardDetail {
   describe: string
   startDate: Timestamp
   endDate: Timestamp
-  members: []
+  // members: []
   comments: IComment[]
   tags: ITag[]
-  todolists: []
-  attachments: []
+  // todolists: []
+  // attachments: []
   proiority: string
   coverPath: string
   position: number
