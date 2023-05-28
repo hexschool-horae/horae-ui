@@ -46,6 +46,7 @@ type TReducerAction =
   | { type: 'ADD_TAG'; payload: { tag: ITag } }
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
+  | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
   // console.log(state, type)
@@ -140,6 +141,22 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         cardDetail: {
           ...state.cardDetail,
           tags,
+        },
+      }
+    }
+    case 'ADD_TODO_LIST': {
+      const todolists = [
+        ...state.cardDetail.todolists,
+        {
+          title: payload.listTitle,
+          contentList: [],
+        },
+      ]
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          todolists,
         },
       }
     }

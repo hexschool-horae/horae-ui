@@ -89,6 +89,17 @@ export interface IComment {
   date: string
 }
 
+export interface ITodoList {
+  _id: string
+  title: string
+  contentList: ITodo[]
+}
+export interface ITodo {
+  _id: string
+  content: string
+  completed: boolean
+}
+
 export interface ICardDetail {
   _id: string
   title: string
@@ -98,7 +109,7 @@ export interface ICardDetail {
   members: []
   comments: IComment[]
   tags: ITag[]
-  todolists: []
+  todolists: ITodoList[]
   attachments: []
   proiority: string
   coverPath: string

@@ -22,6 +22,7 @@ export default function CardDetailComments() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (inputRef.current) {
+        updateComment()
         inputRef.current.blur()
       }
     }
@@ -37,7 +38,6 @@ export default function CardDetailComments() {
             ref={inputRef}
             value={comment}
             className="w-full h-[58px] pl-[60px]"
-            onBlur={updateComment}
             onChange={e => setComment(e.target.value)}
             onKeyDown={handleKeyDown}
           />
