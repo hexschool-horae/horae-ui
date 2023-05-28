@@ -35,7 +35,6 @@ const listCardList = [
 
 export default function Board() {
   const router = useRouter()
-  const [cardDetailIsOpen, setCardDetailIsOpen] = useState(false)
   const [list, setIsList] = useState(listCardList)
   /* eslint-disable */
   function handleDragEnd(event: any) {
@@ -62,10 +61,10 @@ export default function Board() {
 
       <div className="mb-6">
         {/* 測試開啟卡片 */}
-        <span className="bg-gray-300 p-2" onClick={() => setCardDetailIsOpen(prev => !prev)}>
+        <span className="bg-gray-300 p-2">
           <Link href={`/board/${router.query.boardId}/?cardId=646f5af39acb8cc9cf652cd3`}>測試卡片</Link>
         </span>
-        {/* 測試開啟卡片 */}
+
         <MenuBar />
       </div>
       <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
@@ -83,12 +82,7 @@ export default function Board() {
         <AddListButton />
       </div>
 
-      {/* key要綁cardId */}
-      <CardDetail
-        cardDetailIsOpen={cardDetailIsOpen}
-        setCardDetailIsOpen={setCardDetailIsOpen}
-        key={new Date().getTime().toString()}
-      />
+      {router.query.cardId && <CardDetail />}
     </>
   )
 }

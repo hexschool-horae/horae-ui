@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 
 import style from './card.module.scss'
 import { Dialog } from 'primereact/dialog'
+import { ProgressSpinner } from 'primereact/progressspinner'
 
 import { CardDetailProvider, useCardDetail } from '@/contexts/cardDetailContext'
 import CardSidebarButton from '@/components/card/CardSidebarButton'
@@ -19,29 +20,24 @@ import CardPopupTags from '@/components/card/CardPopupTags'
 import CardPopupWrapper from '@/components/card/CardPopupWrapper'
 import { GET_CARD_BY_ID } from '@/apis/axios-service'
 
-interface ICardDetailProps {
-  cardDetailIsOpen: boolean
-  setCardDetailIsOpen: (toggle: boolean) => void
-}
-
 const popupLabels = {
   member: 'memberPopup',
   todoList: 'todoListPopup',
   tags: 'tagsPopup',
 }
 
-export default function CardDetail({ cardDetailIsOpen, setCardDetailIsOpen }: ICardDetailProps) {
+export default function CardDetail() {
   return (
     <CardDetailProvider>
-      <CardInternal cardDetailIsOpen={cardDetailIsOpen} setCardDetailIsOpen={setCardDetailIsOpen} />
+      <CardInternal />
     </CardDetailProvider>
   )
 }
 
-const CardInternal = ({ cardDetailIsOpen, setCardDetailIsOpen }: ICardDetailProps) => {
+const CardInternal = () => {
   const { state, dispatch } = useCardDetail()
   const router = useRouter()
-  const cardId = router.query.cardId?.toString()
+  const cardId = router.query.cardId as string
 
   // useEffect(() => {
   //   // 測試用
@@ -74,62 +70,73 @@ const CardInternal = ({ cardDetailIsOpen, setCardDetailIsOpen }: ICardDetailProp
   //     clearTimeout(timer)
   //   }
   // }, [])
-  const handleGetCard = async (cardId: string) => {
-    if (!cardDetailIsOpen) return
+
+  const getCardDetail = async () => {
     try {
       const response = await GET_CARD_BY_ID(cardId)
 
-      if (!response) return
-      console.log(response)
+      if (response === undefined) return
+
+      dispatch({
+        type: 'INITIALIZE_CARD',
+        payload: {
+          cardDetail: response.data,
+        },
+      })
     } catch (error) {
       console.error('Error fetching card data:', error)
     }
   }
 
   useEffect(() => {
-    if (cardId) {
-      handleGetCard(cardId)
-    }
-  }, [cardId])
+    getCardDetail()
+  }, [])
 
   const handleCloseCardDetail = () => {
-    setCardDetailIsOpen(false)
     router.push(`/board/${router.query.boardId}`)
   }
 
   return (
     <>
-      <Dialog visible={cardDetailIsOpen} onHide={handleCloseCardDetail} className="w-full md:w-[800px] mx-3">
-        <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
-          {/* main col */}
-          <div className="md:col-span-5">
-            <div className="text-[14px] mb-3">
-              在列表<span className="pl-1 text-primary cursor-pointer">測試列表</span>
+      <Dialog visible={true} onHide={handleCloseCardDetail} className="w-full md:w-[800px] mx-3">
+        {state.initialized ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
+              {/* main col */}
+              <div className="md:col-span-5">
+                <div className="text-[14px] mb-3">
+                  在列表<span className="pl-1 text-secondary-3 cursor-pointer">測試列表</span>
+                </div>
+
+                <CardDetailTitle />
+                <CardDetailMember label={popupLabels.member} />
+                <CardDetailTags label={popupLabels.tags} />
+                <CardDetailDescribe />
+                <CardDetailTodoList />
+                <CardDetailComments />
+              </div>
+
+              {/* sidebar */}
+              <div className="md:col-span-2">
+                <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
+                <div
+                  className="grid grid-cols-2 gap-4 
+                  md:grid-cols-1 md:gap-2"
+                >
+                  <CardSidebarButton name="成員" label={popupLabels.member} />
+                  <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
+                  <CardSidebarButton name="標籤" label={popupLabels.tags} />
+                </div>
+
+                <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
+              </div>
             </div>
-
-            <CardDetailTitle />
-            <CardDetailMember label={popupLabels.member} />
-            <CardDetailTags label={popupLabels.tags} />
-            <CardDetailDescribe />
-            <CardDetailTodoList />
-            <CardDetailComments />
+          </>
+        ) : (
+          <div className="flex justify-center items-center h-80">
+            <ProgressSpinner />
           </div>
-
-          {/* sidebar */}
-          <div className="md:col-span-2">
-            <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
-            <div
-              className="grid grid-cols-2 gap-4 
-                md:grid-cols-1 md:gap-2"
-            >
-              <CardSidebarButton name="成員" label={popupLabels.member} />
-              <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
-              <CardSidebarButton name="標籤" label={popupLabels.tags} />
-            </div>
-
-            <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
-          </div>
-        </div>
+        )}
       </Dialog>
 
       <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} />
