@@ -35,6 +35,9 @@ export default function Board() {
     activationConstraint: {
       distance: 3,
     },
+    onActivation: event => {
+      console.log(event)
+    },
   })
   const sensors = useSensors(pointerSensor)
 
@@ -42,7 +45,7 @@ export default function Board() {
   /* eslint-disable */
   function handleDragEnd(event: any) {
     if (!event.over) return
-
+    console.log(event)
     const tempArr = cloneDeep(lists)
     if (!Boolean(tempArr.length)) return
 
