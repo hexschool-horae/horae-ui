@@ -1,23 +1,15 @@
+import { IBoardResponse } from '@/apis/interface/api'
 import WorkSpaceCard from '@/components/workSpace/WorkSpaceCard'
 import WorkSpaceTitle from '@/components/workSpace/WorkSpaceTitle'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
-interface IBoardRes {
-  discribe: string
-  status: string
-  title: string
-  viewSet: string
-  yourPermission: string
-  yourRole: string
-  _id: string
-}
-
 export default function Home() {
   const router = useRouter()
   const wId = router.query.workId as string
   const [workId, setWorkId] = useState('')
-  const [boardData, setBoardDate] = useState<IBoardRes>({
+  const [boardData, setBoardDate] = useState<IBoardResponse>({
+    boards: [],
     discribe: '',
     status: '',
     title: '',
@@ -34,7 +26,7 @@ export default function Home() {
   }, [wId])
 
   const handleAddWorkSpaceSuccess = () => undefined
-  const handleGetBard = (data: IBoardRes) => {
+  const handleGetBard = (data: IBoardResponse) => {
     setBoardDate(data)
   }
 

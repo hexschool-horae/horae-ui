@@ -28,6 +28,9 @@ const schemaInvitation = yup.object().shape({
 interface IWorkspaceData {
   title: string
   viewSet: string
+  discribe: string
+  status: string
+  _id: string
 }
 
 interface IRole {
@@ -53,6 +56,9 @@ export default function Members() {
   const [workspaceData, setWorkspaceData] = useState<IWorkspaceData>({
     title: '',
     viewSet: '',
+    discribe: '',
+    status: '',
+    _id: '',
   })
 
   const [selectedRolesMap, setSelectedRolesMap] = useState<{ [memberId: string]: IRole }>({})
@@ -89,7 +95,13 @@ export default function Members() {
       const data = response.data.members ?? []
       console.log('response', response)
       setMembers(data)
-      setWorkspaceData({ title: response.data.title, viewSet: response.data.viewSet })
+      setWorkspaceData({
+        title: response.data.title,
+        viewSet: response.data.viewSet,
+        discribe: '',
+        status: '',
+        _id: '',
+      })
       console.log('members', members)
     } catch (error) {
       console.error('Error fetching user boards data:', error)

@@ -49,6 +49,7 @@ export default function ValidateController({
             {cloneElement(children as ReactElement<any>, {
               id: field.name,
               value: field.value,
+              checked: field.value,
               className: classNames({ 'p-invalid': fieldState.error }),
               onChange: (e: ChangeEvent<HTMLInputElement>) => field.onChange(e.target.value),
             })}

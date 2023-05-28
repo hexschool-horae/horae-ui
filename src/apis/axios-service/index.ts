@@ -24,6 +24,16 @@ export const GET_USER_BOARDS = () => {
   return axiosFetcher.get<interfaces.IUserBoardDataResponse>(apiPath.GET_USER_BOARDS)
 }
 
+/** B02-3 修改單一工作區(含權限) */
+export const PATCH_WORK_SPACE = (workId: string, data: interfaces.IWorkSpaceEditDataRequest) => {
+  return axiosFetcher.patch(`${apiPath.GET_WORK_SPACE}/${workId}`, data)
+}
+
+/** B02-4 刪除單一工作區 */
+export const DELETE_WORKSPACE = (workId: string, date: object) => {
+  return axiosFetcher.deleteApi(`${apiPath.GET_WORK_SPACE}/${workId}`, date)
+}
+
 /** B02-5 取得單一工作區 */
 export const GET_WORK_SPACE = (workId: string) => {
   return axiosFetcher.get<interfaces.IWorkSpaceByIdDataResponse>(`${apiPath.GET_WORK_SPACE}/${workId}`)

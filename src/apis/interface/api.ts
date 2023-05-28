@@ -46,6 +46,10 @@ export interface IProfileData {
     _id: string
   }
 }
+/** B01-9 取得使用者所有工作區看板 */
+export interface IUserBoardDataResponse {
+  data: IUserBoardResponse[]
+}
 /**
  * B02-2 登入者所有工作區標題清單
  */
@@ -53,22 +57,28 @@ export interface IUserBoardDataRes {
   title: string
   _id: string
 }
-/** B01-9 取得使用者所有工作區看板 */
-export interface IUserBoardDataResponse {
-  data: IUserBoardResponse[]
+/**
+ * B02-3 修改單一工作區(含權限)
+ */
+export interface IWorkSpaceEditDataRequest {
+  title: string
+  discribe: string
+  viewSet: string
+  status: string
 }
 /** B02-5 取得單一工作區 */
 export interface IWorkSpaceByIdDataResponse {
-  data: {
-    boards: IUserBoardResponse[]
-    discribe: string
-    status: string
-    title: string
-    viewSet: string
-    yourPermission: string
-    yourRole: string
-    _id: string
-  }
+  data: IBoardResponse
+}
+export interface IBoardResponse {
+  boards: IUserBoardResponse[]
+  discribe: string
+  status: string
+  title: string
+  viewSet: string
+  yourPermission: string
+  yourRole: string
+  _id: string
 }
 /** B02-6 取得單一工作區成員 */
 export interface IWorkSpaceMembersByIdDataResponse {

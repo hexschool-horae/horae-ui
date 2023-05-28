@@ -13,7 +13,7 @@ import axiosFetcher from '@/apis/axios'
 
 import router from 'next/router'
 import { GET_WORK_SPACE } from '@/apis/axios-service'
-import { IUserBoardDataRes } from '@/apis/interface/api'
+import { IBoardResponse, IUserBoardDataRes } from '@/apis/interface/api'
 
 const { post } = axiosFetcher
 
@@ -24,7 +24,7 @@ const schema = Yup.object().shape({
 interface Props {
   workSpaceId: string
   handleAddWorkSpaceSuccess: () => void
-  handleGetBard: (boardData: IBoardRes) => void
+  handleGetBard: (boardData: IBoardResponse) => void
 }
 
 type IWorkspaceFormReq = {
@@ -32,16 +32,6 @@ type IWorkspaceFormReq = {
   discribe: string
   viewSet: string
   workSpaceId: string
-}
-
-interface IBoardRes {
-  discribe: string
-  status: string
-  title: string
-  viewSet: string
-  yourPermission: string
-  yourRole: string
-  _id: string
 }
 
 export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
@@ -59,7 +49,8 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
 
   const [selectedViewSet, setSelectedViewSet] = useState('public')
   const [boardList, setBoardList] = useState<IUserBoardDataRes[]>([])
-  const [dataResList, setDataResList] = useState<IBoardRes>({
+  const [dataResList, setDataResList] = useState<IBoardResponse>({
+    boards: [],
     discribe: '',
     status: '',
     title: '',
