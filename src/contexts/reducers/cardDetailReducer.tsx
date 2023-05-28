@@ -1,27 +1,19 @@
+import { ICardDetail, ITag } from '@/apis/interface/api'
+
 interface IPopups {
   [key: string]: boolean
 }
 
-interface IComments {
-  id?: string
-  content: string
-  date: string
-}
-
-interface ICardDetail {
-  title: string
-  describe: string
-  comments: IComments[]
-}
-
 export interface IInitialState {
   initialized: boolean
+  popupKey: number
   popups: IPopups
   cardDetail: ICardDetail
 }
 
 export const initialState = {
   initialized: false,
+  popupKey: 0,
   popups: {
     memberPopup: false,
     todoListPopup: false,
@@ -29,9 +21,19 @@ export const initialState = {
   },
   // from API
   cardDetail: {
+    _id: '',
     title: '',
-    describe: '',
+    discribe: '',
+    startDate: null,
+    endDate: null,
+    members: [],
     comments: [],
+    tags: [],
+    todolists: [],
+    attachments: [],
+    proiority: '',
+    coverPath: '',
+    position: 0,
   },
 }
 
@@ -41,10 +43,13 @@ type TReducerAction =
   | { type: 'UPDATE_TITLE'; payload: { title: string } }
   | { type: 'UPDATE_DESCRIBE'; payload: { describe: string } }
   | { type: 'UPDATE_COMMENT'; payload: { comment: string } }
+  | { type: 'ADD_TAG'; payload: { tag: ITag } }
+  | { type: 'EDIT_TAG'; payload: { tag: ITag } }
+  | { type: 'REMOVE_TAG'; payload: { tagId: string } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  // console.log(state, type);
-  // console.log("payload:", payload);
+  // console.log(state, type)
+  // console.log('payload:', payload)
 
   switch (type) {
     case 'INITIALIZE_CARD': {
@@ -72,6 +77,7 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
       return {
         ...state,
         popups: updatedPopups,
+        popupKey: state.popupKey + 1,
       }
     }
     case 'UPDATE_TITLE': {
@@ -93,12 +99,47 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
       }
     }
     case 'UPDATE_COMMENT': {
+      //需要user name, date...
       const comments = [...state.cardDetail.comments, { content: payload.comment, date: '' }]
       return {
         ...state,
         cardDetail: {
           ...state.cardDetail,
           comments,
+        },
+      }
+    }
+    case 'ADD_TAG': {
+      const tags = [...state.cardDetail.tags, payload.tag]
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          tags,
+        },
+      }
+    }
+    case 'EDIT_TAG': {
+      const tags = [...state.cardDetail.tags]
+      const i = tags.findIndex(tag => tag._id === payload.tag._id)
+      if (i >= 0) {
+        tags[i] = payload.tag
+      }
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          tags,
+        },
+      }
+    }
+    case 'REMOVE_TAG': {
+      const tags = state.cardDetail.tags.filter(tag => tag._id !== payload.tagId)
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          tags,
         },
       }
     }

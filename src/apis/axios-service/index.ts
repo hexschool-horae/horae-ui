@@ -31,7 +31,7 @@ export const PATCH_WORK_SPACE = (workId: string, data: interfaces.IWorkSpaceEdit
 
 /** B02-4 刪除單一工作區 */
 export const DELETE_WORKSPACE = (workId: string, date: object) => {
-  return axiosFetcher.deleteApi(`${apiPath.GET_WORK_SPACE}/${workId}`, date)
+  return axiosFetcher.DELETE(`${apiPath.GET_WORK_SPACE}/${workId}`, date)
 }
 
 /** B02-5 取得單一工作區 */
@@ -66,10 +66,34 @@ export const PATCH_WORK_SPACE_MEMBER = (workId: string, date: interfaces.PatchMe
 
 /** B02-11 單一工作區刪除單一成員 */
 export const DELETE_WORKSPACE_MEMBER = (workId: string, date: interfaces.DeleteMembersDataRequest) => {
-  return axiosFetcher.deleteApi(`${apiPath.GET_WORK_SPACE}/${workId}/members`, date)
+  return axiosFetcher.DELETE(`${apiPath.GET_WORK_SPACE}/${workId}/members`, date)
 }
 
 /** B02-12 取得工作區邀請資料 */
 export const GET_INVITATION_DATA = (workId: string) => {
   return axiosFetcher.get<interfaces.InvitationDataResponse>(`${apiPath.GET_WORK_SPACE}/${workId}/invitation-data`)
+}
+/** B05-4 取得單一卡片 */
+export const GET_CARD_BY_ID = (cardId: string) => {
+  return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
+}
+
+/** B03-13 取得單一看板的所有標籤 */
+export const GET_BOARD_TAGS_BY_ID = (boardId: string) => {
+  return axiosFetcher.get<interfaces.IBoardTagsResponse>(`${apiPath.GET_BOARD}/${boardId}/tags`)
+}
+
+/** B03-14 單一看板新增標籤 */
+export const POST_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IPostBoardTagsRequest) => {
+  return axiosFetcher.post<interfaces.IPostBoardTagsResponse>(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
+}
+
+/** B03-15 單一看板設定單一標籤 */
+export const PUT_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IPutBoardTagsRequest) => {
+  return axiosFetcher.put(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
+}
+
+/** B03-16 單一看板刪除標籤 */
+export const DELETE_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IDeleteBoardTagsRequest) => {
+  return axiosFetcher.DELETE(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
 }

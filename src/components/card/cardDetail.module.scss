@@ -7,3 +7,13 @@
 .detail_list {
   @apply flex items-center mb-2;
 }
+
+.detail_list_add_btn {
+  @apply mx-3 bg-secondary-4 text-secondary-3 border-0;
+  width: 30px !important;
+  height: 30px !important;
+  &:hover {
+    color: rgb(204, 58, 58) !important;
+    background: rgb(255, 241, 241) !important;
+  }
+}

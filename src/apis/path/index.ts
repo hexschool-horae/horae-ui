@@ -21,6 +21,7 @@ export default {
   DELETE_WORKSPACE_MEMBES_BY_ID: '/work-space/:w-id/members',
   PATCH_WORK_SPACE_MEMBERS_BY_ID: '/work-space/:w-id/members',
   POST_BOARD: '/board',
+  GET_BOARD: '/board',
   PATCH_BOARD_BY_ID: '/board/:board-id',
   PATCH_BOARD_VISIBLE_BY_ID: '/board/:board-id/visible',
   DELETE_BOARD_BY_ID: '/board/:board-id/delete',
@@ -39,6 +40,6 @@ export default {
   POST_LIST_CARD_BY_ID: '/list/:list-id/card',
   PUT_CARD_BY_ID: '/card/:card-id',
   PATCH_CARD_VISIBLE_BY_ID: '/card/:card-id/visible',
-  GET_CARD_BY_ID: '/card/:card-id',
+  GET_CARD_BY_ID: '/card',
   POST_CARD_ATTACH_BY_ID: '/card/:card-id/attach',
 }

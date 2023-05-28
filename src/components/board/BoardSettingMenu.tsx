@@ -1,7 +1,6 @@
 import { useRef, MouseEvent } from 'react'
 
 import { Button } from 'primereact/button'
-import { Chip } from 'primereact/chip'
 import { Dropdown } from 'primereact/dropdown'
 import { Menu } from 'primereact/menu'
 import { MenuItem } from 'primereact/menuitem'
@@ -12,6 +11,7 @@ import { TieredMenu } from 'primereact/tieredmenu'
 import MemberInfoGroup from './MemberInfoGroup'
 
 import Style from './BoardSettingMenu.module.scss'
+import CardPopupTags from '../card/CardPopupTags'
 
 const BoardAboutTemplate = () => (
   <div className="p-4" style={{ fontSize: '14px' }}>
@@ -61,21 +61,7 @@ const BoardSettingTemplate = () => (
 
 const LabelListTemplate = () => (
   <div className="px-6 py-5" style={{ fontSize: '14px', letterSpacing: '1px' }}>
-    <InputText className="w-full" placeholder="搜尋標籤" />
-
-    <hr className="my-5" />
-
-    <div className="mb-2">標籤</div>
-    <div className="flex">
-      <Chip label="標籤" className="!border-secondary-2 !text-secondary-3 !bg-secondary-4 mr-2"></Chip>
-    </div>
-
-    <hr className="my-5" />
-
-    <div className="w-full bg-secondary-4 text-secondary-3 flex items-center px-3 py-2 rounded-s">
-      新增建立標籤
-      <span className="ml-auto">+</span>
-    </div>
+    <CardPopupTags page="board" />
   </div>
 )
 
