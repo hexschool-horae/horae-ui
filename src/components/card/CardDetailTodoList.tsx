@@ -9,7 +9,7 @@ export default function CardDetailTodoList() {
       <div>
         <div className="flex justify-between">
           <h5 className="text-lg">待辦清單標題</h5>
-          <Button label="隱藏完成項目" rounded outlined size="small" />
+          <Button label="隱藏完成項目" rounded outlined size="small" className="border-gray-300 text-gray-400" />
         </div>
         <ProgressBar value={50} showValue={false} className="h-[5px] my-5"></ProgressBar>
         <ul>

@@ -75,22 +75,67 @@ export interface InvitationLinkDataResponse {
 }
 
 /** B05-4 取得單一卡片 */
+type Timestamp = number
+
+export interface ITag {
+  _id: string
+  title: string
+  color: string
+}
+
+export interface IComment {
+  _id?: string
+  content: string
+  date: string
+}
+
+export interface ICardDetail {
+  _id: string
+  title: string
+  discribe: string
+  startDate: Timestamp
+  endDate: Timestamp
+  members: []
+  comments: IComment[]
+  tags: ITag[]
+  todolists: []
+  attachments: []
+  proiority: string
+  coverPath: string
+  position: number
+}
+
 export interface ICardDetailResponse {
-  data: {
-    _id: string
-    title: string
-    discribe: string
-    startDate: null
-    endDate: null
-    // members: [],
-    // comments: [],
-    // tags: [],
-    // todolists: [],
-    // attachments: [],
-    // proiority: ,
-    // coverPath: ,
-    // position: 3,
-    // createdAt: 2023-05-23T15:25:42.918Z,
-    // version: 0
-  }
+  data: ICardDetail
+}
+
+/** B03-13 取得單一看板的所有標籤 */
+type IBoardTags = {
+  boardId: string
+} & ITag
+
+export interface IBoardTagsResponse {
+  data: IBoardTags[]
+}
+
+/** B03-14 單一看板新增標籤 */
+export interface IPostBoardTagsRequest {
+  title: string
+  color: string
+}
+
+export interface IPostBoardTagsResponse {
+  data: string
+}
+
+/** B03-15 單一看板設定單一標籤 */
+export interface IPutBoardTagsRequest {
+  tagId: string
+  title: string
+  color: string
+}
+
+/** B03-16 單一看板刪除標籤 */
+export interface IDeleteBoardTagsRequest {
+  tagId: string
 }

@@ -28,7 +28,7 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
         icon="pi pi-plus"
         rounded
         aria-label="add"
-        className="mx-3 !w-[30px] !h-[30px]"
+        className={`${style.detail_list_add_btn}`}
         onClick={() => {
           dispatch({
             type: 'TOTGGLE_POPUP',
@@ -38,14 +38,14 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
       />
       <ul className="flex items-center gap-2">
         {state.cardDetail.tags.map(tag => (
-          <li key={tag.id}>
+          <li key={tag._id}>
             <Chip
               label={tag.title}
               className={`cursor-pointer ${tagStyle.tag} ${tagStyle.tag_active}`}
               style={{ backgroundColor: tag.color }}
               removeIcon="pi pi-times"
               removable
-              onRemove={() => handleRemove(tag.id)}
+              onRemove={() => handleRemove(tag._id)}
             />
           </li>
         ))}

@@ -21,6 +21,7 @@ export default {
   DELETE_WORKSPACE_MEMBES_BY_ID: '/work-space/:w-id/members',
   PATCH_WORK_SPACE_MEMBERS_BY_ID: '/work-space/:w-id/members',
   POST_BOARD: '/board',
+  GET_BOARD: '/board',
   PATCH_BOARD_BY_ID: '/board/:board-id',
   PATCH_BOARD_VISIBLE_BY_ID: '/board/:board-id/visible',
   DELETE_BOARD_BY_ID: '/board/:board-id/delete',
