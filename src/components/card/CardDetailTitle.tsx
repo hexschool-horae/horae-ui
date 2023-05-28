@@ -52,7 +52,6 @@ export default function CardDetailTitle() {
 
   const handleBlur = () => {
     const submitData = getValues()
-    console.log(submitData)
     dispatchTitle(submitData.title)
     setIsFoucs(false)
   }

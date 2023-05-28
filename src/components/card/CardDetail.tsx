@@ -24,6 +24,13 @@ const popupLabels = {
   member: 'memberPopup',
   todoList: 'todoListPopup',
   tags: 'tagsPopup',
+  calender: 'calenderPopup',
+  files: 'filesPopup',
+  move: 'movePopup',
+  copy: 'copyPopup',
+  share: 'sharePopup',
+  priority: 'priorityPopup',
+  pomodoro: 'pomodoroPopup',
 }
 
 export default function CardDetail() {
@@ -110,7 +117,7 @@ const CardInternal = () => {
 
                 <CardDetailTitle />
                 <CardDetailMember label={popupLabels.member} />
-                <CardDetailTags label={popupLabels.tags} />
+                {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
                 <CardDetailDescribe />
                 <CardDetailTodoList />
                 <CardDetailComments />
@@ -126,9 +133,21 @@ const CardInternal = () => {
                   <CardSidebarButton name="成員" label={popupLabels.member} />
                   <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
                   <CardSidebarButton name="標籤" label={popupLabels.tags} />
+                  <CardSidebarButton name="日期" label={popupLabels.calender} />
+                  <CardSidebarButton name="附件" label={popupLabels.files} />
                 </div>
 
                 <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
+                <div
+                  className="grid grid-cols-2 gap-4 
+                  md:grid-cols-1 md:gap-2"
+                >
+                  <CardSidebarButton name="移動" label={popupLabels.move} />
+                  <CardSidebarButton name="複製" label={popupLabels.copy} />
+                  <CardSidebarButton name="分享" label={popupLabels.share} />
+                  <CardSidebarButton name="優先權" label={popupLabels.priority} />
+                  <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
+                </div>
               </div>
             </div>
           </>

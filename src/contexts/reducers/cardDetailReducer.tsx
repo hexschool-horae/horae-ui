@@ -48,8 +48,8 @@ type TReducerAction =
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  console.log(state, type)
-  console.log('payload:', payload)
+  // console.log(state, type)
+  // console.log('payload:', payload)
 
   switch (type) {
     case 'INITIALIZE_CARD': {
