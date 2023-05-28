@@ -190,7 +190,7 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
       dispatch({
         type: 'ADD_TAG',
         payload: {
-          tag: { tag },
+          tag: tag,
         },
       })
     }
