@@ -2,11 +2,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
-
 import { cloneDeep } from 'lodash-es'
 
 import { Toast } from 'primereact/toast'
-
 import { MenuBar, List, AddListButton } from '@/components/board'
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
@@ -17,7 +15,7 @@ import { useBoardService } from '@/socketService'
 
 import { useAppSelector } from '@/hooks/useAppStore'
 import { useAppDispatch } from '@/hooks/useAppStore'
-import { setBoardId, setLists } from '@/slices/boardSocketSlice'
+import { setBoardId, setTitle, setLists, setIsErrorMessageVisible } from '@/slices/boardSocketSlice'
 
 export default function Board() {
   const lists = useAppSelector(state => state.boardSocket.lists)
@@ -42,10 +40,10 @@ export default function Board() {
   /* eslint-disable */
   function handleDragEnd(event: any) {
     if (!event.over) return
-    // console.log(event.active.data.eventType)
 
     const tempArr = cloneDeep(lists)
     if (!Boolean(tempArr.length)) return
+
     if (event.active.data.current.eventType === 'card') {
       const {
         current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
@@ -85,9 +83,6 @@ export default function Board() {
   }
   /** 看板新增卡片 */
   const onCreateCard = (listId = '', title = '') => {
-    // // console.log(listId, title)
-    // // // if (listId === '' || title === '') return
-    // return
     const payload = {
       listId,
       title,
@@ -98,9 +93,12 @@ export default function Board() {
   /** 取得單一看板資訊 */
   const handleGetSingleBoard = async () => {
     const result = await GET_BOARD_BY_ID(boardId)
-    if (result === undefined) return
-    const { lists } = result.data
 
+    if (result === undefined) return
+
+    const { lists, title } = result.data
+
+    dispatch(setTitle(title))
     dispatch(setLists(lists))
   }
 
@@ -124,6 +122,10 @@ export default function Board() {
         detail: `${errorMessageText}`,
         life: 3000,
       })
+    }
+
+    return () => {
+      dispatch(setIsErrorMessageVisible(false))
     }
   }, [isErrorMessageVisible])
 
@@ -179,7 +181,7 @@ export default function Board() {
               </div>
             ))
           ) : (
-            <div className="row-span-full text-2xl">尚未建立列表</div>
+            <></>
           )}
           <ListContainer>
             <AddListButton onCreateList={onCreateList} />

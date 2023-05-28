@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { IBoardListItem } from '@/types'
 interface IUserInitialState {
   boardId: string
+  title: string
   lists: IBoardListItem[]
   isErrorMessageVisible: boolean
   errorMessageText: string
@@ -10,6 +11,7 @@ interface IUserInitialState {
 
 const initialState: IUserInitialState = {
   boardId: '',
+  title: '',
   lists: [],
   isErrorMessageVisible: false,
   errorMessageText: '',
@@ -21,6 +23,9 @@ export const boardSocketSlice = createSlice({
   reducers: {
     setBoardId: (state, action: PayloadAction<string>) => {
       state.boardId = action.payload
+    },
+    setTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload
     },
     setLists: (state, action: PayloadAction<IBoardListItem[]>) => {
       state.lists = action.payload
@@ -34,6 +39,7 @@ export const boardSocketSlice = createSlice({
   },
 })
 
-export const { setBoardId, setLists, setIsErrorMessageVisible, setErrorMessageText } = boardSocketSlice.actions //給React組件個別使用
+export const { setBoardId, setTitle, setLists, setIsErrorMessageVisible, setErrorMessageText } =
+  boardSocketSlice.actions //給React組件個別使用
 
 export default boardSocketSlice.reducer //給store.js使用

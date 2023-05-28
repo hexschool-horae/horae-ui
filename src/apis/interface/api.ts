@@ -77,7 +77,7 @@ export interface InvitationLinkDataResponse {
 export interface ISingleBoardResponse {
   [key: string]: {
     _id: string
-    title?: string
+    title: string
     discribe?: string
     coverPath?: string
     viewSet?: string

@@ -45,7 +45,7 @@ const AddCardButton: FC<IAddCardButtonProps> = ({ listId = '', onCreateCard }) =
     if (listId === '' || title === '') return
     console.log(title, onCreateCard)
     onCreateCard && onCreateCard(listId, title)
-    reset()
+    onClose()
   }
   return (
     <>

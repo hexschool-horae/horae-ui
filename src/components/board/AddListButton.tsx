@@ -37,7 +37,7 @@ const AddListButton: FC<IAddListButtonProps> = ({ onCreateList }) => {
     const { title } = submitData
 
     onCreateList && onCreateList(title)
-    reset()
+    onClose()
   }
 
   return (
