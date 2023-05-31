@@ -50,6 +50,11 @@ export const useBoardService = (namespace: string) => {
       // 監聽是否建立卡片成功
       boardSocket.on(events.BOARD_CARD_CREATE_SUCCESS, data => {
         console.log('events.BOARD_CARD_CREATE_SUCCESS = ', data)
+        const {
+          result: { lists },
+        } = data as ISingleBoardResponse
+
+        dispatch(setLists(lists))
       })
       // 監聽是否建立卡片失敗
       boardSocket.on(events.BOARD_CARD_CREATE_FAILED, data => {
