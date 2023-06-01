@@ -16,7 +16,7 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
     }
   })()
   return (
-    <div className={`flex items-center py-4 px-[50px] text-black ${headerStyle}`}>
+    <div className={`flex items-center py-4 px-[50px] text-black border-b border-white ${headerStyle}`}>
       <IconLogo />
       <Link href="/board" className="ml-8">
         工作區
