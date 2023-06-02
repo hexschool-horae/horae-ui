@@ -75,7 +75,7 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
         title: tagTitle,
         color: tagColor,
       }
-      console.log(data)
+      // console.log(data)
       const response = await POST_BOARD_TAGS_BY_ID(boardId, data)
       if (response == undefined) return
       const tag = {
@@ -295,6 +295,7 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
                   severity="secondary"
                   rounded
                   className="w-full mt-4"
+                  disabled={tagTitle == ''}
                   onClick={() => (currentStep === 'create' ? creatTag() : EditTag())}
                 />
               </div>
@@ -323,7 +324,7 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
 
                 <div
                   className="w-full bg-secondary-4 text-secondary-3 flex items-center mt-5 px-3 py-2 rounded-s cursor-pointer"
-                  onClick={() => (currentStep === 'create' ? creatTag() : EditTag())}
+                  onClick={() => tagTitle != '' && (currentStep === 'create' ? creatTag() : EditTag())}
                 >
                   {currentStep === 'create' ? '建立' : '儲存'}
                   <span className="ml-auto">+</span>

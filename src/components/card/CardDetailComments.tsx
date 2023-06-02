@@ -8,10 +8,10 @@ export default function CardDetailComments() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [comment, setComment] = useState('')
 
-  const updateComment = () => {
+  const createComment = () => {
     if (comment == '') return
     dispatch({
-      type: 'UPDATE_COMMENT',
+      type: 'CREATE_COMMENT',
       payload: {
         comment: comment,
       },
@@ -22,7 +22,7 @@ export default function CardDetailComments() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (inputRef.current) {
-        updateComment()
+        createComment()
         inputRef.current.blur()
       }
     }

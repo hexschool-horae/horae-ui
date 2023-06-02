@@ -42,7 +42,7 @@ type TReducerAction =
   | { type: 'TOTGGLE_POPUP'; payload: string }
   | { type: 'UPDATE_TITLE'; payload: { title: string } }
   | { type: 'UPDATE_DESCRIBE'; payload: { describe: string } }
-  | { type: 'UPDATE_COMMENT'; payload: { comment: string } }
+  | { type: 'CREATE_COMMENT'; payload: { comment: string } }
   | { type: 'ADD_TAG'; payload: { tag: ITag } }
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
@@ -99,7 +99,7 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         },
       }
     }
-    case 'UPDATE_COMMENT': {
+    case 'CREATE_COMMENT': {
       //需要user name, date...
       const comments = [...state.cardDetail.comments, { content: payload.comment, date: '' }]
       return {
@@ -148,6 +148,7 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
       const todolists = [
         ...state.cardDetail.todolists,
         {
+          _id: new Date().getTime().toString(),
           title: payload.listTitle,
           contentList: [],
         },
