@@ -220,3 +220,13 @@ export interface ISingleBoardResponse {
     }>
   }
 }
+
+/** B05-9 在卡片新增標籤 */
+export interface IPostCardTagRequest {
+  tagId: string
+}
+
+/** B05-10 在卡片移除標籤 */
+export interface IDeleteCardTagRequest {
+  tagId: string
+}

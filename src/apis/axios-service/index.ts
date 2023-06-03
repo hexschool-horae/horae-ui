@@ -103,3 +103,13 @@ export const DELETE_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IDelet
 export const GET_CARD_BY_ID = (cardId: string) => {
   return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
 }
+
+/** B05-9 在卡片新增標籤 */
+export const POST_CARD_TAG_BY_ID = (cardId: string, data: interfaces.IPostCardTagRequest) => {
+  return axiosFetcher.post(`${apiPath.GET_CARD_BY_ID}/${cardId}/tag`, data)
+}
+
+/** B05-10 在卡片移除標籤 */
+export const DELETE_CARD_TAG_BY_ID = (cardId: string, data: interfaces.IDeleteCardTagRequest) => {
+  return axiosFetcher.DELETE(`${apiPath.GET_CARD_BY_ID}/${cardId}/tag`, data)
+}

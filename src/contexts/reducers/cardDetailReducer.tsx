@@ -49,8 +49,8 @@ type TReducerAction =
   | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  // console.log(state, type)
-  // console.log('payload:', payload)
+  console.log(state, type)
+  console.log('payload:', payload)
 
   switch (type) {
     case 'INITIALIZE_CARD': {

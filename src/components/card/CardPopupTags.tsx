@@ -11,8 +11,10 @@ import { IInitialState } from '@/contexts/reducers/cardDetailReducer'
 import { ITag } from '@/apis/interface/api'
 import {
   DELETE_BOARD_TAGS_BY_ID,
+  DELETE_CARD_TAG_BY_ID,
   GET_BOARD_TAGS_BY_ID,
   POST_BOARD_TAGS_BY_ID,
+  POST_CARD_TAG_BY_ID,
   PUT_BOARD_TAGS_BY_ID,
 } from '@/apis/axios-service'
 
@@ -37,6 +39,8 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
 
   const router = useRouter()
   const boardId = router.query.boardId as string
+  const cardId = router.query.cardId as string
+
   const getTags = async () => {
     try {
       const response = await GET_BOARD_TAGS_BY_ID(boardId)
@@ -83,13 +87,7 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
         title: tagTitle,
         color: tagColor,
       }
-      if (page === 'card' && dispatch !== undefined) {
-        dispatch({
-          type: 'ADD_TAG',
-          payload: { tag },
-        })
-      }
-
+      addTagToCard(tag)
       setTagList([...tagList, tag])
       goList()
     } catch (error) {
@@ -114,13 +112,13 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
 
       const response = await PUT_BOARD_TAGS_BY_ID(boardId, data)
       if (response == undefined) return
-      // Response
+
       if (page === 'card' && dispatch !== undefined) {
         dispatch({
           type: 'EDIT_TAG',
           payload: {
             tag: {
-              id: editTagId,
+              _id: editTagId,
               title: tagTitle,
               color: tagColor,
             },
@@ -160,15 +158,7 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
       const response = await DELETE_BOARD_TAGS_BY_ID(boardId, data)
       if (response == undefined) return
 
-      if (page === 'card' && dispatch !== undefined) {
-        dispatch({
-          type: 'REMOVE_TAG',
-          payload: {
-            tagId: editTagId,
-          },
-        })
-      }
-
+      deleteTagFromCard(editTagId)
       setTagList(tags => tags.filter(tag => tag._id !== editTagId))
       goList()
     } catch (error) {
@@ -180,19 +170,48 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
     if (page !== 'card' || dispatch == undefined) return
 
     if (isActiveTag(tag._id)) {
+      deleteTagFromCard(tag._id)
+    } else {
+      addTagToCard(tag)
+    }
+  }
+
+  const addTagToCard = async (tag: ITag) => {
+    if (page !== 'card' || dispatch == undefined) return
+    try {
+      const data = {
+        tagId: tag._id,
+      }
+      const response = await POST_CARD_TAG_BY_ID(cardId, data)
+      if (response == undefined) return
+
+      dispatch({
+        type: 'ADD_TAG',
+        payload: { tag },
+      })
+    } catch (error) {
+      console.log('Error add tag to card:', error)
+    }
+  }
+
+  const deleteTagFromCard = async (tagId: string) => {
+    if (page !== 'card' || dispatch == undefined) return
+
+    try {
+      const data = {
+        tagId: tagId,
+      }
+      const response = await DELETE_CARD_TAG_BY_ID(cardId, data)
+      if (response == undefined) return
+
       dispatch({
         type: 'REMOVE_TAG',
         payload: {
-          tagId: tag._id,
+          tagId: tagId,
         },
       })
-    } else {
-      dispatch({
-        type: 'ADD_TAG',
-        payload: {
-          tag: tag,
-        },
-      })
+    } catch (error) {
+      console.log('Error delete tag from card:', error)
     }
   }
 
@@ -323,7 +342,9 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
                 )}
 
                 <div
-                  className="w-full bg-secondary-4 text-secondary-3 flex items-center mt-5 px-3 py-2 rounded-s cursor-pointer"
+                  className={`w-full  text-secondary-3 flex items-center mt-5 px-3 py-2 rounded-s 
+                    ${tagTitle != '' ? 'bg-secondary-4 cursor-pointer ' : 'bg-secondary-2'}
+                  `}
                   onClick={() => tagTitle != '' && (currentStep === 'create' ? creatTag() : EditTag())}
                 >
                   {currentStep === 'create' ? '建立' : '儲存'}
