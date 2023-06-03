@@ -127,6 +127,7 @@ async function get<T>(url: string, isAuth = true) {
     return response.data
   } catch (error) {
     console.warn(error)
+    throw error
   }
 }
 
