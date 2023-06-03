@@ -7,10 +7,12 @@ import boardSocketReducer from '@/slices/boardSocketSlice'
 import workspaceReducer from '@/slices/workspaceSlice'
 import socketServiceReducer from '@/slices/socketServiceSlice'
 import boardSlice from '@/slices/boardSlice'
+import errorSlice from '@/slices/errorSlice'
 
 const reducers = combineReducers({
   user: userReducer,
   board: boardSlice,
+  error: errorSlice,
   boardSocket: boardSocketReducer,
   workspace: workspaceReducer,
   socketService: socketServiceReducer,
