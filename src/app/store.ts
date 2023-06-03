@@ -3,12 +3,12 @@ import { combineReducers } from 'redux'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import userReducer from '@/slices/userSlice'
-import boardSocketReducer from '@/slices/boardSocketSlice'
+import boardReducer from '@/slices/boardSlice'
 import workspaceReducer from '@/slices/workspaceSlice'
 
 const reducers = combineReducers({
   user: userReducer,
-  boardSocket: boardSocketReducer,
+  board: boardReducer,
   workspace: workspaceReducer,
 })
 

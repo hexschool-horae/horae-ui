@@ -4,7 +4,7 @@ import { useAppSelector } from '@/hooks/useAppStore'
 // import { useAppDispatch } from '@/hooks/useAppStore'
 
 export default function BoardTitle() {
-  const boardTitle = useAppSelector(state => state.boardSocket.title)
+  const boardTitle = useAppSelector(state => state.board.title)
 
   const [isEdit, setIsEdit] = useState(false)
   return (

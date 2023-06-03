@@ -21,22 +21,26 @@ const permissionDataItems = [
   },
 ]
 
-const permissionItems = permissionDataItems.map((item, i) => ({
-  label: item.label,
-  template: (
-    <div className={Style.permission_item} key={i}>
-      <div className={Style.permission_item_label}>{item.label}</div>
-      <div className={Style.permission_item_des}>{item.des}</div>
-    </div>
-  ),
-}))
+const permissionItems = (onClick: () => void) =>
+  permissionDataItems.map((item, i) => ({
+    label: item.label,
+    template: (
+      <div className={Style.permission_item} key={i} onClick={onClick}>
+        <div className={Style.permission_item_label}>{item.label}</div>
+        <div className={Style.permission_item_des}>{item.des}</div>
+      </div>
+    ),
+  }))
 
 export default function BoardPermissionMenu() {
+  const onClick = () => {
+    console.log('click!')
+  }
   const menu = useRef<Menu>(null)
   const items: MenuItem[] = [
     { label: 'title', template: () => <div className={Style.permission_item_title}>觀看權限</div> },
     { separator: true },
-    ...permissionItems,
+    ...permissionItems(onClick),
   ]
 
   const handleMenuToggle = (event: MouseEvent<HTMLButtonElement>) => {

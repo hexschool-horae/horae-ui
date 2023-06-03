@@ -3,7 +3,7 @@ import { useEffect, ReactNode } from 'react'
 import { useAppSelector } from '@/hooks/useAppStore'
 
 // 不需要權限驗證的路由
-const nonAuthPaths = ['/login', '/sign-up']
+const nonAuthPaths = ['/login', '/sign-up', '/']
 
 const RouterGuard = ({ children }: { children?: ReactNode }) => {
   const router = useRouter()
@@ -12,13 +12,16 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
 
   // 路由權限驗證
   useEffect(() => {
+    console.log(pathname)
+    // 看板不受登入的影響
+    if (pathname === '/board/[boardId]') return
+
     if (isLogin) {
-      if (pathname === '/login' || pathname === '/sign-up' || pathname === '/') {
+      if (nonAuthPaths.indexOf(pathname) !== -1) {
         router.push('/board')
       }
     } else {
-      console.log(pathname)
-      if (!nonAuthPaths.includes(pathname) && pathname !== '/') {
+      if (nonAuthPaths.indexOf(pathname) === -1) {
         router.push('/login')
       }
     }

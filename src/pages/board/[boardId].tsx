@@ -17,13 +17,14 @@ import { useBoardService } from '@/socketService'
 
 import { useAppSelector } from '@/hooks/useAppStore'
 import { useAppDispatch } from '@/hooks/useAppStore'
-import { setBoardId, setTitle, setLists, setIsErrorMessageVisible } from '@/slices/boardSocketSlice'
+import { setBoardId, setTitle, setLists, setIsErrorMessageVisible } from '@/slices/boardSlice'
 
 export default function Board() {
-  const lists = useAppSelector(state => state.boardSocket.lists)
-  const boardId = useAppSelector(state => state.boardSocket.boardId)
-  const isErrorMessageVisible = useAppSelector(state => state.boardSocket.isErrorMessageVisible)
-  const errorMessageText = useAppSelector(state => state.boardSocket.errorMessageText)
+  const lists = useAppSelector(state => state.board.lists)
+  const boardId = useAppSelector(state => state.board.boardId)
+  const isErrorMessageVisible = useAppSelector(state => state.board.isErrorMessageVisible)
+  const errorMessageText = useAppSelector(state => state.board.errorMessageText)
+
   const dispatch = useAppDispatch()
   const router = useRouter()
   const boardService = useBoardService()
@@ -187,9 +188,12 @@ export default function Board() {
             ) : (
               <></>
             )}
-            <ListContainer>
-              <AddListButton onCreateList={onCreateList} />
-            </ListContainer>
+
+            <div className="row-span-full">
+              <div className="h-auto">
+                <AddListButton onCreateList={onCreateList} />
+              </div>
+            </div>
           </div>
         </DndContext>
         {/* 卡片元件 */}

@@ -6,7 +6,7 @@ import events from '@/socketService/sockets.events'
 import { useRouter } from 'next/router'
 
 import { useAppDispatch } from '@/hooks/useAppStore'
-import { setLists, setIsErrorMessageVisible, setErrorMessageText } from '@/slices/boardSocketSlice'
+import { setLists, setIsErrorMessageVisible, setErrorMessageText } from '@/slices/boardSlice'
 
 import { ISingleBoardResponse } from '@/apis/interface/api'
 

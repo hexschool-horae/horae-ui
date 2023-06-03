@@ -1,4 +1,5 @@
 import { useRef, MouseEvent } from 'react'
+import { useAppSelector } from '@/hooks/useAppStore'
 
 import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
@@ -13,51 +14,58 @@ import MemberInfoGroup from './MemberInfoGroup'
 import Style from './BoardSettingMenu.module.scss'
 import CardPopupTags from '../card/CardPopupTags'
 
-const BoardAboutTemplate = () => (
-  <div className="p-4" style={{ fontSize: '14px' }}>
-    <div className="mb-3">看板管理員</div>
-    {/* <img src={item.img} alt="" style={{ width: "16px", height: "16px", marginRight: "0.75rem" }} /> */}
-    <div className="flex">
-      <div className="w-[3rem] h-[3rem] bg-black rounded-full mr-3"></div>
-      <div>
-        <div className="mb-1">成員名稱</div>
-        <div className="text-gray-2 text-xs font-light mb-1">@Lia_333</div>
+const BoardAboutTemplate = () => {
+  const members = useAppSelector(state => state.board.members)
+  const [admin] = members.filter(item => item.role === 'admin')
 
-        <Button size="small" style={{ padding: 0 }} link>
-          <span className="font-light">編輯基本資訊</span>
-        </Button>
+  return (
+    <div className="p-4" style={{ fontSize: '14px' }}>
+      <div className="mb-3">看板管理員</div>
+      {/* <img src={item.img} alt="" style={{ width: "16px", height: "16px", marginRight: "0.75rem" }} /> */}
+      <div className="flex">
+        <div className="w-[3rem] h-[3rem] bg-black rounded-full mr-3"></div>
+        <div>
+          <div className="mb-1">{admin?.userId?.name || '成員名稱'}</div>
+          <div className="text-gray-2 text-xs font-light mb-1">{admin?.userId?._id || '@nick name'}</div>
+
+          <Button size="small" style={{ padding: 0 }} link>
+            {/* <span className="font-light">編輯基本資訊</span> */}
+          </Button>
+        </div>
       </div>
+
+      <hr className="my-5" />
+      <div className="mb-1">描述</div>
+
+      <InputTextarea rows={30} className="w-full h-[100px]" placeholder="新增描述說明..." />
     </div>
+  )
+}
 
-    <hr className="my-5" />
-    <div className="mb-1">描述</div>
+const BoardSettingTemplate = () => {
+  return (
+    <div className="px-6 py-5" style={{ fontSize: '14px', letterSpacing: '1px' }}>
+      <div className="mb-3">變更工作區</div>
+      <Dropdown className="w-full" placeholder="工作區名稱" />
 
-    <InputTextarea rows={30} className="w-full h-[100px]" placeholder="新增描述說明..." />
-  </div>
-)
+      <hr className="my-5" />
+      <div>卡片封面已啟用</div>
+      <div className="text-gray-2 text-xs font-light mb-1">@Lia_333</div>
 
-const BoardSettingTemplate = () => (
-  <div className="px-6 py-5" style={{ fontSize: '14px', letterSpacing: '1px' }}>
-    <div className="mb-3">變更工作區</div>
-    <Dropdown className="w-full" placeholder="工作區名稱" />
+      {/* <hr className="my-5" />
+      <div className="mb-1">留言權限...</div>
+      <div className="text-gray-2 text-xs font-light mb-1">留言權限...</div>
 
-    <hr className="my-5" />
-    <div>卡片封面已啟用</div>
-    <div className="text-gray-2 text-xs font-light mb-1">@Lia_333</div>
+      <hr className="my-5" />
+      <div className="mb-1">新增/移除權限...</div>
+      <div className="text-gray-2 text-xs font-light mb-1">成員</div> */}
 
-    <hr className="my-5" />
-    <div className="mb-1">留言權限...</div>
-    <div className="text-gray-2 text-xs font-light mb-1">留言權限...</div>
-
-    <hr className="my-5" />
-    <div className="mb-1">新增/移除權限...</div>
-    <div className="text-gray-2 text-xs font-light mb-1">成員</div>
-
-    <hr className="my-5" />
-    <div className="mb-1">卡片封面已啟用</div>
-    <div className="text-gray-2 text-xs font-light mb-1">所有工作區成員皆可編輯和加入此看板</div>
-  </div>
-)
+      <hr className="my-5" />
+      <div className="mb-1">允許工作區成員編輯和加入</div>
+      <div className="text-gray-2 text-xs font-light mb-1">所有工作區成員皆可編輯和加入此看板</div>
+    </div>
+  )
+}
 
 const LabelListTemplate = () => (
   <div className="px-6 py-5" style={{ fontSize: '14px', letterSpacing: '1px' }}>
