@@ -19,7 +19,6 @@ import CardPopupTodoList from '@/components/card/CardPopupTodoList'
 import CardPopupTags from '@/components/card/CardPopupTags'
 import CardPopupWrapper from '@/components/card/CardPopupWrapper'
 import { GET_CARD_BY_ID } from '@/apis/axios-service'
-import TestEditor from './testEditor'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -122,7 +121,6 @@ const CardInternal = () => {
                 <CardDetailDescribe />
                 <CardDetailTodoList />
                 <CardDetailComments />
-                <TestEditor />
               </div>
 
               {/* sidebar */}
