@@ -17,3 +17,29 @@
     background: rgb(255, 241, 241) !important;
   }
 }
+
+.editor_preview {
+  ul {
+    list-style: disc;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 30px;
+  }
+  ol {
+    list-style: auto;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding-left: 30px;
+  }
+  pre {
+    background-color: transparent !important;
+  }
+}
+.editor_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(173, 172, 172, 0.12);
+}
