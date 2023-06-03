@@ -28,6 +28,7 @@ export const socketServiceSlice = createSlice({
       if (state.boardService) {
         state.boardService.terminateService(state.boardId || '')
         state.boardService = null
+        state.boardId = ''
       }
     },
     createList(state, action: PayloadAction<interfaces.ICreateListPayload>) {
@@ -72,6 +73,6 @@ export const socketServiceSlice = createSlice({
   },
 })
 
-export const { initialBoardService, createList, terminateBoardService } = socketServiceSlice.actions
+export const socketServiceActions = socketServiceSlice.actions
 
 export default socketServiceSlice.reducer //給store.js使用
