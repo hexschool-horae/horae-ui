@@ -1,8 +1,12 @@
-import { FC, ReactNode, useEffect, useState } from 'react'
+import { FC, ReactNode, useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import AdminLayoutContextProvider from '@/contexts/adminLayoutContext'
 import Header from '@/components/common/admin/Header'
 import Sidebar from '@/components/common/admin/Sidebar'
+import { Toast } from 'primereact/toast'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { errorSliceActions } from '@/slices/errorSlice'
+
 interface IAdminLayoutProps {
   children: ReactNode
 }
@@ -10,6 +14,22 @@ interface IAdminLayoutProps {
 const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
   const router = useRouter()
   const [boardId, setBoardId] = useState('')
+  const errorMessages = useAppSelector(state => state.error.errors)
+  const dispatch = useAppDispatch()
+  const toastRef = useRef<Toast>(null)
+
+  useEffect(() => {
+    if (errorMessages.length > 0) {
+      const latestErrorMessage = errorMessages.slice(-1)[0]
+      toastRef.current?.show({
+        severity: 'error',
+        summary: 'Error Message',
+        detail: latestErrorMessage.message,
+        life: 3000,
+      })
+      dispatch(errorSliceActions.popErrorMessage())
+    }
+  }, [errorMessages])
 
   useEffect(() => {
     const boardId: string = router.query.boardId as string
@@ -26,6 +46,7 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
           <div className="w-full h-full overflow-y-auto">{children}</div>
         </div>
       </div>
+      <Toast ref={toastRef} position="bottom-left" />
     </AdminLayoutContextProvider>
   )
 }
