@@ -129,20 +129,20 @@ export interface IInitialBoardService {
 
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
-  // createCard: (payload: ICreateCardPayload) => void
-  // modifyBoardViewPermission: (payload: IModifyBoardViewPermission) => void
-  // archiveBoard: (payload: IArchiveBoardPayload) => void
-  // modifyBoardTitle: (payload: IModifyBoardTitlePayload) => void
-  // archiveList: (payload: IArchiveBoardListPayload) => void
-  // createNewBoardTag: (payload: ICreateNewBoardTagPayload) => void
-  // modifyBoardTag: (payload: IModifyBoardTagPayload) => void
-  // deleteBoardTag: (payload: IDeleteBoardTagPayload) => void
-  // modifyCard: (payload: IModifyCardPayload) => void
-  // attachTagToCard: (payload: IAttachTagToCard) => void
-  // removeTagFromCard: (payload: IRemoveTagFromCard) => void
-  // moveCard: () => undefined
-  // deleteCard: () => undefined
-  // moveList: () => undefined
-  // deleteList: () => undefined
-  // terminateService: (boardId: string) => void
+  createCard: (payload: ICreateCardPayload) => void
+  modifyBoardViewPermission: (payload: IModifyBoardViewPermission) => void
+  archiveBoard: (payload: IArchiveBoardPayload) => void
+  modifyBoardTitle: (payload: IModifyBoardTitlePayload) => void
+  archiveList: (payload: IArchiveBoardListPayload) => void
+  createNewBoardTag: (payload: ICreateNewBoardTagPayload) => void
+  modifyBoardTag: (payload: IModifyBoardTagPayload) => void
+  deleteBoardTag: (payload: IDeleteBoardTagPayload) => void
+  modifyCard: (payload: IModifyCardPayload) => void
+  attachTagToCard: (payload: IAttachTagToCard) => void
+  removeTagFromCard: (payload: IRemoveTagFromCard) => void
+  moveCard: () => undefined
+  deleteCard: () => undefined
+  moveList: () => undefined
+  deleteList: () => undefined
+  terminateService: (boardId: string) => void
 }
