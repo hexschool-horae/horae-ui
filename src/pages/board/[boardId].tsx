@@ -152,25 +152,16 @@ export default function Board() {
       <Head>
         <title>Horae - 看板</title>
       </Head>
-
-      <div className="mb-6">
-        <MenuBar />
-      </div>
-
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
-          {lists.length ? (
-            lists.map((item, index: number) => (
-              <div className="row-span-full" key={index}>
-                <Droppable
-                  id={`${item._id}`}
-                  data={{
-                    listId: item._id,
-                    listPosition: index,
-                    eventType: 'list',
-                  }}
-                >
-                  <Draggable
+      <div className="flex flex-col h-full py-[50px] px-[64px]">
+        <div className="mb-6">
+          <MenuBar />
+        </div>
+        <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+          <div className="w-auto grid gap-4 auto-cols-[286px] px-4">
+            {lists.length ? (
+              lists.map((item, index: number) => (
+                <div className="row-span-full" key={index}>
+                  <Droppable
                     id={`${item._id}`}
                     data={{
                       listId: item._id,
@@ -178,25 +169,34 @@ export default function Board() {
                       eventType: 'list',
                     }}
                   >
-                    <ListContainer>
-                      <List data={item} onCreateCard={onCreateCard} />
-                    </ListContainer>
-                  </Draggable>
-                </Droppable>
-              </div>
-            ))
-          ) : (
-            <></>
-          )}
-          <ListContainer>
-            <AddListButton onCreateList={onCreateList} />
-          </ListContainer>
-        </div>
-      </DndContext>
-      {/* 卡片元件 */}
-      {router.query.cardId && <CardDetail />}
-      {/* 錯誤訊息提示 */}
-      <Toast ref={toastBL} position="bottom-left" />
+                    <Draggable
+                      id={`${item._id}`}
+                      data={{
+                        listId: item._id,
+                        listPosition: index,
+                        eventType: 'list',
+                      }}
+                    >
+                      <ListContainer>
+                        <List data={item} onCreateCard={onCreateCard} />
+                      </ListContainer>
+                    </Draggable>
+                  </Droppable>
+                </div>
+              ))
+            ) : (
+              <></>
+            )}
+            <ListContainer>
+              <AddListButton onCreateList={onCreateList} />
+            </ListContainer>
+          </div>
+        </DndContext>
+        {/* 卡片元件 */}
+        {router.query.cardId && <CardDetail />}
+        {/* 錯誤訊息提示 */}
+        <Toast ref={toastBL} position="bottom-left" />
+      </div>
     </>
   )
 }
