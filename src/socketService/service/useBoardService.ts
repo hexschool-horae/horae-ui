@@ -6,7 +6,8 @@ import { Manager } from 'socket.io-client'
 const URL = process.env.NEXT_PUBLIC_SOCKET_SERVER || ''
 import store from '@/app/store'
 
-import { setSingleBoard } from '@/slices/boardSlice'
+import { boardSliceActions } from '@/slices/boardSlice'
+import { errorSliceActions } from '@/slices/errorSlice'
 
 let boardSocket: Socket
 
@@ -31,12 +32,22 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
 
   // 監聽是否建立看板成功
   boardSocket.on(events.BOARD_CREATE_LIST_RESULT, data => {
-    store.dispatch(setSingleBoard(data))
+    store.dispatch(boardSliceActions.setSingleBoard(data))
   })
 
-  // 監聽是否建立卡片成功
-  boardSocket.on(events.BOARD_CARD_CREATE_RESULT, data => {
-    console.log('events.BOARD_CARD_CREATE_SUCCESS = ', data)
+  // 監聽修改看板標題是否成功
+  boardSocket.on(events.BOARD_MODIFY_TITLE_RESULT, data => {
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTitle(data.title))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
   })
   return {
     createList,
