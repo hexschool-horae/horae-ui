@@ -72,6 +72,7 @@ export default function CardDetailDescribe() {
   return (
     <>
       <MdEditor
+        /* @ts-ignore */
         value={description}
         style={{ height: '240px' }}
         placeholder="輸入描述..."
