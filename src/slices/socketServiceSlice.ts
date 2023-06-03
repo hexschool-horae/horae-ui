@@ -6,13 +6,11 @@ import { useBoardService } from '@/socketService'
 interface ISocketServiceInitialState {
   boardService: IBoardService | null
   boardId?: string | null
-  value: number
 }
 
 const initialState: ISocketServiceInitialState | null = {
   boardService: null,
   boardId: '',
-  value: 0,
 }
 
 export const socketServiceSlice = createSlice({
