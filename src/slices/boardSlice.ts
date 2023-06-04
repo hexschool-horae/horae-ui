@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ISingleBoardInterface } from '@/socketService/types/board'
+import { ISingleBoardResponse } from '@/apis/interface/api'
 
 interface IInitialState {
-  singleBaord?: ISingleBoardInterface | null
+  singleBaord?: ISingleBoardResponse | null
   boardId: string
 }
 
@@ -15,7 +15,7 @@ export const boardSlice = createSlice({
   name: 'board',
   initialState,
   reducers: {
-    setSingleBoard(state, action: PayloadAction<ISingleBoardInterface>) {
+    setSingleBoard(state, action: PayloadAction<ISingleBoardResponse>) {
       state.singleBaord = action.payload
     },
     setBoardId(state, action: PayloadAction<string>) {
