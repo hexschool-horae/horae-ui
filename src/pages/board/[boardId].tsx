@@ -22,7 +22,7 @@ const Board: FC = () => {
   const handleGetSingleBoard = async () => {
     try {
       const result = await GET_BOARD_BY_ID(boardId)
-      dispatch(boardSliceActions.setSingleBoard(result || {}))
+      dispatch(boardSliceActions.setSingleBoard(result.data || {}))
     } catch (e) {
       let errorMessage = ''
       if (e instanceof AxiosError) {
