@@ -1,3 +1,5 @@
+import { IBasicResponse } from '@/types'
+
 export interface IRegisterForm {
   email: string
   password: string
@@ -175,14 +177,14 @@ export interface IDeleteBoardTagsRequest {
 }
 
 /** B03-5 取得單一看板 */
-export interface ISingleBoardResponse {
-  [key: string]: {
+export interface ISingleBoardResponse extends IBasicResponse {
+  data: {
     _id: string
     title: string
-    discribe?: string
-    coverPath?: string
-    viewSet?: string
-    members?: [
+    discribe: string
+    coverPath: string
+    viewSet: string
+    members: [
       {
         userId: {
           _id: string
@@ -192,20 +194,36 @@ export interface ISingleBoardResponse {
         _id: string
       }
     ]
-    lists: Array<{
+    lists: {
       _id: string
       title: string
-      status?: string
+      status: string
       position: number
-      cards: Array<{
+      cards: {
         _id: string
         title: string
-        startDate?: string
-        endDate?: string
-        tags?: any[]
-        proiority?: string
+        startDate: number
+        endDate: number
+        tags: {
+          _id: string
+          title: string
+          color: string
+        }[]
+        comments: {
+          _id: string
+          comment: string
+          user: {
+            _id: string
+            name: string
+            createdAt: string
+          }
+          card: string
+        }[]
+        proiority: string
         position: number
-      }>
-    }>
+      }[]
+    }[]
+    yourRole: string
+    yourPermission: string
   }
 }

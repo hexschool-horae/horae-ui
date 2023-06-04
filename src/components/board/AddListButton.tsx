@@ -9,7 +9,7 @@ import { classNames } from 'primereact/utils'
 import ValidateController from '../common/ValidateController'
 
 interface IAddListButtonProps {
-  onCreateList: (title: string) => void
+  onCreateList?: (title: string) => void
 }
 
 const schema = yup

@@ -17,7 +17,7 @@ export default function List({
   onCreateCard,
 }: {
   data: IBoardListItem
-  onCreateCard: (listId: string, title: string) => void
+  onCreateCard?: (listId: string, title: string) => void
 }) {
   /** 卡片陣列狀態 */
   const { cards } = data
