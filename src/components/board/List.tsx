@@ -14,7 +14,6 @@ import { classNames } from 'primereact/utils'
 
 export default function List({
   data,
-  onCreateCard,
 }: {
   data: IBoardListItem
   onCreateCard?: (listId: string, title: string) => void
@@ -76,7 +75,7 @@ export default function List({
         <></>
       )}
 
-      <AddCardButton listId={data._id} onCreateCard={onCreateCard} />
+      <AddCardButton listId={data._id} />
     </>
   )
 }
