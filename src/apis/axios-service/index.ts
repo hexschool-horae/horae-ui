@@ -99,11 +99,6 @@ export const DELETE_BOARD_TAGS_BY_ID = (boardId: string, data: interfaces.IDelet
   return axiosFetcher.DELETE(`${apiPath.GET_BOARD}/${boardId}/tags`, data)
 }
 
-/** B05-4 取得單一卡片 */
-export const GET_CARD_BY_ID = (cardId: string) => {
-  return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
-}
-
 /** B05-9 在卡片新增標籤 */
 export const POST_CARD_TAG_BY_ID = (cardId: string, data: interfaces.IPostCardTagRequest) => {
   return axiosFetcher.post(`${apiPath.GET_CARD_BY_ID}/${cardId}/tag`, data)
@@ -112,4 +107,29 @@ export const POST_CARD_TAG_BY_ID = (cardId: string, data: interfaces.IPostCardTa
 /** B05-10 在卡片移除標籤 */
 export const DELETE_CARD_TAG_BY_ID = (cardId: string, data: interfaces.IDeleteCardTagRequest) => {
   return axiosFetcher.DELETE(`${apiPath.GET_CARD_BY_ID}/${cardId}/tag`, data)
+}
+
+/** B05-4 取得單一卡片 */
+export const GET_CARD_BY_ID = (cardId: string) => {
+  return axiosFetcher.get<interfaces.ICardDetailResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}`)
+}
+
+/** B05-2 修改單一卡片(基本資訊) */
+export const PATCH_CARD_BASIC_INFO_BY_ID = (cardId: string, data: interfaces.IPatchCardBasicInfoRequest) => {
+  return axiosFetcher.patch(`${apiPath.GET_CARD_BY_ID}/${cardId}`, data)
+}
+
+/** B05-11 卡片評論新增 */
+export const POST_CARD_COMMENT_BY_ID = (cardId: string, data: interfaces.IPostCardCommentRequest) => {
+  return axiosFetcher.post(`${apiPath.GET_CARD_BY_ID}/${cardId}/comment`, data)
+}
+
+/** B05-12 卡片評論修改  */
+export const PUT_CARD_COMMENT_BY_ID = (cardId: string, data: interfaces.IPutCardCommentRequest) => {
+  return axiosFetcher.put(`${apiPath.GET_CARD_BY_ID}/${cardId}/comment`, data)
+}
+
+/** B05-13 卡片評論刪除 */
+export const DELETE_CARD_COMMENT_BY_ID = (cardId: string, data: interfaces.IDeleteCardCommentRequest) => {
+  return axiosFetcher.DELETE(`${apiPath.GET_CARD_BY_ID}/${cardId}/comment`, data)
 }

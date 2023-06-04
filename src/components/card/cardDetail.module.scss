@@ -18,6 +18,12 @@
   }
 }
 
+.icon_btn_delete {
+  &:focus {
+    box-shadow: none;
+  }
+}
+
 .editor_preview {
   ul {
     list-style: disc;

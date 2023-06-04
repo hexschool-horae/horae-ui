@@ -100,15 +100,7 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
       }
     }
     case 'CREATE_COMMENT': {
-      //需要user name, date...
-      const comments = [...state.cardDetail.comments, { content: payload.comment, date: '' }]
-      return {
-        ...state,
-        cardDetail: {
-          ...state.cardDetail,
-          comments,
-        },
-      }
+      return { ...state }
     }
     case 'ADD_TAG': {
       const tags = [...state.cardDetail.tags, payload.tag]

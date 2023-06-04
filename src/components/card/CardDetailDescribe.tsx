@@ -1,15 +1,18 @@
+import router from 'next/router'
 import dynamic from 'next/dynamic'
+
 import { Plugins } from 'react-markdown-editor-lite'
 import remarkGfm from 'remark-gfm'
 import ReactMarkdown from 'react-markdown'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import { github } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 import 'react-markdown-editor-lite/lib/index.css'
 
 import { useEffect, useState } from 'react'
 import { Button } from 'primereact/button'
 import { useCardDetail } from '@/contexts/cardDetailContext'
 import style from './cardDetail.module.scss'
+import { PATCH_CARD_BASIC_INFO_BY_ID } from '@/apis/axios-service'
 
 /*
 建議使用 client-side render 
@@ -40,9 +43,26 @@ export default function CardDetailDescribe() {
   const [description, setDescription] = useState('')
   const [isEdit, setIsEdit] = useState(false)
 
-  const handleUpdate = () => {
-    dispatchDescribe()
-    setIsEdit(false)
+  const cardId = router.query.cardId as string
+
+  const handleUpdate = async () => {
+    try {
+      const data = {
+        title: state.cardDetail.title,
+        describe: description,
+        startDate: state.cardDetail.startDate,
+        endDate: state.cardDetail.endDate,
+        proiority: state.cardDetail.proiority,
+      }
+
+      const response = await PATCH_CARD_BASIC_INFO_BY_ID(cardId, data)
+
+      if (response == undefined) return
+      dispatchDescribe()
+      setIsEdit(false)
+    } catch (error) {
+      console.log('Error update card basic info:', error)
+    }
   }
 
   const dispatchDescribe = () => {
@@ -94,7 +114,7 @@ export default function CardDetailDescribe() {
                     <SyntaxHighlighter
                       {...props}
                       children={String(children).replace(/\n$/, '')}
-                      style={github}
+                      style={docco}
                       language={match[1]}
                       PreTag="div"
                     />
