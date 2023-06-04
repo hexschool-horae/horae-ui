@@ -26,11 +26,53 @@ export const initialState = {
     describe: '',
     startDate: null,
     endDate: null,
-    // members: [],
-    // comments: [],
-    // tags: [],
-    // todolists: [],
-    // attachments: [],
+    members: [
+      {
+        userId: {
+          _id: '',
+          name: '',
+        },
+        role: '',
+        _id: '',
+      },
+    ],
+    comments: [
+      {
+        _id: '',
+        comment: '',
+        createdAt: '',
+        user: {
+          _id: '',
+          name: '',
+        },
+      },
+    ],
+    tags: [
+      {
+        _id: '',
+        title: '',
+        color: '',
+      },
+    ],
+    todolists: [
+      {
+        _id: '',
+        title: '',
+        contentList: {
+          _id: '',
+          content: '',
+          completed: false,
+        },
+      },
+    ],
+    attachments: [
+      {
+        id: '',
+        createdAt: '',
+        title: '',
+        url: '',
+      },
+    ],
     proiority: '',
     coverPath: '',
     position: 0,
