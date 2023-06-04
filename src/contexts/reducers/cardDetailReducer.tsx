@@ -24,16 +24,19 @@ export const initialState = {
     _id: '',
     title: '',
     describe: '',
-    startDate: 0,
-    endDate: 0,
-    // members: [],
+    startDate: null,
+    endDate: null,
+    members: [],
     comments: [],
     tags: [],
     todolists: [],
-    // attachments: [],
+    attachments: [],
     proiority: '',
     coverPath: '',
     position: 0,
+    updateUser: '',
+    createdAt: '',
+    updateAt: '',
   },
 }
 
@@ -49,8 +52,8 @@ type TReducerAction =
   | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  console.log(state, type)
-  console.log('payload:', payload)
+  // console.log(state, type)
+  // console.log('payload:', payload)
 
   switch (type) {
     case 'INITIALIZE_CARD': {
