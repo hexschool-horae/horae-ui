@@ -237,17 +237,17 @@ export interface ICardDetail {
   describe: string
   startDate: null | Timestamp
   endDate: null | Timestamp
-  members?: IMembers[]
-  comments?: IComment[]
-  tags?: ITag[]
-  todolists?: ITodoList[]
-  attachments?: IAttachment[]
+  members: IMembers[]
+  comments: IComment[]
+  tags: ITag[]
+  todolists: ITodoList[]
+  attachments: IAttachment[]
   proiority: string
   coverPath: string
   position: number
-  // updateUser: string
-  // createdAt: string
-  // updateAt: string
+  updateUser: string
+  createdAt: string
+  updateAt: string
 }
 
 export interface ICardDetailResponse {
