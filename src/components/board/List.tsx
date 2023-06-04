@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
+
 import AddCardButton from './AddCardButton'
 import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
@@ -8,16 +10,24 @@ import Droppable from './Droppable'
 
 import { IBoardListItem } from '@/types/pages'
 
+import { classNames } from 'primereact/utils'
+
 export default function List({
   data,
   onCreateCard,
 }: {
   data: IBoardListItem
-  onCreateCard: (listId: string, title: string) => void
+  onCreateCard?: (listId: string, title: string) => void
 }) {
   /** 卡片陣列狀態 */
   const { cards } = data
   const router = useRouter()
+  const [isDisabledLink, setIsDisabledLink] = useState(false)
+
+  const onIsDragging = (isDragging: boolean) => {
+    /** 當拖曳事件發生時，禁止 Link 被觸發(透過 class disabled-link) */
+    setIsDisabledLink(isDragging)
+  }
 
   return (
     <>
@@ -49,8 +59,12 @@ export default function List({
                     listPosition: data.position,
                     eventType: 'card',
                   }}
+                  onIsDragging={onIsDragging}
                 >
-                  <Link href={`/board/${router.query.boardId}/?cardId=${item._id}`}>
+                  <Link
+                    className={classNames({ 'disabled-link': isDisabledLink })}
+                    href={`/board/${router.query.boardId}/?cardId=${item._id}`}
+                  >
                     <Card key={index} title={item.title} labels={item.labels} />
                   </Link>
                 </Draggable>

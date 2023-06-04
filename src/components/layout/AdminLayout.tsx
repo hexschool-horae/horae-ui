@@ -1,29 +1,54 @@
-import { ReactNode } from 'react'
-import BackHeader from '../common/BackHeader'
-import BackSideBar from '../common/BackSideBar'
-import AdminLayoutContextProvider from '@/contexts/adminLayoutContext'
+import { FC, ReactNode, useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
+import AdminLayoutContextProvider from '@/contexts/adminLayoutContext'
+import Header from '@/components/common/admin/Header'
+import Sidebar from '@/components/common/admin/Sidebar'
+import { Toast } from 'primereact/toast'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { errorSliceActions } from '@/slices/errorSlice'
 
-export default function Admin({ children }: { children?: ReactNode }) {
+interface IAdminLayoutProps {
+  children: ReactNode
+}
+
+const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
   const router = useRouter()
-  const isShowSideBar = !router.query.hashData
+  const [boardId, setBoardId] = useState('')
+  const errorMessages = useAppSelector(state => state.error.errors)
+  const dispatch = useAppDispatch()
+  const toastRef = useRef<Toast>(null)
 
+  useEffect(() => {
+    if (errorMessages.length > 0) {
+      const latestErrorMessage = errorMessages.slice(-1)[0]
+      toastRef.current?.show({
+        severity: 'error',
+        summary: 'Error Message',
+        detail: latestErrorMessage.message,
+        life: 3000,
+      })
+      dispatch(errorSliceActions.popErrorMessage())
+    }
+  }, [errorMessages])
+
+  useEffect(() => {
+    const boardId: string = router.query.boardId as string
+    if (router.isReady) {
+      setBoardId(boardId)
+    }
+  }, [router.isReady, router.pathname])
   return (
     <AdminLayoutContextProvider>
       <div className="flex flex-col h-full">
-        <BackHeader className="h-full overflow-y-auto" />
+        <Header boardId={boardId} />
         <div className="flex flex-1 overflow-y-auto">
-          {/* <BackSideBar className="h-full overflow-y-auto" /> */}
-          {isShowSideBar && <BackSideBar className="h-full overflow-y-auto" />}
-          <main
-            className={`main bg-secondary-4 p-12 h-full overflow-y-auto ${
-              isShowSideBar ? 'back-main' : 'back-main-w-full'
-            }`}
-          >
-            {children}
-          </main>
+          <Sidebar className="h-full overflow-y-auto" boardId={boardId} />
+          <div className="w-full h-full overflow-y-auto">{children}</div>
         </div>
       </div>
+      <Toast ref={toastRef} position="bottom-left" />
     </AdminLayoutContextProvider>
   )
 }
+
+export default AdminLayout

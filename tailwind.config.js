@@ -16,6 +16,7 @@ module.exports = {
         'secondary-4': '#FFF1F1',
         black: '#1A1A1A',
         'gray-2': '#606060',
+        'gray-3': '#F8F8F8',
       },
       fontSize: {
         xxs: '10px',

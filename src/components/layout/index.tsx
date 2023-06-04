@@ -4,11 +4,11 @@ import { useAppSelector } from '@/hooks/useAppStore'
 import DefaultLayout from '@/components/layout/DefaultLayout'
 import AdminLayout from '@/components/layout/AdminLayout'
 
-interface ComponentSelectorProps {
+interface ILayout {
   children: ReactNode
 }
 
-const Layout: FC<PropsWithChildren<ComponentSelectorProps>> = ({ children }: { children: ReactNode }) => {
+const Layout: FC<PropsWithChildren<ILayout>> = ({ children }) => {
   const isLogin = useAppSelector(state => state.user.isLogin)
   if (!isLogin) {
     return <DefaultLayout>{children}</DefaultLayout>

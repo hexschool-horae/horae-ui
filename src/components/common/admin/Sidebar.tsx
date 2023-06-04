@@ -1,26 +1,31 @@
 import axiosFetcher from '@/apis/axios'
-
-import { useRouter } from 'next/router'
-import { Button } from 'primereact/button'
 import { useEffect, useState, FC } from 'react'
-import WorkSpaceModel from '../workSpace/WorkSpaceModel'
+import { Button } from 'primereact/button'
+import { useRouter } from 'next/router'
+import WorkSpaceModel from '@/components/workSpace/WorkSpaceModel'
 import { IUserBoardDataRes } from '@/apis/interface/api'
-
 const { get } = axiosFetcher
+
+interface ISidebarProps {
+  className?: string
+  boardId?: string
+}
 
 interface dataRes {
   data: Array<IUserBoardDataRes>
 }
 
-interface IBackSidebarProps {
-  className: string
-}
-
-const BackSideBar: FC<IBackSidebarProps> = ({ className }) => {
+const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
   const router = useRouter()
+  const sidebarStyle = (() => {
+    if (boardId) {
+      return 'bg-gray-3'
+    } else {
+      return 'bg-white'
+    }
+  })()
   const [userBoardList, setUserBoardList] = useState<IUserBoardDataRes[]>([])
   const [visible, setVisible] = useState(false)
-
   const showDialog = () => {
     setVisible(true)
   }
@@ -37,16 +42,15 @@ const BackSideBar: FC<IBackSidebarProps> = ({ className }) => {
     setUserBoardList(result.data)
   }
 
+  useEffect(() => {
+    handleGetWorkSpaceTitleData()
+  }, [])
   const getShortName = (name: string) => {
     return name.charAt(0)
   }
 
-  useEffect(() => {
-    handleGetWorkSpaceTitleData()
-  }, [])
-
   return (
-    <div className={`sideBar w-[332px] ${className}`}>
+    <div className={`w-[332px] ${className} ${sidebarStyle}`}>
       <nav>
         <ul>
           <li>
@@ -123,4 +127,4 @@ const BackSideBar: FC<IBackSidebarProps> = ({ className }) => {
   )
 }
 
-export default BackSideBar
+export default Sidebar

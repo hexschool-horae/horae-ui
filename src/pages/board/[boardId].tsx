@@ -1,34 +1,31 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useRef } from 'react'
+import { FC, useEffect } from 'react'
+import { AxiosError } from 'axios'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
 
-import { Toast } from 'primereact/toast'
-import { MenuBar, List, AddListButton } from '@/components/board'
+import MenuBar from '@/components/board/MenuBar'
+import AddListButton from '@/components/board/AddListButton'
 import Draggable from '@/components/board/Draggable'
 import Droppable from '@/components/board/Droppable'
-
-import CardDetail from '@/components/card/CardDetail'
+import List from '@/components/board/List'
 import ListContainer from '@/components/board/ListContainer'
+import CardDetail from '@/components/card/CardDetail'
 
+import { boardSliceActions } from '@/slices/boardSlice'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { errorSliceActions } from '@/slices/errorSlice'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { GET_BOARD_BY_ID } from '@/apis/axios-service'
-import { useBoardService } from '@/socketService'
 
-import { useAppSelector } from '@/hooks/useAppStore'
-import { useAppDispatch } from '@/hooks/useAppStore'
-import { setBoardId, setTitle, setLists, setIsErrorMessageVisible } from '@/slices/boardSocketSlice'
-
-export default function Board() {
-  const lists = useAppSelector(state => state.boardSocket.lists)
-  const boardId = useAppSelector(state => state.boardSocket.boardId)
-  const isErrorMessageVisible = useAppSelector(state => state.boardSocket.isErrorMessageVisible)
-  const errorMessageText = useAppSelector(state => state.boardSocket.errorMessageText)
-  const dispatch = useAppDispatch()
+const Board: FC = () => {
   const router = useRouter()
-  const boardService = useBoardService()
-
-  const toastBL = useRef<Toast>(null)
+  const token = useAppSelector(state => state.user.token) || ''
+  const boardId = useAppSelector(state => state.board.boardId)
+  const singleBaord = useAppSelector(state => state.board.singleBaord)
+  const lists = singleBaord?.lists
+  const dispatch = useAppDispatch()
 
   /** 讓 draggable、droppable 內的 pointer 事件不會被 prevent */
   const pointerSensor = useSensor(PointerSensor, {
@@ -41,7 +38,7 @@ export default function Board() {
   /** 暫時的卡片拖拉邏輯 */
   /* eslint-disable */
   function handleDragEnd(event: any) {
-    if (!event.over) return
+    if (!event.over || lists === undefined) return
 
     const tempArr = cloneDeep(lists)
     if (!Boolean(tempArr.length)) return
@@ -72,76 +69,55 @@ export default function Board() {
       tempArr[overListPosition] = temp
     }
 
-    dispatch(setLists(tempArr))
-  }
-
-  /** 看板新增列表 */
-  const onCreateList = (title = '') => {
-    const payload = {
-      title,
-      boardId,
-    }
-    boardService?.createList(payload)
-  }
-  /** 看板新增卡片 */
-  const onCreateCard = (listId = '', title = '') => {
-    const payload = {
-      listId,
-      title,
-      boardId,
-    }
-    boardService?.createCard(payload)
+    dispatch(boardSliceActions.updateBoardList(tempArr))
   }
 
   /** 取得單一看板資訊 */
   const handleGetSingleBoard = async () => {
-    const result = await GET_BOARD_BY_ID(boardId)
+    try {
+      const result = await GET_BOARD_BY_ID(boardId)
 
-    if (result === undefined) return
+      dispatch(boardSliceActions.setSingleBoard(result?.data))
+    } catch (e) {
+      let errorMessage = ''
+      if (e instanceof AxiosError) {
+        errorMessage = e.response?.data.message
+      } else {
+        errorMessage = '發生錯誤'
+      }
 
-    const { lists, title } = result.data
-
-    dispatch(setTitle(title))
-    dispatch(setLists(lists))
+      dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message: errorMessage,
+        })
+      )
+      // toastRef.current?.show({
+      //   severity: 'error',
+      //   summary: 'Error Message',
+      //   detail: errorMessage,
+      //   life: 3000,
+      // })
+    }
   }
 
   /** 取得 url query boardID */
   useEffect(() => {
-    if (router.isReady) {
-      const boardId = router.query?.boardId as string
-      dispatch(setBoardId(boardId))
-    }
+    const boardId = router.query?.boardId as string
+    dispatch(boardSliceActions.setBoardId(boardId))
+    dispatch(socketServiceActions.initialBoardService({ boardId, token }))
 
     return () => {
-      dispatch(setBoardId(''))
+      dispatch(boardSliceActions.reset())
+      dispatch(socketServiceActions.terminateBoardService())
     }
   }, [router.isReady])
-
-  useEffect(() => {
-    if (isErrorMessageVisible) {
-      toastBL.current?.show({
-        severity: 'error',
-        summary: 'Error Message',
-        detail: `${errorMessageText}`,
-        life: 3000,
-      })
-    }
-
-    return () => {
-      dispatch(setIsErrorMessageVisible(false))
-    }
-  }, [isErrorMessageVisible])
 
   /** 看板初始化
    * B03-5 取得單一看板 */
   useEffect(() => {
-    if (boardId === undefined || boardId === '') return
+    if (!boardId) return
     handleGetSingleBoard()
-
-    /** 看板銷毀，重置 store 裡的 board list */
-    return () => {
-      dispatch(setLists([]))
-    }
   }, [boardId])
 
   return (
@@ -149,25 +125,16 @@ export default function Board() {
       <Head>
         <title>Horae - 看板</title>
       </Head>
-
-      <div className="mb-6">
-        <MenuBar />
-      </div>
-
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        <div className="w-auto grid gap-4 auto-cols-[286px] px-4 h-full overflow-scroll">
-          {lists.length ? (
-            lists.map((item, index: number) => (
-              <div className="row-span-full" key={index}>
-                <Droppable
-                  id={`${item._id}`}
-                  data={{
-                    listId: item._id,
-                    listPosition: index,
-                    eventType: 'list',
-                  }}
-                >
-                  <Draggable
+      <div className="flex flex-col h-full py-[50px] px-[64px]">
+        <div className="mb-6">
+          <MenuBar />
+        </div>
+        <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+          <div className="w-auto grid gap-4 auto-cols-[286px] px-4">
+            {lists !== undefined ? (
+              lists.map((item, index: number) => (
+                <div className="row-span-full" key={index}>
+                  <Droppable
                     id={`${item._id}`}
                     data={{
                       listId: item._id,
@@ -175,25 +142,37 @@ export default function Board() {
                       eventType: 'list',
                     }}
                   >
-                    <ListContainer>
-                      <List data={item} onCreateCard={onCreateCard} />
-                    </ListContainer>
-                  </Draggable>
-                </Droppable>
+                    <Draggable
+                      id={`${item._id}`}
+                      data={{
+                        listId: item._id,
+                        listPosition: index,
+                        eventType: 'list',
+                      }}
+                    >
+                      <ListContainer>
+                        <List data={item} />
+                      </ListContainer>
+                    </Draggable>
+                  </Droppable>
+                </div>
+              ))
+            ) : (
+              <></>
+            )}
+
+            <div className="row-span-full">
+              <div className="h-auto">
+                <AddListButton />
               </div>
-            ))
-          ) : (
-            <></>
-          )}
-          <ListContainer>
-            <AddListButton onCreateList={onCreateList} />
-          </ListContainer>
-        </div>
-      </DndContext>
-      {/* 卡片元件 */}
-      {router.query.cardId && <CardDetail />}
-      {/* 錯誤訊息提示 */}
-      <Toast ref={toastBL} position="bottom-left" />
+            </div>
+          </div>
+        </DndContext>
+        {/* 卡片元件 */}
+        {router.query.cardId && <CardDetail />}
+      </div>
     </>
   )
 }
+
+export default Board

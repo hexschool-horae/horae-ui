@@ -10,6 +10,10 @@ export const POST_USER_LOGIN = (payload: interfaces.IRegisterForm) => {
   return axiosFetcher.post<interfaces.IRegisterResponse>(apiPath.POST_USER_LOGIN, payload)
 }
 
+export const POST_USER_LOGOUT = () => {
+  return axiosFetcher.post(apiPath.POST_USER_LOGOUT)
+}
+
 /**
  * B01-8 取得使用者個人資訊
  */

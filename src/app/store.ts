@@ -2,20 +2,26 @@ import { configureStore } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+
 import userReducer from '@/slices/userSlice'
-import boardSocketReducer from '@/slices/boardSocketSlice'
+import boardReducer from '@/slices/boardSlice'
 import workspaceReducer from '@/slices/workspaceSlice'
+import socketServiceReducer from '@/slices/socketServiceSlice'
+import errorReducer from '@/slices/errorSlice'
 
 const reducers = combineReducers({
   user: userReducer,
-  boardSocket: boardSocketReducer,
+  board: boardReducer,
+  error: errorReducer,
   workspace: workspaceReducer,
+  socketService: socketServiceReducer,
 })
 
 //預設位置 localstorage。說明：https://github.com/rt2zz/redux-persist
 const persistConfig = {
   key: 'app',
   storage,
+  whitelist: ['user'],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers)
