@@ -7,14 +7,12 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
 
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+
 import ValidateController from '../common/ValidateController'
-
-// import { useAppSelector } from '@/hooks/useAppStore'
-// import { useBoardService } from '@/socketService'
-
 interface IAddCardButtonProps {
   listId?: string
-  onCreateCard?: (listId: string, title: string) => void
 }
 
 const schema = yup
@@ -24,8 +22,9 @@ const schema = yup
   .required()
 
 /** 新增看板按鈕 */
-const AddCardButton: FC<IAddCardButtonProps> = ({ listId = '', onCreateCard }) => {
-  // const boardId = useAppSelector(state => state.boardSocket.boardId)
+const AddCardButton: FC<IAddCardButtonProps> = ({ listId = '' }) => {
+  const boardId = useAppSelector(state => state.board?.boardId)
+  const dispatch = useAppDispatch()
 
   const [cardInputVisible, setCardInputVisible] = useState(false)
   const { control, handleSubmit, reset } = useForm({
@@ -43,8 +42,8 @@ const AddCardButton: FC<IAddCardButtonProps> = ({ listId = '', onCreateCard }) =
   const onSubmit = (submitData: { title: string }) => {
     const { title } = submitData
     if (listId === '' || title === '') return
-    console.log(title, onCreateCard)
-    onCreateCard && onCreateCard(listId, title)
+    dispatch(socketServiceActions.createCard({ boardId, listId, title }))
+
     onClose()
   }
   return (

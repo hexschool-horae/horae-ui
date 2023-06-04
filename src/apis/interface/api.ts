@@ -1,4 +1,7 @@
-import { IBasicResponse } from '@/types'
+export interface IBasicResponse {
+  success: boolean
+  message: string
+}
 
 export interface IRegisterForm {
   email: string
@@ -183,7 +186,7 @@ export interface ISingleBoardResponse extends IBasicResponse {
     title: string
     discribe: string
     coverPath: string
-    viewSet: string
+    viewSet: '' | 'public' | 'private' | 'workspace'
     members: [
       {
         userId: {

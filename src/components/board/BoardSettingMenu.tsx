@@ -1,5 +1,7 @@
 import { useRef, MouseEvent } from 'react'
 import { useAppSelector } from '@/hooks/useAppStore'
+import { useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
@@ -15,8 +17,10 @@ import Style from './BoardSettingMenu.module.scss'
 import CardPopupTags from '../card/CardPopupTags'
 
 const BoardAboutTemplate = () => {
-  const members = useAppSelector(state => state.board.members)
-  const [admin] = members.filter(item => item.role === 'admin')
+  const members = useAppSelector(state => state.board?.singleBaord?.members)
+
+  const admins = members?.filter(item => item.role === 'admin')
+  const admin = admins?.[0]
 
   return (
     <div className="p-4" style={{ fontSize: '14px' }}>
@@ -79,7 +83,7 @@ const settingData1Items = [
   { mainLabel: '標籤', subTemplate: <LabelListTemplate /> },
 ]
 const settingData2Items = ['以電子郵件新增看板內容', '追蹤', '複製看板']
-const settingData3Items = ['關閉看板', '分享看板']
+// const settingData3Items = ['關閉看板', '分享看板']
 const activityDataItems = [
   { img: '', title: '成員名稱 | 活動描述', subtitle: '2023.03.23 19:45' },
   { img: '', title: '成員名稱 | 活動描述', subtitle: '2023.03.22 14:05' },
@@ -104,14 +108,28 @@ const setting2Items = settingData2Items.map((item, i) => ({
     </div>
   ),
 }))
-const setting3Items = settingData3Items.map((item, i) => ({
-  label: item,
-  template: (
-    <div className={Style.setting_item} key={i}>
-      <div className={Style.setting_item_label}>{item}</div>
+
+const CloseBoardItem = () => {
+  const boardId = useAppSelector(state => state.board?.boardId)
+  const dispatch = useAppDispatch()
+
+  const onClick = () => {
+    dispatch(socketServiceActions.archiveBoard({ boardId, status: 'close' }))
+  }
+  return (
+    <div className={Style.setting_item} onClick={onClick}>
+      <div className={Style.setting_item_label}>關閉看板</div>
     </div>
-  ),
-}))
+  )
+}
+// const setting3Items = settingData3Items.map((item, i) => ({
+//   label: item,
+//   template: (
+//     <div className={Style.setting_item} key={i}>
+//       <div className={Style.setting_item_label}>{item}</div>
+//     </div>
+//   ),
+// }))
 
 const activityItems = activityDataItems.map((item, i) => ({
   label: item.title,
@@ -140,7 +158,8 @@ export default function BoardSettingMenu() {
     {
       template: () => <div style={{ borderTop: '1px solid #dee2e6', margin: '1.25rem 1.5rem' }}></div>,
     },
-    ...setting3Items,
+    // ...setting3Items,
+    { label: 'close', template: <CloseBoardItem /> },
     {
       label: 'sss',
       template: () => (

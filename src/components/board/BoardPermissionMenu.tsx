@@ -3,9 +3,17 @@ import { useRef, MouseEvent } from 'react'
 import { Button } from 'primereact/button'
 import { Menu } from 'primereact/menu'
 import { MenuItem } from 'primereact/menuitem'
-
 import Style from './MenuItem.module.scss'
 
+import { useAppDispatch } from '@/hooks/useAppStore'
+import { useAppSelector } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+
+const permissionData = {
+  workspace: '工作區',
+  public: '公開',
+  private: '私密',
+}
 const permissionDataItems = [
   {
     label: '公開',
@@ -21,11 +29,15 @@ const permissionDataItems = [
   },
 ]
 
-const permissionItems = (onClick: () => void) =>
+const permissionItems = (onClick: (event: MouseEvent, viewSet: 'public' | 'private' | 'workspace') => void) =>
   permissionDataItems.map((item, i) => ({
     label: item.label,
     template: (
-      <div className={Style.permission_item} key={i} onClick={onClick}>
+      <div
+        className={Style.permission_item}
+        key={i}
+        onClick={(event: MouseEvent) => onClick(event, item.label as 'public' | 'private' | 'workspace')}
+      >
         <div className={Style.permission_item_label}>{item.label}</div>
         <div className={Style.permission_item_des}>{item.des}</div>
       </div>
@@ -33,9 +45,16 @@ const permissionItems = (onClick: () => void) =>
   }))
 
 export default function BoardPermissionMenu() {
-  const onClick = () => {
-    console.log('click!')
+  const boardViewSet = useAppSelector(state => state.board?.singleBaord?.viewSet) || ''
+  const boardId = useAppSelector(state => state.board?.boardId)
+  const dispatch = useAppDispatch()
+
+  const onClick = (event: MouseEvent, viewSet: 'public' | 'private' | 'workspace') => {
+    console.log(boardId, viewSet)
+    dispatch(socketServiceActions.modifyBoardViewPermission({ boardId, viewSet }))
+    menu?.current?.hide(event)
   }
+
   const menu = useRef<Menu>(null)
   const items: MenuItem[] = [
     { label: 'title', template: () => <div className={Style.permission_item_title}>觀看權限</div> },
@@ -51,7 +70,13 @@ export default function BoardPermissionMenu() {
   return (
     <>
       <Menu style={{ minWidth: '240px', padding: '0' }} model={items} popup ref={menu} />
-      <Button className="mr-4" label="私密" severity="secondary" size="small" onClick={handleMenuToggle} />
+      <Button
+        className="mr-4"
+        label={boardViewSet && permissionData[boardViewSet]}
+        severity="secondary"
+        size="small"
+        onClick={handleMenuToggle}
+      />
     </>
   )
 }

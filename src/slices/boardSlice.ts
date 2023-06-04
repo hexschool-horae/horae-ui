@@ -4,7 +4,7 @@ import { ISingleBoardInterface } from '@/socketService/types/board'
 
 // ---重構中，之後補回來---
 
-// type TViewSet = '' | 'private' | 'workspace' | 'public'
+type TViewSet = '' | 'private' | 'workspace' | 'public'
 // type TYourRole = '' | 'visitor' | 'admin'
 // interface IMember {
 //   userId: {
@@ -154,6 +154,11 @@ export const boardSlice = createSlice({
     ) {
       if (state.singleBaord) {
         state.singleBaord.lists = action.payload
+      }
+    },
+    updateBoardViewSet(state, action: PayloadAction<TViewSet>) {
+      if (state.singleBaord) {
+        state.singleBaord.viewSet = action.payload
       }
     },
     reset: () => initialState,

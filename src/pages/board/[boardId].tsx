@@ -15,6 +15,7 @@ import CardDetail from '@/components/card/CardDetail'
 
 import { boardSliceActions } from '@/slices/boardSlice'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { errorSliceActions } from '@/slices/errorSlice'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { GET_BOARD_BY_ID } from '@/apis/axios-service'
 
@@ -30,9 +31,6 @@ const Board: FC = () => {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 3,
-    },
-    onActivation: event => {
-      console.log(event)
     },
   })
   const sensors = useSensors(pointerSensor)
@@ -74,24 +72,6 @@ const Board: FC = () => {
     dispatch(boardSliceActions.updateBoardList(tempArr))
   }
 
-  /** 看板新增列表 */
-  // const onCreateList = (title = '') => {
-  //   const payload = {
-  //     title,
-  //     boardId,
-  //   }
-  //   boardService?.createList(payload)
-  // }
-  // /** 看板新增卡片 */
-  // const onCreateCard = (listId = '', title = '') => {
-  //   const payload = {
-  //     listId,
-  //     title,
-  //     boardId,
-  //   }
-  //   boardService?.createCard(payload)
-  // }
-
   /** 取得單一看板資訊 */
   const handleGetSingleBoard = async () => {
     try {
@@ -105,6 +85,13 @@ const Board: FC = () => {
       } else {
         errorMessage = '發生錯誤'
       }
+
+      dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message: errorMessage,
+        })
+      )
       // toastRef.current?.show({
       //   severity: 'error',
       //   summary: 'Error Message',

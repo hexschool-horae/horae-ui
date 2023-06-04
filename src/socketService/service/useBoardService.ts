@@ -30,15 +30,73 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     })
   })
 
-  // 監聽是否建立看板成功
+  // 監聽看板新增列表是否成功
   boardSocket.on(events.BOARD_CREATE_LIST_RESULT, data => {
-    store.dispatch(boardSliceActions.setSingleBoard(data))
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardList(data.result.lists))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
+  // 監聽看板新增卡片是否成功
+  boardSocket.on(events.BOARD_CARD_CREATE_RESULT, data => {
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardList(data.result.lists))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
   })
 
   // 監聽修改看板標題是否成功
   boardSocket.on(events.BOARD_MODIFY_TITLE_RESULT, data => {
+    console.log('監看修改看板標題是否成功:', data)
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateBoardTitle(data.title))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
+  // 監聽修改看板權限是否成功
+  boardSocket.on(events.BOARD_MODIFY_VIEW_SET_RESULT, data => {
+    console.log('監看修改看板權限是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardViewSet(data.result.viewSet))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
+  // 監聽關閉看板是否成功
+  boardSocket.on(events.BOARD_ARCHIVE_RESULT, data => {
+    console.log('監看關閉看板是否成功:', data)
+    if (data.code !== -1) {
+      // store.dispatch(boardSliceActions.updateBoardViewSet(data.result))
     } else {
       const message: string = data.data.message
       store.dispatch(

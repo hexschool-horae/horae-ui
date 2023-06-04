@@ -6,6 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
 import { classNames } from 'primereact/utils'
 
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+
 import ValidateController from '../common/ValidateController'
 
 interface IAddListButtonProps {
@@ -19,8 +22,11 @@ const schema = yup
   .required()
 
 /** 新增看板按鈕 */
-const AddListButton: FC<IAddListButtonProps> = ({ onCreateList }) => {
+const AddListButton: FC<IAddListButtonProps> = () => {
   const [inputVisible, setInputVisible] = useState(false)
+  const boardId = useAppSelector(state => state.board?.boardId)
+  const dispatch = useAppDispatch()
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       title: '',
@@ -35,8 +41,8 @@ const AddListButton: FC<IAddListButtonProps> = ({ onCreateList }) => {
 
   const onSubmit = (submitData: { title: string }) => {
     const { title } = submitData
+    dispatch(socketServiceActions.createList({ boardId, title }))
 
-    onCreateList && onCreateList(title)
     onClose()
   }
 

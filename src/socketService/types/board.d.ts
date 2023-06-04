@@ -5,7 +5,7 @@ export interface ICreateListPayload {
 
 export interface IModifyBoardViewPermission {
   boardId: string
-  viewSet: 'private' | 'public'
+  viewSet: 'private' | 'public' | 'workspace'
 }
 
 export interface ICreateCardPayload {
@@ -76,7 +76,7 @@ export interface ISingleBoardInterface {
   title: string
   discribe: string
   coverPath: string
-  viewSet: string
+  viewSet: '' | 'workspace' | 'public' | 'private'
   members: {
     userId: {
       _id: string

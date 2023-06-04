@@ -35,6 +35,7 @@ export const socketServiceSlice = createSlice({
       state.boardService?.createList(action.payload)
     },
     modifyBoardViewPermission(state, action: PayloadAction<interfaces.IModifyBoardViewPermission>) {
+      console.log(action.payload)
       state.boardService?.modifyBoardViewPermission(action.payload)
     },
     archiveBoard(state, action: PayloadAction<interfaces.IArchiveBoardPayload>) {

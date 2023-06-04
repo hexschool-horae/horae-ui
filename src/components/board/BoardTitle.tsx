@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { InputText } from 'primereact/inputtext'
 import { useAppSelector } from '@/hooks/useAppStore'
-import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 export default function BoardTitle() {
   const boardTitle = useAppSelector(state => state.board?.singleBaord?.title) || ''
