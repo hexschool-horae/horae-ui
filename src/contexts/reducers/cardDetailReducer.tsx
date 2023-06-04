@@ -58,11 +58,13 @@ export const initialState = {
       {
         _id: '',
         title: '',
-        contentList: {
-          _id: '',
-          content: '',
-          completed: false,
-        },
+        contentList: [
+          {
+            _id: '',
+            content: '',
+            completed: false,
+          },
+        ],
       },
     ],
     attachments: [
