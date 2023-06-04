@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import style from './cardDetail.module.scss'
 import { Button } from 'primereact/button'
 import { ProgressBar } from 'primereact/progressbar'
 import { Checkbox } from 'primereact/checkbox'
 import { InputText } from 'primereact/inputtext'
 import { useCardDetail } from '@/contexts/cardDetailContext'
 import { ITodoList, ITodo } from '@/apis/interface/api'
+import IconDelete from '@/assets/icons/icon_delete.svg'
 
 export default function CardDetailTodoList() {
   const { state } = useCardDetail()
@@ -92,7 +94,7 @@ export default function CardDetailTodoList() {
                 className="w-full"
                 onChange={e => setNewTodoItem(e.target.value)}
                 ref={el => (inputsRef.current[i] = el)}
-                onKeyDown={e => handleKeyDown(e, i)}
+                onKeyPress={e => handleKeyPress(e, i)}
               />
             </li> */}
     </>
@@ -134,6 +136,7 @@ const TodoList = ({
   }
 
   const handleUpdateTodoItem = (todoId: string) => {
+    if (editTodoItem == '') return
     onUpdateTodoItem(listId, todoId, editTodoItem)
   }
 
@@ -155,7 +158,7 @@ const TodoList = ({
     setProgressWidth(wh)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, type: string, todoId?: string) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, type = 'create', todoId?: string) => {
     if (e.key !== 'Enter') return
     switch (type) {
       case 'create':
@@ -178,6 +181,10 @@ const TodoList = ({
   useEffect(() => {
     if (isEditId != null) {
       editInputRef.current?.focus()
+      const index = contentList.findIndex(todo => todo._id === isEditId)
+      if (index >= 0) {
+        setEditTodoItem(contentList[index].content)
+      }
     }
   }, [isEditId])
 
@@ -222,7 +229,7 @@ const TodoList = ({
                 value={editTodoItem}
                 ref={editInputRef}
                 onBlur={() => setIsEditId(null)}
-                onKeyDown={e => handleKeyDown(e, 'edit', todo._id)}
+                onKeyPress={e => handleKeyPress(e, 'edit', todo._id)}
               />
             ) : (
               <label
@@ -235,15 +242,14 @@ const TodoList = ({
                 {todo.content}
               </label>
             )}
-
             <Button
-              icon="pi pi-times"
-              rounded
-              outlined
-              aria-label="remove"
-              className="!w-[30px] !h-[30px]"
+              size="small"
+              text
+              className={`hover:bg-transparent ${style.icon_btn_delete}`}
               onClick={() => handleDeleteTdodItem(todo._id)}
-            />
+            >
+              <IconDelete />
+            </Button>
           </li>
         ))}
         {/* add new todo item */}
@@ -255,7 +261,7 @@ const TodoList = ({
             onChange={e => setTodoItem(e.target.value)}
             value={todoItem}
             ref={inputRef}
-            onKeyDown={e => handleKeyDown(e, 'create')}
+            onKeyPress={e => handleKeyPress(e)}
           />
         </li>
       </ul>
