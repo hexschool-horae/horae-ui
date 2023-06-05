@@ -77,6 +77,12 @@ export const socketServiceSlice = createSlice({
     deleteCardComment(state, action: PayloadAction<interfaces.IDeleteCardComment>) {
       state.boardService?.deleteCardComment(action.payload)
     },
+    modifyListTitle(state, action: PayloadAction<interfaces.IBoardModifyListTitle>) {
+      state.boardService?.modifyListTitle(action.payload)
+    },
+    archiveBoardList(state, action: PayloadAction<interfaces.IArchiveBoardListPayload>) {
+      state.boardService?.archiveList(action.payload)
+    },
     setBoardId(state, action: PayloadAction<string>) {
       state.boardId = action.payload
     },

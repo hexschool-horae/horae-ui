@@ -145,6 +145,12 @@ export interface IDeleteCardComment {
   boardId: string
 }
 
+export interface IBoardModifyListTitle {
+  title: string
+  listId: string
+  boardId: string
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -161,6 +167,7 @@ export type IBoardService = {
   addCardComment: (payload: IAddCardComment) => void
   modifyCardComment: (payload: IModifyCardComment) => void
   deleteCardComment: (payload: IDeleteCardComment) => void
+  modifyListTitle: (payload: IBoardModifyListTitle) => void
   moveCard: () => undefined
   deleteCard: () => undefined
   moveList: () => undefined

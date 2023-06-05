@@ -72,6 +72,12 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽卡片刪除評論是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_COMMENT_RESULT, () => undefined)
 
+  // 監聽列表修改標題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_LIST_TITLE_RESULT, () => undefined)
+
+  // 監聽封存列表是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST, () => undefined)
+
   // 監聽看板新增卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_CREATE_RESULT, data => {
     if (data.code !== -1) {
@@ -151,6 +157,8 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     addCardComment,
     modifyCardComment,
     deleteCardComment,
+    modifyListTitle,
+    archiveBoardList,
     moveCard,
     deleteCard,
     moveList,
@@ -237,6 +245,14 @@ const modifyCardComment = (payload: interfaces.IModifyCardComment) => {
 
 const deleteCardComment = (payload: interfaces.IDeleteCardComment) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.DELETE_CARD_COMMENT, payload)
+}
+
+const modifyListTitle = (payload: interfaces.IBoardModifyListTitle) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_LIST_TITLE, payload)
+}
+
+const archiveBoardList = (payload: interfaces.IArchiveBoardListPayload) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST, payload)
 }
 
 const moveCard = () => undefined
