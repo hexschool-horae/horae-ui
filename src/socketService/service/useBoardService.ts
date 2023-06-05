@@ -55,7 +55,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT, () => undefined)
 
   // 監聽刪除看板標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT, () => undefined)
 
   // 監聽看板卡片加入標籤是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.ATTACH_TAG_TO_CARD_RESULT, () => undefined)
