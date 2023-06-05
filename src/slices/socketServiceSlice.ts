@@ -59,9 +59,6 @@ export const socketServiceSlice = createSlice({
     createCard(state, action: PayloadAction<interfaces.ICreateCardPayload>) {
       state.boardService?.createCard(action.payload)
     },
-    modifyCard(state, action: PayloadAction<interfaces.IModifyCardPayload>) {
-      state.boardService?.modifyCard(action.payload)
-    },
     attachTagToCard(state, action: PayloadAction<interfaces.IAttachTagToCard>) {
       state.boardService?.attachTagToCard(action.payload)
     },
