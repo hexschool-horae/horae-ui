@@ -59,14 +59,26 @@ export const socketServiceSlice = createSlice({
     createCard(state, action: PayloadAction<interfaces.ICreateCardPayload>) {
       state.boardService?.createCard(action.payload)
     },
-    modifyCard(state, action: PayloadAction<interfaces.IModifyCardPayload>) {
-      state.boardService?.modifyCard(action.payload)
-    },
     attachTagToCard(state, action: PayloadAction<interfaces.IAttachTagToCard>) {
       state.boardService?.attachTagToCard(action.payload)
     },
     removeTagFromCard(state, action: PayloadAction<interfaces.IRemoveTagFromCard>) {
       state.boardService?.removeTagFromCard(action.payload)
+    },
+    addCardComment(state, action: PayloadAction<interfaces.IAddCardComment>) {
+      state.boardService?.addCardComment(action.payload)
+    },
+    modifyCardComment(state, action: PayloadAction<interfaces.IModifyCardComment>) {
+      state.boardService?.modifyCardComment(action.payload)
+    },
+    deleteCardComment(state, action: PayloadAction<interfaces.IDeleteCardComment>) {
+      state.boardService?.deleteCardComment(action.payload)
+    },
+    modifyListTitle(state, action: PayloadAction<interfaces.IBoardModifyListTitle>) {
+      state.boardService?.modifyListTitle(action.payload)
+    },
+    archiveBoardList(state, action: PayloadAction<interfaces.IArchiveBoardListPayload>) {
+      state.boardService?.archiveList(action.payload)
     },
     setBoardId(state, action: PayloadAction<string>) {
       state.boardId = action.payload
