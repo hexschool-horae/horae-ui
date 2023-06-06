@@ -131,7 +131,7 @@ const CardInternal = () => {
                   md:grid-cols-1 md:gap-2"
                 >
                   <CardSidebarButton name="成員" label={popupLabels.member} />
-                  <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
+                  <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
                   <CardSidebarButton name="標籤" label={popupLabels.tags} />
                   <CardSidebarButton name="日期" label={popupLabels.calender} />
                   <CardSidebarButton name="附件" label={popupLabels.files} />

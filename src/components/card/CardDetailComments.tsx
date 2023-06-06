@@ -50,9 +50,9 @@ export default function CardDetailComments() {
       }
       const response = await POST_CARD_COMMENT_BY_ID(cardId, data)
       if (response == undefined) return
-      console.log(response)
+      // console.log(response)
       const obj = {
-        _id: new Date().getTime().toString(), //待換成API給的ＩＤ
+        _id: response.data,
         comment: comment,
         createdAt: '剛剛',
         user: {

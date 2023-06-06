@@ -125,7 +125,7 @@ export const PATCH_CARD_BASIC_INFO_BY_ID = (cardId: string, data: interfaces.IPa
 
 /** B05-11 卡片評論新增 */
 export const POST_CARD_COMMENT_BY_ID = (cardId: string, data: interfaces.IPostCardCommentRequest) => {
-  return axiosFetcher.post(`${apiPath.GET_CARD_BY_ID}/${cardId}/comment`, data)
+  return axiosFetcher.post<interfaces.IPostCardCommentResponse>(`${apiPath.GET_CARD_BY_ID}/${cardId}/comment`, data)
 }
 
 /** B05-12 卡片評論修改  */
