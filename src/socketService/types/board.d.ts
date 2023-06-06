@@ -14,15 +14,15 @@ export interface ICreateCardPayload {
   listId: string
 }
 
-export interface IModifyCardPayload {
-  title: string
+// 修改單一卡片
+export interface IModifySingleCard {
   boardId: string
   cardId: string
   title: string
   describe: string
   startDate: Date
   endDate: Date
-  proiority: number
+  proiority: string
 }
 
 export interface IAttachTagToCard {
@@ -123,6 +123,34 @@ export interface IInitialBoardService {
   boardId: string
 }
 
+// 新增卡片評論
+export interface IAddCardComment {
+  comment: string
+  cardId: string
+  boardId: string
+}
+
+// 修改卡片評論
+export interface IModifyCardComment {
+  comment: string
+  commentId: string
+  cardId: string
+  boardId: string
+}
+
+// 刪除卡片評論
+export interface IDeleteCardComment {
+  commentId: string
+  cardId: string
+  boardId: string
+}
+
+export interface IBoardModifyListTitle {
+  title: string
+  listId: string
+  boardId: string
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -133,9 +161,13 @@ export type IBoardService = {
   createNewBoardTag: (payload: ICreateNewBoardTagPayload) => void
   modifyBoardTag: (payload: IModifyBoardTagPayload) => void
   deleteBoardTag: (payload: IDeleteBoardTagPayload) => void
-  modifyCard: (payload: IModifyCardPayload) => void
+  modifyCard: (payload: IModifySingleCard) => void
   attachTagToCard: (payload: IAttachTagToCard) => void
   removeTagFromCard: (payload: IRemoveTagFromCard) => void
+  addCardComment: (payload: IAddCardComment) => void
+  modifyCardComment: (payload: IModifyCardComment) => void
+  deleteCardComment: (payload: IDeleteCardComment) => void
+  modifyListTitle: (payload: IBoardModifyListTitle) => void
   moveCard: () => undefined
   deleteCard: () => undefined
   moveList: () => undefined
