@@ -17,6 +17,7 @@ import CardDetailComments from '@/components/card/CardDetailComments'
 import CardPopupMember from '@/components/card/CardPopupMember'
 import CardPopupTodoList from '@/components/card/CardPopupTodoList'
 import CardPopupTags from '@/components/card/CardPopupTags'
+import CardPopupPriority from './CardPopupPriority'
 import CardPopupWrapper from '@/components/card/CardPopupWrapper'
 import { GET_CARD_BY_ID } from '@/apis/axios-service'
 
@@ -164,6 +165,7 @@ const CardInternal = () => {
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>
         <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />
       </CardPopupWrapper>
+      <CardPopupPriority label={popupLabels.priority} key={popupLabels.priority + state.popupKey} />
     </>
   )
 }

@@ -1,0 +1,19 @@
+.high {
+  @apply text-secondary-1;
+}
+.medium {
+  @apply text-primary;
+}
+.low {
+  @apply text-green-500;
+}
+
+.high-bg {
+  @apply bg-secondary-1;
+}
+.medium-bg {
+  @apply bg-primary;
+}
+.low-bg {
+  @apply bg-green-500;
+}

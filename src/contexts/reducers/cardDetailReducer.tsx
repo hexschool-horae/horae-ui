@@ -94,10 +94,11 @@ type TReducerAction =
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
   | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
+  | { type: 'SET_PRIORITY'; payload: { priority: string } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  // console.log(state, type)
-  // console.log('payload:', payload)
+  console.log(state, type)
+  console.log('payload:', payload)
 
   switch (type) {
     case 'INITIALIZE_CARD': {
@@ -197,6 +198,15 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         cardDetail: {
           ...state.cardDetail,
           todolists,
+        },
+      }
+    }
+    case 'SET_PRIORITY': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          proiority: payload.priority,
         },
       }
     }
