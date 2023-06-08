@@ -11,12 +11,11 @@ import { Button } from 'primereact/button'
 
 import { useAppDispatch } from '@/hooks/useAppStore'
 import { setIsLogin, setToken } from '@/slices/userSlice'
-import axiosFetcher from '@/apis/axios'
 import { useRouter } from 'next/router'
-
+import { IRegisterForm } from '@/apis/interface/api'
 import ValidateController from '@/components/common/ValidateController'
 
-const { post } = axiosFetcher
+import { POST_SIGN_UP } from '@/apis/axios-service'
 
 const schema = yup
   .object({
@@ -26,17 +25,6 @@ const schema = yup
   .required()
 
 // 註冊基本表單欄位
-interface IRegisterForm {
-  email: string
-  password: string
-}
-
-interface IRegisterResponse {
-  user: {
-    token: string
-  }
-}
-
 export default function Register() {
   const router = useRouter()
   // 取首頁輸入註冊email
@@ -52,8 +40,7 @@ export default function Register() {
   const dispatch = useAppDispatch()
 
   const onSubmit = async (submitData: IRegisterForm) => {
-    const result = await post<IRegisterResponse>('/user/sign-up', submitData, false)
-
+    const result = await POST_SIGN_UP(submitData)
     if (result === undefined) return
     const { token } = result?.user ?? {}
 
