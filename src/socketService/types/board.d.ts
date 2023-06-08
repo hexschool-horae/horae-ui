@@ -151,6 +151,52 @@ export interface IBoardModifyListTitle {
   boardId: string
 }
 
+// 新增卡片 todo 標題
+export interface IAddNewTodoTitle {
+  cardId: string
+  boardId: string
+  title: string
+}
+
+// 修改卡片 todo 標題
+export interface IModifyTodoTitle {
+  cardId: string
+  titleId: string
+  boardId: string
+  title: string
+}
+
+// 刪除卡片 todo 標題
+export interface IDeleteTodo {
+  cardId: string
+  titleId: string
+  boardId: string
+}
+
+// 新增卡片細項
+export interface IAddTodoContent {
+  cardId: string
+  titleId: string
+  boardId: string
+  content: string
+}
+
+// 編輯卡片細項
+export interface IModifyTodoContent {
+  cardId: string
+  boardId: string
+  contentId: string
+  content: string
+  completed: boolean
+}
+
+// 編輯卡片細項
+export interface IDeleteTodoContent {
+  cardId: string
+  boardId: string
+  contentId: string
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -168,6 +214,12 @@ export type IBoardService = {
   modifyCardComment: (payload: IModifyCardComment) => void
   deleteCardComment: (payload: IDeleteCardComment) => void
   modifyListTitle: (payload: IBoardModifyListTitle) => void
+  addNewTodoTitle: (payload: IAddNewTodoTitle) => void
+  modifyTodoTitle: (payload: IModifyTodoTitle) => void
+  deleteTodo: (payload: IDeleteTodo) => void
+  addTodoContent: (payload: IAddTodoContent) => void
+  modifyTodoContent: (payload: IModifyTodoContent) => void
+  deleteTodoContent: (payload: IDeleteTodoContent) => void
   moveCard: () => undefined
   deleteCard: () => undefined
   moveList: () => undefined
