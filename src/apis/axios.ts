@@ -5,6 +5,7 @@ import { RootState } from '@/app/store'
 import type { AxiosInstance, AxiosResponse, AxiosError } from 'axios'
 import type { EnhancedStore } from '@reduxjs/toolkit'
 import type { IBasicResponse } from '@/types/api'
+import { dialogSliceAction } from '@/slices/dialogSlice'
 
 // app.js建立時，會注入store
 let store: EnhancedStore | null = null
@@ -68,12 +69,17 @@ async function post<T>(url: string, data?: unknown | null, isAuth = true) {
     }
 
     const clarifiedPath = url.replace(/[^ -~]/g, '')
+    store.dispatch(dialogSliceAction.pushSpinnerQueue(url))
     const response = await instance.post<T>(clarifiedPath, data)
 
     const { data: responseData } = response
     return responseData
   } catch (error) {
     console.warn(error)
+  } finally {
+    if (store) {
+      store.dispatch(dialogSliceAction.popSpinnerQueue(url))
+    }
   }
 }
 
@@ -95,12 +101,17 @@ async function patch<T>(url: string, data: unknown, isAuth = true) {
     }
 
     const clarifiedPath = url.replace(/[^ -~]/g, '')
+    store.dispatch(dialogSliceAction.pushSpinnerQueue(url))
     const response = await instance.patch<T>(clarifiedPath, data)
 
     const { data: responseData } = response
     return responseData
   } catch (error) {
     console.warn(error)
+  } finally {
+    if (store) {
+      store.dispatch(dialogSliceAction.popSpinnerQueue(url))
+    }
   }
 }
 
@@ -122,12 +133,17 @@ async function get<T>(url: string, isAuth = true) {
     }
 
     const clarifiedPath = url.replace(/[^ -~]/g, '')
+    store.dispatch(dialogSliceAction.pushSpinnerQueue(url))
     const response = await instance.get<T>(clarifiedPath)
 
     return response.data
   } catch (error) {
     console.warn(error)
     throw error
+  } finally {
+    if (store) {
+      store.dispatch(dialogSliceAction.popSpinnerQueue(url))
+    }
   }
 }
 
@@ -149,12 +165,17 @@ async function put<T>(url: string, data: unknown, isAuth = true) {
     }
 
     const clarifiedPath = url.replace(/[^ -~]/g, '')
+    store.dispatch(dialogSliceAction.pushSpinnerQueue(url))
     const response = await instance.put<T>(clarifiedPath, data)
 
     const { data: responseData } = response
     return responseData
   } catch (error) {
     console.warn(error)
+  } finally {
+    if (store) {
+      store.dispatch(dialogSliceAction.popSpinnerQueue(url))
+    }
   }
 }
 
@@ -176,6 +197,7 @@ async function DELETE<T>(url: string, data: unknown, isAuth = true) {
     }
 
     const clarifiedPath = url.replace(/[^ -~]/g, '')
+    store.dispatch(dialogSliceAction.pushSpinnerQueue(url))
     const response = await instance.delete<T>(clarifiedPath, {
       data,
     })
@@ -184,6 +206,10 @@ async function DELETE<T>(url: string, data: unknown, isAuth = true) {
     return responseData
   } catch (error) {
     console.warn(error)
+  } finally {
+    if (store) {
+      store.dispatch(dialogSliceAction.popSpinnerQueue(url))
+    }
   }
 }
 
