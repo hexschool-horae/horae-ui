@@ -80,6 +80,24 @@ export const socketServiceSlice = createSlice({
     archiveBoardList(state, action: PayloadAction<interfaces.IArchiveBoardListPayload>) {
       state.boardService?.archiveList(action.payload)
     },
+    addNewTodoTitle(state, action: PayloadAction<interfaces.IAddNewTodoTitle>) {
+      state.boardService?.addNewTodoTitle(action.payload)
+    },
+    modifyTodoTitle(state, action: PayloadAction<interfaces.IModifyTodoTitle>) {
+      state.boardService?.modifyTodoTitle(action.payload)
+    },
+    deleteTodo(state, action: PayloadAction<interfaces.IDeleteTodo>) {
+      state.boardService?.deleteTodo(action.payload)
+    },
+    addTodoContent(state, action: PayloadAction<interfaces.IAddTodoContent>) {
+      state.boardService?.addTodoContent(action.payload)
+    },
+    modifyTodoContent(state, action: PayloadAction<interfaces.IModifyTodoContent>) {
+      state.boardService?.modifyTodoContent(action.payload)
+    },
+    deleteTodoContent(state, action: PayloadAction<interfaces.IDeleteTodoContent>) {
+      state.boardService?.deleteTodoContent(action.payload)
+    },
     setBoardId(state, action: PayloadAction<string>) {
       state.boardId = action.payload
     },
