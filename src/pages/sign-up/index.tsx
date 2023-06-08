@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import classes from '@/pages/login/login.module.scss'
 
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -67,32 +68,24 @@ export default function Register() {
       <Head>
         <title>Horae - 註冊</title>
       </Head>
-
-      <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-bold mb-5">註冊</h1>
-
-        <div className="flex flex-col">
-          <ValidateController name="email" label="電子信箱" control={control}>
+      <div className="w-full h-full flex items-center justify-center">
+        <div className={classes['login-form-box']}>
+          <div className={classes.title}>Horae - 註冊</div>
+          <ValidateController name="email" label="電子信箱" control={control} className="mt-5">
             <InputText />
           </ValidateController>
-        </div>
-
-        <div className="flex flex-col mb-5">
-          <ValidateController name="password" label="密碼" control={control}>
+          <ValidateController name="password" label="密碼" control={control} className="mt-5">
             <InputText />
           </ValidateController>
-        </div>
-
-        <Button className=" bg-red-600 px-10 mb-6" onClick={handleSubmit(onSubmit)} rounded>
-          註冊
-        </Button>
-        <div>
-          已經有帳號了？
-          <Link href="login">
-            <Button className="text-red-600 p-0" link>
+          <Button className={`${classes['btn-login']} mt-7`} onClick={handleSubmit(onSubmit)} rounded>
+            註冊
+          </Button>
+          <div className="flex items-center mt-2">
+            <span>已經有帳號了？</span>
+            <Link href="login" className="text-red-600 underline">
               登入
-            </Button>
-          </Link>
+            </Link>
+          </div>
         </div>
       </div>
     </>
