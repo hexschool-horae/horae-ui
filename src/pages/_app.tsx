@@ -11,6 +11,7 @@ import RouterGuard from '@/app/RouterGuard'
 
 import { injectStore } from '@/apis/axios'
 import Layout from '@/components/layout'
+import Spinner from '@/components/common/dialog/Spinner'
 
 // 注入 redux toolkit
 injectStore(store)
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <RouterGuard>
           <Layout>
             <Component {...pageProps} />
+            <Spinner />
           </Layout>
         </RouterGuard>
       </PersistGate>

@@ -8,6 +8,7 @@ import boardReducer from '@/slices/boardSlice'
 import workspaceReducer from '@/slices/workspaceSlice'
 import socketServiceReducer from '@/slices/socketServiceSlice'
 import errorReducer from '@/slices/errorSlice'
+import dialogReducer from '@/slices/dialogSlice'
 
 const reducers = combineReducers({
   user: userReducer,
@@ -15,6 +16,7 @@ const reducers = combineReducers({
   error: errorReducer,
   workspace: workspaceReducer,
   socketService: socketServiceReducer,
+  dialog: dialogReducer,
 })
 
 //預設位置 localstorage。說明：https://github.com/rt2zz/redux-persist
