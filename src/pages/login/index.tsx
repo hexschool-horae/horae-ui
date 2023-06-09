@@ -54,10 +54,10 @@ export default function Register() {
         <div className={classes['login-form-box']}>
           <div className={classes.title}>Horae - 登入</div>
           <ValidateController name="email" label="電子信箱" control={control} className="mt-5">
-            <InputText />
+            <InputText type="text" />
           </ValidateController>
           <ValidateController name="password" label="密碼" control={control} className="mt-5">
-            <InputText />
+            <InputText type="password" />
           </ValidateController>
           <Button className={`${classes['btn-login']} mt-7`} onClick={handleSubmit(onSubmit)} rounded>
             登入
