@@ -3,6 +3,8 @@ import { InputText } from 'primereact/inputtext'
 import { useAppSelector } from '@/hooks/useAppStore'
 import { useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 
 export default function BoardTitle() {
   const boardTitle = useAppSelector(state => state.board?.singleBaord?.title) || ''
@@ -32,6 +34,7 @@ export default function BoardTitle() {
             title: localBoardTitle,
           })
         )
+        dispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TITLE_RESULT))
       }
     }
   }, [isEdit])
