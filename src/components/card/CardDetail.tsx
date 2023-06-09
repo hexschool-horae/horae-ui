@@ -20,6 +20,8 @@ import CardPopupTags from '@/components/card/CardPopupTags'
 import CardPopupPriority from './CardPopupPriority'
 import CardPopupWrapper from '@/components/card/CardPopupWrapper'
 import { GET_CARD_BY_ID } from '@/apis/axios-service'
+import CardPopupCalendar from './CardPopupCalendar'
+import CardDetailCalendar from './CardDetailCalendar'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -119,6 +121,9 @@ const CardInternal = () => {
                 <CardDetailTitle />
                 <CardDetailMember label={popupLabels.member} />
                 {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
+                {state.cardDetail.startDate != null && state.cardDetail.endDate != null && (
+                  <CardDetailCalendar label={popupLabels.calender} />
+                )}
                 <CardDetailDescribe />
                 <CardDetailTodoList />
                 <CardDetailComments />
@@ -144,7 +149,7 @@ const CardInternal = () => {
                   md:grid-cols-1 md:gap-2"
                 >
                   <CardSidebarButton name="移動" label={popupLabels.move} />
-                  <CardSidebarButton name="複製" label={popupLabels.copy} />
+                  {/* <CardSidebarButton name="複製" label={popupLabels.copy} /> */}
                   <CardSidebarButton name="分享" label={popupLabels.share} />
                   <CardSidebarButton name="優先權" label={popupLabels.priority} />
                   <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
@@ -165,6 +170,7 @@ const CardInternal = () => {
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>
         <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />
       </CardPopupWrapper>
+      <CardPopupCalendar label={popupLabels.calender} key={popupLabels.calender + state.popupKey} />
       <CardPopupPriority label={popupLabels.priority} key={popupLabels.priority + state.popupKey} />
     </>
   )

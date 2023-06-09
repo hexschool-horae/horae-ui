@@ -95,10 +95,12 @@ type TReducerAction =
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
   | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
   | { type: 'SET_PRIORITY'; payload: { priority: string } }
+  | { type: 'ADD_DATES'; payload: { startDate: number; endDate: number } }
+  | { type: 'DELETE_DATES'; payload: any }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  console.log(state, type)
-  console.log('payload:', payload)
+  // console.log(state, type)
+  // console.log('payload:', payload)
 
   switch (type) {
     case 'INITIALIZE_CARD': {
@@ -207,6 +209,26 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         cardDetail: {
           ...state.cardDetail,
           proiority: payload.priority,
+        },
+      }
+    }
+    case 'ADD_DATES': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+        },
+      }
+    }
+    case 'DELETE_DATES': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          startDate: null,
+          endDate: null,
         },
       }
     }
