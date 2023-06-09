@@ -26,5 +26,5 @@ export const dialogSlice = createSlice({
   },
 })
 
-export const dialogSliceAction = dialogSlice.actions //給React組件個別使用
+export const dialogSliceActions = dialogSlice.actions //給React組件個別使用
 export default dialogSlice.reducer
