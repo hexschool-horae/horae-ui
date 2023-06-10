@@ -42,7 +42,7 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
       await POST_USER_LOGOUT()
       dispatch(setIsLogin(false))
       dispatch(setToken(''))
-      router.push('/')
+      router.push('/login')
     } catch (e) {
       console.log(e)
     }
