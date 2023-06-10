@@ -24,7 +24,7 @@ export default function Board() {
   }, [])
 
   return (
-    <div className="bg-secondary-4 h-full py-[50px] px-[64px]">
+    <div className="h-full">
       <h2 className="text-2xl font-bold mb-6">歡迎！</h2>
       {userBoardsData.length === 0 ? (
         <p>
