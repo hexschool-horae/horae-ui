@@ -24,7 +24,7 @@ export default function Board() {
   }, [])
 
   return (
-    <div className="h-full">
+    <>
       <h2 className="text-2xl font-bold mb-6">歡迎！</h2>
       {userBoardsData.length === 0 ? (
         <p>
@@ -47,6 +47,6 @@ export default function Board() {
         </>
       )}
       <Button className="p-0" label="前往個人頁面" onClick={() => router.push('/profile')} link />
-    </div>
+    </>
   )
 }
