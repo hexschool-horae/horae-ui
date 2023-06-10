@@ -89,7 +89,6 @@ type TReducerAction =
   | { type: 'TOTGGLE_POPUP'; payload: string }
   | { type: 'UPDATE_TITLE'; payload: { title: string } }
   | { type: 'UPDATE_DESCRIBE'; payload: { describe: string } }
-  | { type: 'CREATE_COMMENT'; payload: { comment: string } }
   | { type: 'ADD_TAG'; payload: { tag: ITag } }
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
@@ -148,9 +147,6 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
           describe: payload.describe,
         },
       }
-    }
-    case 'CREATE_COMMENT': {
-      return { ...state }
     }
     case 'ADD_TAG': {
       const tags = [...state.cardDetail.tags, payload.tag]

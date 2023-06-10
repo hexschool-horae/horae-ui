@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-
-import style from './card.module.scss'
 import { Dialog } from 'primereact/dialog'
 import { ProgressSpinner } from 'primereact/progressspinner'
+import style from './card.module.scss'
 
+import { boardSliceActions } from '@/slices/boardSlice'
+import { useAppDispatch } from '@/hooks/useAppStore'
 import { CardDetailProvider, useCardDetail } from '@/contexts/cardDetailContext'
+
 import CardSidebarButton from '@/components/card/CardSidebarButton'
 import CardDetailTitle from '@/components/card/CardDetailTitle'
 import CardDetailMember from '@/components/card/CardDetailMember'
@@ -46,6 +48,7 @@ export default function CardDetail() {
 
 const CardInternal = () => {
   const { state, dispatch } = useCardDetail()
+  const appDispatch = useAppDispatch()
   const router = useRouter()
   const cardId = router.query.cardId as string
 
@@ -93,6 +96,8 @@ const CardInternal = () => {
           cardDetail: response.data,
         },
       })
+
+      appDispatch(boardSliceActions.setCardDetail(response.data))
     } catch (error) {
       console.error('Error fetching card data:', error)
     }
