@@ -125,7 +125,7 @@ const Board: FC = () => {
       <Head>
         <title>Horae - 看板</title>
       </Head>
-      <div className="flex flex-col h-full py-[50px] px-[64px]">
+      <div className="flex flex-col">
         <div className="mb-6">
           <MenuBar />
         </div>
