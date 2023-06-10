@@ -76,7 +76,25 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_LIST_TITLE_RESULT, () => undefined)
 
   // 監聽封存列表是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST_RESULT, () => undefined)
+
+  // 監聽 新增卡片 todo 標題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE_RESULT, () => undefined)
+
+  // 監聽 修改卡片 todo 標題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE_RESULT, () => undefined)
+
+  // 監聽 刪除卡片 todo 標題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_RESULT, () => undefined)
+
+  // 監聽 新增卡片細項是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT_RESULT, () => undefined)
+
+  // 監聽 修改卡片細項是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT_RESULT, () => undefined)
+
+  // 監聽 刪除卡片細項是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT_RESULT, () => undefined)
 
   // 監聽看板新增卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_CREATE_RESULT, data => {
@@ -163,6 +181,12 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     deleteCard,
     moveList,
     deleteList,
+    addNewTodoTitle,
+    modifyTodoTitle,
+    deleteTodo,
+    addTodoContent,
+    modifyTodoContent,
+    deleteTodoContent,
     terminateService,
   }
 }
@@ -253,6 +277,30 @@ const modifyListTitle = (payload: interfaces.IBoardModifyListTitle) => {
 
 const archiveBoardList = (payload: interfaces.IArchiveBoardListPayload) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST, payload)
+}
+
+const addNewTodoTitle = (payload: interfaces.IAddNewTodoTitle) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE, payload)
+}
+
+const modifyTodoTitle = (payload: interfaces.IModifyTodoTitle) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE, payload)
+}
+
+const deleteTodo = (payload: interfaces.IDeleteTodo) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO, payload)
+}
+
+const addTodoContent = (payload: interfaces.IAddTodoContent) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT, payload)
+}
+
+const modifyTodoContent = (payload: interfaces.IModifyTodoContent) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT, payload)
+}
+
+const deleteTodoContent = (payload: interfaces.IDeleteTodoContent) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT, payload)
 }
 
 const moveCard = () => undefined
