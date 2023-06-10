@@ -1,7 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
-import { persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
 
 import userReducer from '@/slices/userSlice'
 import boardReducer from '@/slices/boardSlice'
@@ -19,17 +17,8 @@ const reducers = combineReducers({
   dialog: dialogReducer,
 })
 
-//預設位置 localstorage。說明：https://github.com/rt2zz/redux-persist
-const persistConfig = {
-  key: 'app',
-  storage,
-  whitelist: ['user'],
-}
-
-const persistedReducer = persistReducer(persistConfig, reducers)
-
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: reducers,
   devTools: process.env.NODE_ENV !== 'production',
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
@@ -37,6 +26,6 @@ const store = configureStore({
     }),
 })
 
-export type RootState = ReturnType<typeof persistedReducer>
+export type RootState = ReturnType<typeof reducers>
 export type AppDispatch = typeof store.dispatch
 export default store
