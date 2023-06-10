@@ -1,11 +1,15 @@
-const httpErrorHandler = (status: number, message: string) => {
+import type { EnhancedStore } from '@reduxjs/toolkit'
+import { AppDispatch } from '@/app/store'
+import { setIsLogin } from '@/slices/userSlice'
+
+const httpErrorHandler = (status: number, message: string, store: EnhancedStore) => {
   switch (status) {
     case 400:
       response400(message)
       break
 
     case 401:
-      response401(message)
+      response401(message, store)
       break
 
     case 404:
@@ -34,8 +38,11 @@ const response400 = (message: string) => {
   console.warn(message)
 }
 
-const response401 = (message: string) => {
-  console.warn(message)
+const response401 = (message: string, store: EnhancedStore) => {
+  // 新增登出機制
+  alert(message)
+  const dispatch: AppDispatch = store.dispatch
+  dispatch(setIsLogin(false))
 }
 
 const response404 = () => {

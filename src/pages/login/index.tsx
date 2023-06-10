@@ -83,7 +83,7 @@ export default function Register() {
 
         <div className="flex flex-col mb-5">
           <ValidateController name="password" label="密碼" control={control}>
-            <InputText />
+            <InputText type="password" />
           </ValidateController>
         </div>
 

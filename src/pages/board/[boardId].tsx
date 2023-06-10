@@ -44,18 +44,39 @@ const Board: FC = () => {
     if (!Boolean(tempArr.length)) return
 
     if (event.active.data.current.eventType === 'card') {
-      const {
-        current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
-      } = event.active.data as { current: { cardPosition: number; listPosition: number } }
-      const {
-        current: { cardPosition: overCardPosition, listPosition: overListPosition },
-      } = event.over.data as { current: { cardPosition: number; listPosition: number } }
-      /* @ts-ignore */
-      const temp = tempArr[activeListPosition].cards[activeCardPosition]
-      /* @ts-ignore */
-      tempArr[activeListPosition].cards[activeCardPosition] = tempArr[overListPosition].cards[overCardPosition]
-      /* @ts-ignore */
-      tempArr[overListPosition].cards[overCardPosition] = temp
+      if (event.over.data.current.eventType === 'list') {
+        const {
+          current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
+        } = event.active.data as { current: { cardPosition: number; listPosition: number } }
+        const {
+          current: { cardPosition: overCardPosition, listPosition: overListPosition },
+        } = event.over.data as { current: { cardPosition: number; listPosition: number } }
+
+        if (event.over.data.current.cardPosition === 0) {
+          tempArr[overListPosition].cards.unshift(tempArr[activeListPosition].cards[activeCardPosition])
+          tempArr[activeListPosition].cards.splice(activeCardPosition, 1)
+        } else {
+          tempArr[overListPosition].cards.push(tempArr[activeListPosition].cards[activeCardPosition])
+          tempArr[activeListPosition].cards.splice(activeCardPosition, 1)
+        }
+      } else {
+        const {
+          current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
+        } = event.active.data as { current: { cardPosition: number; listPosition: number } }
+        const {
+          current: { cardPosition: overCardPosition, listPosition: overListPosition },
+        } = event.over.data as { current: { cardPosition: number; listPosition: number } }
+
+        /* @ts-ignore */
+        const temp =
+          activeCardPosition === undefined
+            ? tempArr[activeListPosition].cards[activeCardPosition]
+            : tempArr[activeListPosition].cards[activeCardPosition]
+        /* @ts-ignore */
+        tempArr[activeListPosition].cards[activeCardPosition] = tempArr[overListPosition].cards[overCardPosition]
+        /* @ts-ignore */
+        tempArr[overListPosition].cards[overCardPosition] = temp
+      }
     } else {
       const {
         current: { listPosition: activeListPosition },
@@ -68,7 +89,7 @@ const Board: FC = () => {
       tempArr[activeListPosition] = tempArr[overListPosition]
       tempArr[overListPosition] = temp
     }
-
+    console.log('tempArr', tempArr)
     dispatch(boardSliceActions.updateBoardList(tempArr))
   }
 
@@ -92,12 +113,6 @@ const Board: FC = () => {
           message: errorMessage,
         })
       )
-      // toastRef.current?.show({
-      //   severity: 'error',
-      //   summary: 'Error Message',
-      //   detail: errorMessage,
-      //   life: 3000,
-      // })
     }
   }
 

@@ -83,6 +83,34 @@ export const GET_BOARD_BY_ID = (boardId: string) => {
   return axiosFetcher.get<interfaces.ISingleBoardResponse>(`${apiPath.GET_BOARD_BY_ID}/${boardId}`)
 }
 
+/** B03-6 取得單一看板的所有成員 */
+export const GET_BOARD_ALL_MEMBERS_BY_ID = (boardId: string) => {
+  return axiosFetcher.get<interfaces.IBoardMembersResponse>(
+    `${apiPath.GET_BOARDS_ALL_MEMBERS_BY_ID}/${boardId}/members`
+  )
+}
+
+/** B03-7 單一看板新增成員 */
+export const POST_BOARD_MEMBERS_BY_ID = (boardId: string, data: unknown) => {
+  return axiosFetcher.post<interfaces.IBasicResponse>(`${apiPath.POST_BOARD_MEMBERS_BY_ID}/${boardId}/members`, data)
+}
+
+/** B03-8 單一看板設定成員權限 */
+export const PATCH_BOARD_MEMBERS_BY_ID = (boardId: string, data: unknown) => {
+  return axiosFetcher.patch<interfaces.IBoardMembersPermissionResponse>(
+    `${apiPath.PATCH_BOARD_MEMBERS_BY_ID}/${boardId}/members`,
+    data
+  )
+}
+
+/** B03-9 單一看板刪除成員 */
+export const DELETE_BOARD_MEMBERS_BY_ID = (boardId: string, data: unknown) => {
+  return axiosFetcher.DELETE<interfaces.IBoardMembersPermissionResponse>(
+    `${apiPath.DELETE_BOARD_MEMBERS_BY_ID}/${boardId}/members`,
+    data
+  )
+}
+
 /** B03-13 取得單一看板的所有標籤 */
 export const GET_BOARD_TAGS_BY_ID = (boardId: string) => {
   return axiosFetcher.get<interfaces.IBoardTagsResponse>(`${apiPath.GET_BOARD}/${boardId}/tags`)

@@ -1,38 +1,98 @@
+import { memo, useState } from 'react'
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown'
 import { classNames } from 'primereact/utils'
 import Style from './MemberInfoGroup.module.scss'
-import { ReactNode } from 'react'
 
+import { useAppSelector } from '@/hooks/useAppStore'
+import { PATCH_BOARD_MEMBERS_BY_ID, DELETE_BOARD_MEMBERS_BY_ID } from '@/apis/axios-service'
+
+// import { errorSliceActions } from '@/slices/errorSlice'
 /** 團隊成員資訊 */
-interface IMemberInfoModel {
-  /** url */
-  img?: string
-  title?: string | ReactNode
-  subtitle?: string | ReactNode
+interface IBoardMember {
+  userId: {
+    _id: string
+    name: string
+    email: string
+  }
+  role: string
+  inviteHashData: string
+  _id: string
 }
 
-export default function MemberInfoGroup({
-  className,
-  model,
-  append = <></>,
-}: {
-  model: IMemberInfoModel
-  className?: string
-  append?: ReactNode
-}) {
-  if (model === undefined) {
-    return <></>
+interface IPermissonOption {
+  name: string
+  code: string | number
+}
+
+const permissionOptions = new Map([
+  ['admin', '管理員'],
+  ['editor', '成員'],
+  ['exit', '離開看板'],
+])
+
+const MemberInfoGroup = ({ className, model }: { model: IBoardMember; className?: string }) => {
+  const boardId = useAppSelector(state => state.board.boardId)
+  // const dispatch = useAppDispatch()
+  const [permission, setPermission] = useState<IPermissonOption>({
+    name: permissionOptions.get(model.role) || '',
+    code: model.role,
+  })
+
+  const handleChangePermission = (value: IPermissonOption) => {
+    setPermission(value)
+    if (model.role === 'admin' && value.code === 'admin') return
+
+    if (value.code !== 'leave') {
+      // try {
+      PATCH_BOARD_MEMBERS_BY_ID(boardId, {
+        role: value,
+        userId: model.userId?._id,
+      })
+      // } catch (error) {
+      //   console.warn(error)
+      //   dispatch(
+      //     errorSliceActions.pushNewErrorMessage({
+      //       code: -1,
+      //       message: '成員權限設定錯誤',
+      //     })
+      //   )
+      // }
+    } else {
+      DELETE_BOARD_MEMBERS_BY_ID(boardId, {
+        userId: model.userId?._id,
+      })
+    }
   }
 
-  return (
+  return model !== undefined ? (
     <div className={classNames(className, Style.member_info_item)}>
       {/* 照片之後補上 */}
-      {/* <img src={img} alt="" style={{ width: "16px", height: "16px", marginRight: "0.75rem" }} /> */}
+
       <div className="w-[3rem] h-[3rem] bg-black rounded-full mr-3"></div>
       <div>
-        <span>{model.title}</span>
-        <div className={classNames(Style.member_info_subtitle, 'text-gray-2')}>{model.subtitle}</div>
+        <span>{model.userId?.name}</span>
+        <div className={classNames(Style.member_info_subtitle, 'text-gray-2')}>{model.userId?.email}</div>
       </div>
-      <span className="ml-auto"> {append}</span>
+      <span className="ml-auto">
+        <Dropdown
+          className="w-full md:w-14rem"
+          value={permission}
+          placeholder={permission.name}
+          options={Array.from(permissionOptions).map(item => ({
+            name: item[1],
+            code: item[0],
+            disabled: model.role === item[0],
+          }))}
+          optionLabel="name"
+          onChange={(e: DropdownChangeEvent) => {
+            handleChangePermission(e.value)
+          }}
+        />
+      </span>
     </div>
+  ) : (
+    <></>
   )
 }
+
+export default memo(MemberInfoGroup)

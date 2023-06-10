@@ -230,3 +230,39 @@ export interface ISingleBoardResponse extends IBasicResponse {
     yourPermission: string
   }
 }
+
+/** B03-6 取得單一看板的所有成員 */
+export interface IBoardMembersResponse extends IBasicResponse {
+  data: {
+    title: string
+    viewSet: string
+    members: [
+      {
+        userId: {
+          _id: string
+          name: string
+          email: string
+        }
+        role: string
+        inviteHashData: string
+        _id: string
+      }
+    ]
+  }
+}
+
+/** B03-7 */
+
+/** B03-8 單一看板設定成員權限 */
+export interface IBoardMembersPermissionResponse extends IBasicResponse {
+  data: {
+    userId: {
+      _id: string
+      name: string
+      email: string
+    }
+    role: string
+    inviteHashData: string
+    _id: string
+  }[]
+}
