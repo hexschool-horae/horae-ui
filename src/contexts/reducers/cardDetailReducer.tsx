@@ -128,6 +128,8 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         Object.keys(updatedPopups).forEach(popupId => {
           if (popupId !== payload) {
             updatedPopups[popupId] = false
+          } else {
+            updatedPopups[popupId] = true
           }
         })
       }

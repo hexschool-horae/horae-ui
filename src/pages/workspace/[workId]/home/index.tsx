@@ -31,7 +31,7 @@ export default function Home() {
   }
 
   return (
-    <>
+    <div className="bg-secondary-4 min-h-full py-[50px] px-[64px]">
       {boardData.title ? (
         <>
           <WorkSpaceTitle boardData={boardData}></WorkSpaceTitle>
@@ -54,6 +54,6 @@ export default function Home() {
       ) : (
         ''
       )}
-    </>
+    </div>
   )
 }

@@ -29,11 +29,7 @@ export interface Boards {
 
 /** 單一工作區成員*/
 export interface IWorkSpaceMembersByIdResponse {
-  userId: {
-    _id: string
-    name: string
-    email: string
-  }
+  userId: IUserId
   role: string
   _id: string
 }
@@ -45,11 +41,7 @@ export interface DeleteMembersDataRequest {
   userId: string
 }
 export interface IProfileData {
-  data: {
-    name: string
-    email: string
-    _id: string
-  }
+  data: IUserId
 }
 /** B01-9 取得使用者所有工作區看板 */
 export interface IUserBoardDataResponse {
@@ -196,6 +188,28 @@ export interface ISingleBoardResponse extends IBasicResponse {
   }
 }
 
+/** B03-6 取得單一看板的所有成員 */
+export interface IBoardAllMembersDataResponse {
+  data: IBoardAllMembersData
+}
+export interface IBoardAllMembersData {
+  title: string
+  viewSet: string
+  members: IBoardMembers[]
+}
+export interface IBoardMembers {
+  userId: IUserId
+  role: string
+  inviteHashData: string
+  _id: string
+}
+export interface IUserId {
+  _id: string
+  name: string
+  email: string
+  isSelected: boolean
+}
+
 /** B05-9 在卡片新增標籤 */
 export interface IPostCardTagRequest {
   tagId: string
@@ -300,4 +314,13 @@ export interface IPutCardCommentRequest {
 /** B05-13 卡片評論刪除 */
 export interface IDeleteCardCommentRequest {
   commentId: string
+}
+
+/** B05-20 卡片成員新增 */
+export interface IPostCardMemberRequest {
+  memberId: string
+}
+/** B05-21 卡片成員刪除 */
+export interface IDeleteCardMemberRequest {
+  memberId: string
 }

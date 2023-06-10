@@ -203,7 +203,7 @@ export default function Members() {
   }, [workId])
 
   return (
-    <div key={workspaceId}>
+    <div className="bg-secondary-4 min-h-full py-[50px] px-[64px]" key={workspaceId}>
       {/* 確認對話框 */}
       <ConfirmDialog
         visible={showAddMembersConfirmation}

@@ -66,7 +66,7 @@ export default function Setting() {
   }, [workId])
 
   return (
-    <div>
+    <div className="bg-secondary-4 min-h-full py-[50px] px-[64px]">
       {/* 確認對話框 */}
       <ConfirmDialog
         visible={showAddMembersConfirmation}

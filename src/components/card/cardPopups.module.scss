@@ -15,3 +15,21 @@
     text-align: center;
   }
 }
+// 成員
+.member_item_link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: pointer;
+  &:hover {
+    @apply bg-secondary-4;
+    .member_profile {
+      @apply text-secondary-3;
+    }
+  }
+}
+.member_item_left {
+  display: flex;
+  align-items: center;
+}
