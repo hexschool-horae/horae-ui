@@ -8,6 +8,7 @@ import IconBoard from '@/assets/icons/icon_board.svg'
 import IconWorkspace from '@/assets/icons/icon_workspace.svg'
 import IconAdd from '@/assets/icons/icon_add.svg'
 import IconArrowDown from '@/assets/icons/icon_arrow_down.svg'
+import IconArrowLeft from '@/assets/icons/icon_left_arrow.svg'
 
 interface ISidebarProps {
   className?: string
@@ -31,6 +32,12 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
   const [userBoardList, setUserBoardList] = useState<IUserBoardDataRes[]>([])
   const [userBoardMenuToggleStatus, setUserBoardMenuToggleStatus] = useState<IUserBoardMenuToggleStatus[]>([])
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
+  const [toggleSidebar, setToggleSidebar] = useState<boolean>(false)
+
+  const onToggleSidebar = () => {
+    setToggleSidebar(!toggleSidebar)
+  }
+
   const showDialog = () => {
     setShowWorkSpaceModal(true)
   }
@@ -76,19 +83,21 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
   }
 
   return (
-    <div className={`hide-scrollbar ${classes.sidebar} ${className} ${sidebarStyle}`}>
-      <Link href="/board" className="cursor-pointer">
-        <div className="flex items-center">
-          <IconBoard />
-          <span className="ml-1">看板</span>
+    <div className={`${classes.sidebar} ${className} ${sidebarStyle} ${toggleSidebar ? classes.close : ''}`}>
+      <div className="px-5 pt-4">
+        <Link href="/board" className="cursor-pointer">
+          <div className="flex items-center">
+            <IconBoard />
+            <span className="ml-1">看板</span>
+          </div>
+        </Link>
+        <div className="flex items-center mt-6 mb-6 cursor-pointer" onClick={showDialog}>
+          <IconWorkspace />
+          <span className="ml-1">工作區</span>
+          <IconAdd className="ml-auto w-6 h-6" />
         </div>
-      </Link>
-      <div className="flex items-center mt-6 mb-6 cursor-pointer" onClick={showDialog}>
-        <IconWorkspace />
-        <span className="ml-1">工作區</span>
-        <IconAdd className="ml-auto w-6 h-6" />
       </div>
-      <div className={classes['workspace-list']}>
+      <div className={`${classes['workspace-list']} px-5 pb-5 hide-scrollbar`}>
         {userBoardList.map((item, index) => {
           return (
             <div className={classes['workspace-list-item']} key={index}>
@@ -118,7 +127,9 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
           )
         })}
       </div>
-
+      <div className={`${classes['toggle-btn']}`} onClick={() => onToggleSidebar()}>
+        <IconArrowLeft className={`w-4 h-4 text-white ${toggleSidebar ? classes.close : ''}`} />
+      </div>
       <WorkSpaceModel
         visible={showWorkSpaceModal}
         onHide={hideDialog}
