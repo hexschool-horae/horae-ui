@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import IconLogo from '@/assets/icons/icon_logo.svg'
 import Link from 'next/link'
-import { InputText } from 'primereact/inputtext'
 import { POST_USER_LOGOUT } from '@/apis/axios-service'
 import { useRouter } from 'next/router'
 import { AppDispatch } from '@/app/store'
@@ -36,20 +35,9 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
 
   return (
     <div className={`flex items-center py-4 px-[50px] text-black border-b border-white ${headerStyle}`}>
-      <IconLogo />
-      <Link href="/board" className="ml-8">
-        工作區
+      <Link href="/board">
+        <IconLogo className="cursor-pointer" />
       </Link>
-      <Link href="/board" className="ml-5">
-        最近的
-      </Link>
-      <Link href="/board" className="ml-5">
-        已標記
-      </Link>
-      <span className="p-input-icon-left ml-[200px]">
-        <i className="pi pi-search" />
-        <InputText placeholder="Search" />
-      </span>
       <div className="ml-auto flex items-center">
         <span className="text-black mr-4 cursor-pointer" onClick={onLogout}>
           登出
