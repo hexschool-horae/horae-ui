@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { useAppDispatch } from '@/hooks/useAppStore'
-import { setIsLogin, setToken } from '@/slices/userSlice'
+import { setIsLogin, setToken, setProfile } from '@/slices/userSlice'
 import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
 import ValidateController from '@/components/common/ValidateController'
@@ -41,6 +41,7 @@ export default function Register() {
 
     dispatch(setToken(token))
     dispatch(setIsLogin(true))
+    dispatch(setProfile(submitData.email))
     // 重置表單
     reset()
   }
