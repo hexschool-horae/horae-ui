@@ -1,22 +1,20 @@
-import axiosFetcher from '@/apis/axios'
 import { useEffect, useState, FC } from 'react'
-import { Button } from 'primereact/button'
-import { useRouter } from 'next/router'
+import classes from '@/components/common/admin/Sidebar.module.scss'
 import WorkSpaceModel from '@/components/workSpace/WorkSpaceModel'
 import { IUserBoardDataRes } from '@/apis/interface/api'
-const { get } = axiosFetcher
-
+import { GET_ALL_WORK_SPACE } from '@/apis/axios-service'
+import Link from 'next/link'
+import IconLeftArrow from '@/assets/icons/icon_left_arrow.svg'
+import IconBoard from '@/assets/icons/icon_board.svg'
+import IconWorkspace from '@/assets/icons/icon_workspace.svg'
+import IconAdd from '@/assets/icons/icon_add.svg'
 interface ISidebarProps {
   className?: string
   boardId?: string
-}
-
-interface dataRes {
-  data: Array<IUserBoardDataRes>
+  alwaysHide?: boolean | null
 }
 
 const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
-  const router = useRouter()
   const sidebarStyle = (() => {
     if (boardId) {
       return 'bg-gray-3'
@@ -25,21 +23,23 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
     }
   })()
   const [userBoardList, setUserBoardList] = useState<IUserBoardDataRes[]>([])
-  const [visible, setVisible] = useState(false)
+  const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const showDialog = () => {
-    setVisible(true)
+    setShowWorkSpaceModal(true)
   }
 
   const hideDialog = () => {
-    setVisible(false)
+    setShowWorkSpaceModal(false)
   }
 
   /** B02-2 取得登入者所有工作區標題清單  */
   const handleGetWorkSpaceTitleData = async () => {
-    console.log('--側邊攔--')
-    const result = await get<dataRes>('/work-space')
-    if (!result) return
-    setUserBoardList(result.data)
+    try {
+      const result = await GET_ALL_WORK_SPACE()
+      setUserBoardList(result.data)
+    } catch (e) {
+      console.warn(e)
+    }
   }
 
   useEffect(() => {
@@ -50,77 +50,50 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
   }
 
   return (
-    <div className={`w-[332px] ${className} ${sidebarStyle}`}>
-      <nav>
-        <ul>
-          <li>
-            <Button
-              className="text-gray-500 px-5 sm:text-base text-sm focus:border-transparent"
-              label="看板"
-              onClick={() => router.push('/board')}
-              link
-              severity="info"
-            />
-          </li>
-          <li>
-            <div className="flex items-center justify-between">
-              <Button
-                className="text-black px-5 sm:text-base text-sm focus:border-transparent"
-                label="工作區"
-                link
-                severity="info"
-                disabled
-              />
-              <div className="mr-5 text-secondary-3 cursor-pointer text-lg" onClick={showDialog}>
-                +
+    <div
+      className={`w-[332px] relative p-5 inline-flex flex-col text-base leading-none text-black ${className} ${sidebarStyle}`}
+    >
+      <Link href="/board" className="cursor-pointer">
+        <div className="flex items-center">
+          <IconBoard />
+          <span className="ml-1">看板</span>
+        </div>
+      </Link>
+      <div className="flex items-center mt-6 mb-6 cursor-pointer" onClick={showDialog}>
+        <IconWorkspace />
+        <span className="ml-1">工作區</span>
+        <IconAdd className="ml-auto w-6 h-6" />
+      </div>
+      <div className={classes['workspace-list']}>
+        {userBoardList.map((item, index) => {
+          return (
+            <div className={classes['workspace-list-item']} key={index}>
+              <div className="flex items-center">
+                <span className="bg-primary text-white rounded py-1.5 px-[10px] mr-3">{getShortName(item.title)}</span>
+                <span>{item.title}</span>
+              </div>
+              <div className="flex flex-col ml-[45px] mt-4">
+                <Link href={`/workspace/${item._id}/home`}>看板</Link>
+                <Link href={`/workspace/${item._id}/members`} className="mt-3">
+                  成員
+                </Link>
+                <Link href={`/workspace/${item._id}/setting`} className="mt-3">
+                  設定
+                </Link>
               </div>
             </div>
-
-            <ul className="ml-0">
-              {userBoardList.map((item, index) => (
-                <li key={index}>
-                  <Button link disabled>
-                    <span className="bg-primary text-white rounded py-1.5 px-[10px] mr-3">
-                      {getShortName(item.title)}
-                    </span>
-                    {item.title}
-                  </Button>
-                  <ul className="ml-14">
-                    <li>
-                      <Button
-                        label="看板"
-                        onClick={() => router.push(`/workspace/${item._id}/home`)}
-                        size="small"
-                        link
-                      />
-                    </li>
-                    <li>
-                      <Button
-                        label="成員"
-                        onClick={() => router.push(`/workspace/${item._id}/members`)}
-                        size="small"
-                        link
-                      />
-                    </li>
-                    <li>
-                      <Button
-                        label="設定"
-                        onClick={() => router.push(`/workspace/${item._id}/setting`)}
-                        size="small"
-                        link
-                      />
-                    </li>
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          </li>
-        </ul>
-      </nav>
+          )
+        })}
+      </div>
+      <div className="absolute right-0 top-[30px] transform translate-x-1/2">
+        <div className={classes['toggle-btn']}>
+          <IconLeftArrow />
+        </div>
+      </div>
       <WorkSpaceModel
-        visible={visible}
+        visible={showWorkSpaceModal}
         onHide={hideDialog}
-        setVisible={setVisible}
+        setVisible={setShowWorkSpaceModal}
         handleGetWorkSpaceTitleData={handleGetWorkSpaceTitleData}
       />
     </div>
