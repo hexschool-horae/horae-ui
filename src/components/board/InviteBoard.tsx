@@ -47,12 +47,12 @@ export default function InviteBoard() {
             <div className="mb-6">
               <div className="flex">
                 <InputText
-                  className="w-4/5"
+                  className="w-3/4"
                   placeholder="請輸入郵件地址或名稱"
                   onChange={e => handleInviteMembers(e.target.value)}
                 />
-                {/* <Button label="成員" className="bg-secondary-4 text-secondary-1 ml-auto" rounded></Button> */}
-                <Button label="邀請" className="bg-secondary-1 w-1/5 ml-3" rounded></Button>
+                <Button label="成員" className="bg-secondary-4 text-secondary-1 ml-auto" rounded></Button>
+                <Button label="邀請" className="bg-secondary-1 ml-3" rounded></Button>
               </div>
             </div>
 

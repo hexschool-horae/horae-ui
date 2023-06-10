@@ -30,6 +30,8 @@ export default {
   POST_BOARD_MEMBERS_BY_ID: '/board',
   PATCH_BOARD_MEMBERS_BY_ID: '/board',
   DELETE_BOARD_MEMBERS_BY_ID: '/board',
+  POST_BOARD_INVITATION_LINK_BY_ID: '/board',
+  GET_BOARD_INVITATION_DATA_BY_ID: '/board',
   POST_BOARD_COVER_BY_ID: '/board/:board-id/cover',
   PUT_BOARD_COVER_BY_ID: '/board/:board-id/cover',
   DELETE_BOARD_COVER_BY_ID: '/board/:board-id/cover',

@@ -111,6 +111,20 @@ export const DELETE_BOARD_MEMBERS_BY_ID = (boardId: string, data: unknown) => {
   )
 }
 
+/** B03-10 產生看板邀請連結 */
+export const POST_BOARD_INVITATION_LINK_BY_ID = (boardId: string) => {
+  return axiosFetcher.post<interfaces.IBoardInvitationLinkResponse>(
+    `${apiPath.POST_BOARD_INVITATION_LINK_BY_ID}/${boardId}/invitation-link`
+  )
+}
+
+/** B03-12 取得看板邀請資料 */
+export const GET_BOARD_INVITATION_DATA_BY_ID = (boardId: string) => {
+  return axiosFetcher.post<interfaces.IBoardInvitationDataResponse>(
+    `${apiPath.GET_BOARD_INVITATION_DATA_BY_ID}/${boardId}/invitation-data`
+  )
+}
+
 /** B03-13 取得單一看板的所有標籤 */
 export const GET_BOARD_TAGS_BY_ID = (boardId: string) => {
   return axiosFetcher.get<interfaces.IBoardTagsResponse>(`${apiPath.GET_BOARD}/${boardId}/tags`)

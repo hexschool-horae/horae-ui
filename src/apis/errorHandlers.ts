@@ -1,8 +1,11 @@
 import type { EnhancedStore } from '@reduxjs/toolkit'
 import { AppDispatch } from '@/app/store'
 import { setIsLogin } from '@/slices/userSlice'
+import { errorSliceActions } from '@/slices/errorSlice'
 
 const httpErrorHandler = (status: number, message: string, store: EnhancedStore) => {
+  const dispatch: AppDispatch = store.dispatch
+
   switch (status) {
     case 400:
       response400(message)
@@ -32,6 +35,14 @@ const httpErrorHandler = (status: number, message: string, store: EnhancedStore)
       responseSpecial()
       break
   }
+
+  //錯誤由左下角的Toast顯示
+  dispatch(
+    errorSliceActions.pushNewErrorMessage({
+      code: -1,
+      message,
+    })
+  )
 }
 
 const response400 = (message: string) => {

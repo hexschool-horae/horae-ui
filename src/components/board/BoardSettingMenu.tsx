@@ -1,6 +1,5 @@
-import { useRef, MouseEvent } from 'react'
-import { useAppSelector } from '@/hooks/useAppStore'
-import { useAppDispatch } from '@/hooks/useAppStore'
+import { useRef, MouseEvent, useEffect, useState } from 'react'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 import { Button } from 'primereact/button'
@@ -11,14 +10,14 @@ import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { TieredMenu } from 'primereact/tieredmenu'
 
-// import MemberInfoGroup from './MemberInfoGroup'
-
 import Style from './BoardSettingMenu.module.scss'
 import CardPopupTags from '../card/CardPopupTags'
+import CoverSelector from './CoverSelector'
+import { POST_BOARD_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
+import { classNames } from 'primereact/utils'
 
 const BoardAboutTemplate = () => {
   const members = useAppSelector(state => state.board?.singleBaord?.members)
-
   const admins = members?.filter(item => item.role === 'admin')
   const admin = admins?.[0]
 
@@ -102,6 +101,7 @@ const setting1Items = settingData1Items.map((item, i) => ({
 
 const setting2Items = {
   label: '新增看板背景',
+  items: [{ template: <CoverSelector />, popup: true }],
   template: (
     <div className={Style.setting_item}>
       <div className={Style.setting_item_label}>更換背景</div>
@@ -141,6 +141,11 @@ const CloseBoardItem = () => {
 // }))
 
 export default function BoardSettingMenu() {
+  const boardId = useAppSelector(state => state.board.boardId)
+  const [invitationLink, setInvitationLink] = useState('')
+  const [isCopied, setIsCopied] = useState(false)
+  const linkInputRef = useRef<HTMLInputElement>(null)
+
   const menu = useRef<Menu>(null)
   const items: MenuItem[] = [
     {
@@ -164,7 +169,21 @@ export default function BoardSettingMenu() {
       label: 'share',
       template: () => (
         <div className={Style.setting_item_shared}>
-          <InputText placeholder="分享連結" style={{ width: '100%', marginBottom: '0.25rem' }} />
+          <InputText
+            ref={linkInputRef}
+            placeholder="分享連結"
+            value={invitationLink}
+            style={{ width: '100%', marginBottom: '0.25rem' }}
+            onClick={handleCopyIvitationLink}
+            onBlur={() => setIsCopied(false)}
+          />
+
+          {isCopied && (
+            <p style={{ color: '#487BFF' }} className={classNames('mb-2', Style.setting_item_label)}>
+              已複製連結
+            </p>
+          )}
+
           <p style={{ color: '#606060' }} className={Style.setting_item_label}>
             所有人都能查看這個看板，但只有看板成員可以編輯
           </p>
@@ -202,6 +221,34 @@ export default function BoardSettingMenu() {
     if (menu.current === null) return
     menu.current.toggle(event)
   }
+
+  const handleGetInvitationLink = async () => {
+    const result = await POST_BOARD_INVITATION_LINK_BY_ID(boardId)
+    if (result === undefined) return
+    const {
+      data: { invitationLink },
+    } = result
+
+    invitationLink && setInvitationLink(invitationLink)
+  }
+
+  const handleCopyIvitationLink = async () => {
+    if (linkInputRef.current) {
+      try {
+        await navigator.clipboard.writeText(linkInputRef.current.value)
+        setIsCopied(true)
+      } catch (error) {
+        console.log(error)
+        setIsCopied(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (boardId) {
+      handleGetInvitationLink()
+    }
+  }, [boardId])
 
   return (
     <>

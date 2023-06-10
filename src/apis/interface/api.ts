@@ -251,8 +251,6 @@ export interface IBoardMembersResponse extends IBasicResponse {
   }
 }
 
-/** B03-7 */
-
 /** B03-8 單一看板設定成員權限 */
 export interface IBoardMembersPermissionResponse extends IBasicResponse {
   data: {
@@ -265,4 +263,18 @@ export interface IBoardMembersPermissionResponse extends IBasicResponse {
     inviteHashData: string
     _id: string
   }[]
+}
+
+export interface IBoardInvitationLinkResponse extends IBasicResponse {
+  data: {
+    invitationLink: string
+  }
+}
+
+/** B03-12 取得看板邀請資料 */
+export interface IBoardInvitationDataResponse extends IBasicResponse {
+  data: {
+    title: string
+    inviter: string
+  }
 }

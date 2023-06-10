@@ -5,8 +5,6 @@ import Style from './MemberInfoGroup.module.scss'
 
 import { useAppSelector } from '@/hooks/useAppStore'
 import { PATCH_BOARD_MEMBERS_BY_ID, DELETE_BOARD_MEMBERS_BY_ID } from '@/apis/axios-service'
-
-// import { errorSliceActions } from '@/slices/errorSlice'
 /** 團隊成員資訊 */
 interface IBoardMember {
   userId: {
@@ -32,31 +30,20 @@ const permissionOptions = new Map([
 
 const MemberInfoGroup = ({ className, model }: { model: IBoardMember; className?: string }) => {
   const boardId = useAppSelector(state => state.board.boardId)
-  // const dispatch = useAppDispatch()
   const [permission, setPermission] = useState<IPermissonOption>({
     name: permissionOptions.get(model.role) || '',
     code: model.role,
   })
 
-  const handleChangePermission = (value: IPermissonOption) => {
+  const handleChangePermission = async (value: IPermissonOption) => {
     setPermission(value)
     if (model.role === 'admin' && value.code === 'admin') return
 
     if (value.code !== 'leave') {
-      // try {
       PATCH_BOARD_MEMBERS_BY_ID(boardId, {
         role: value,
         userId: model.userId?._id,
       })
-      // } catch (error) {
-      //   console.warn(error)
-      //   dispatch(
-      //     errorSliceActions.pushNewErrorMessage({
-      //       code: -1,
-      //       message: '成員權限設定錯誤',
-      //     })
-      //   )
-      // }
     } else {
       DELETE_BOARD_MEMBERS_BY_ID(boardId, {
         userId: model.userId?._id,
@@ -73,6 +60,7 @@ const MemberInfoGroup = ({ className, model }: { model: IBoardMember; className?
         <span>{model.userId?.name}</span>
         <div className={classNames(Style.member_info_subtitle, 'text-gray-2')}>{model.userId?.email}</div>
       </div>
+
       <span className="ml-auto">
         <Dropdown
           className="w-full md:w-14rem"
