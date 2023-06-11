@@ -147,7 +147,20 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽 修改卡片 todo 標題是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE_RESULT, data => {
+    console.log('監聽 修改卡片 todo 標題是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateTodoLists(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 刪除卡片 todo 標題是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_RESULT, data => {
