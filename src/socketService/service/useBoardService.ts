@@ -106,7 +106,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER_RESULT, () => undefined)
 
   // 監聽 看板新增成員是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, () => undefined)
 
   // 監聽看板新增卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_CREATE_RESULT, data => {
