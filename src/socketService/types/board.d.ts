@@ -220,6 +220,20 @@ export interface IModifyBoardListPosition {
   finalPosition: number
 }
 
+// 卡片成員新增
+export interface IAddCardMember {
+  cardId: string
+  memberId: string
+  boardId: string
+}
+
+// 卡片成員移除
+export interface IDeleteCardMember {
+  cardId: string
+  memberId: string
+  boardId: string
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -250,5 +264,7 @@ export type IBoardService = {
   modifyBoardMemberPermission: (payload: IModifyBoardMemberPermission) => void
   deleteBoardMember: (payload: IDeleteBoardMember) => void
   addBoardMember: (payload: IAddBoardMember) => void
+  addCardMember: (payload: IAddCardMember) => void
+  deleteCardMember: (payload: IDeleteCardMember) => void
   terminateService: (boardId: string) => void
 }
