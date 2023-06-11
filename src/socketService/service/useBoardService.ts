@@ -96,6 +96,18 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 刪除卡片細項是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT_RESULT, () => undefined)
 
+  // 監聽 移動看板列表是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION_RESULT, () => undefined)
+
+  // 監聽 修改看板成員權限是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION_RESULT, () => undefined)
+
+  // 監聽 刪除看板成員是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER_RESULT, () => undefined)
+
+  // 監聽 看板新增成員是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER, () => undefined)
+
   // 監聽看板新增卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_CREATE_RESULT, data => {
     if (data.code !== -1) {
@@ -179,7 +191,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     archiveBoardList,
     moveCard,
     deleteCard,
-    moveList,
+    moveBoardList,
     deleteList,
     addNewTodoTitle,
     modifyTodoTitle,
@@ -187,6 +199,9 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     addTodoContent,
     modifyTodoContent,
     deleteTodoContent,
+    modifyBoardMemberPermission,
+    deleteBoardMember,
+    addBoardMember,
     terminateService,
   }
 }
@@ -303,8 +318,22 @@ const deleteTodoContent = (payload: interfaces.IDeleteTodoContent) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT, payload)
 }
 
+const moveBoardList = (payload: interfaces.IModifyBoardListPosition) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION, payload)
+}
+
+const modifyBoardMemberPermission = (payload: interfaces.IModifyBoardMemberPermission) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION, payload)
+}
+
+const deleteBoardMember = (payload: interfaces.IDeleteBoardMember) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER, payload)
+}
+
+const addBoardMember = (payload: interfaces.IAddBoardMember) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER, payload)
+}
 const moveCard = () => undefined
 const deleteCard = () => undefined
-const moveList = () => undefined
 const deleteList = () => undefined
 export default useBoardService
