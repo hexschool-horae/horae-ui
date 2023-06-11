@@ -197,6 +197,29 @@ export interface IDeleteTodoContent {
   contentId: string
 }
 
+export interface IModifyBoardMemberPermission {
+  role: string
+  userId: string
+  boardId: string
+}
+
+export interface IDeleteBoardMember {
+  userId: string
+  boardId: string
+}
+
+export interface IAddBoardMember {
+  boardId: string
+  hashData: string
+}
+
+// 移動列表位置
+export interface IModifyBoardListPosition {
+  boardId: string
+  listId: string
+  finalPosition: number
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -220,9 +243,12 @@ export type IBoardService = {
   addTodoContent: (payload: IAddTodoContent) => void
   modifyTodoContent: (payload: IModifyTodoContent) => void
   deleteTodoContent: (payload: IDeleteTodoContent) => void
+  moveBoardList: (payload: IModifyBoardListPosition) => void
   moveCard: () => undefined
   deleteCard: () => undefined
-  moveList: () => undefined
   deleteList: () => undefined
+  modifyBoardMemberPermission: (payload: IModifyBoardMemberPermission) => void
+  deleteBoardMember: (payload: IDeleteBoardMember) => void
+  addBoardMember: (payload: IAddBoardMember) => void
   terminateService: (boardId: string) => void
 }

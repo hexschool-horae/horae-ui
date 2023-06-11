@@ -80,6 +80,9 @@ export const socketServiceSlice = createSlice({
     archiveBoardList(state, action: PayloadAction<interfaces.IArchiveBoardListPayload>) {
       state.boardService?.archiveList(action.payload)
     },
+    moveBoardList(state, action: PayloadAction<interfaces.IModifyBoardListPosition>) {
+      state.boardService?.moveBoardList(action.payload)
+    },
     addNewTodoTitle(state, action: PayloadAction<interfaces.IAddNewTodoTitle>) {
       state.boardService?.addNewTodoTitle(action.payload)
     },
@@ -97,6 +100,15 @@ export const socketServiceSlice = createSlice({
     },
     deleteTodoContent(state, action: PayloadAction<interfaces.IDeleteTodoContent>) {
       state.boardService?.deleteTodoContent(action.payload)
+    },
+    modifyBoardMemberPermission(state, action: PayloadAction<interfaces.IModifyBoardMemberPermission>) {
+      state.boardService?.modifyBoardMemberPermission(action.payload)
+    },
+    deleteBoardMember(state, action: PayloadAction<interfaces.IDeleteBoardMember>) {
+      state.boardService?.deleteBoardMember(action.payload)
+    },
+    addBoardMember(state, action: PayloadAction<interfaces.IAddBoardMember>) {
+      state.boardService?.addBoardMember(action.payload)
     },
     setBoardId(state, action: PayloadAction<string>) {
       state.boardId = action.payload
