@@ -8,14 +8,7 @@ import { Button } from 'primereact/button'
 export default function CardDetailFiles() {
   const { dispatch } = useCardDetail()
   const [fileList, setFileList] = useState<File[]>([
-    {
-      name: 'file?.name',
-      lastModified: 1686305900703,
-      lastModifiedDate: new Date(),
-      size: 1039871,
-      type: 'application/pdf',
-      webkitRelativePath: '',
-    },
+    new File([''], 'file?.name', { lastModified: 1686305900703, type: 'application/pdf' }),
   ])
 
   const onSubmit = (event: React.FormEvent) => {

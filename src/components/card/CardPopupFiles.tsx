@@ -40,14 +40,7 @@ export default function CardPopupFiles({ label }: ICardPopupPriorityProps) {
         <form className="real-file" onSubmit={onSubmit}>
           <label className={`${cardPopupsStyle.fake_file}`}>
             選擇本機檔案路徑
-            <input
-              ref={fileInputRef}
-              className="attach-file"
-              type="file"
-              name="file"
-              multiple
-              onChange={handleFileChange}
-            />
+            <input ref={fileInputRef} className="attach-file" type="file" name="file" onChange={handleFileChange} />
           </label>
           <div className="file-name-box mb-6">
             {fileList
