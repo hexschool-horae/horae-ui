@@ -22,11 +22,10 @@ export default function CardDetailTodoList() {
 
   const appDispatch = useAppDispatch()
   const socketTodoLists = useAppSelector(state => state.board.cardDetail?.todolists)
-  const { state } = useCardDetail()
+  const { state, dispatch } = useCardDetail()
 
   const [todoLists, setTodoLists] = useState<ITodoList[]>([])
   const [addTodoLoading, setAddTodoLoading] = useState(false)
-  const [updateKey, setUpdateKey] = useState(0)
 
   const onDeleteTodoList = (listId: string) => {
     appDispatch(
@@ -36,6 +35,12 @@ export default function CardDetailTodoList() {
         titleId: listId,
       })
     )
+    dispatch({
+      type: 'DELETE_TODO_LIST',
+      payload: {
+        todolists: todoLists,
+      },
+    })
   }
 
   const onToggleComplete = (checked: boolean, listId: string, todoId: string) => {
@@ -58,7 +63,6 @@ export default function CardDetailTodoList() {
     if (socketTodoLists == undefined) return
     setTodoLists(socketTodoLists)
     setAddTodoLoading(false)
-    setUpdateKey(prev => prev + 1)
   }, [socketTodoLists])
 
   useEffect(() => {
@@ -72,7 +76,7 @@ export default function CardDetailTodoList() {
     <>
       {todoLists.map(todolist => (
         <TodoList
-          key={todolist._id + updateKey}
+          key={todolist._id}
           boardId={boardId}
           cardId={cardId}
           listTitle={todolist.title}
@@ -114,6 +118,7 @@ const TodoList = ({
   const appDispatch = useAppDispatch()
   const inputRef = useRef<HTMLInputElement>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
+  const [todoList, setTodoList] = useState<ITodo[]>([])
   const [todoItem, setTodoItem] = useState('')
   const [editTodoItem, setEditTodoItem] = useState('')
   const [toggleCheck, setToggleCheck] = useState(false)
@@ -193,9 +198,9 @@ const TodoList = ({
 
   const calculateProgressWidth = () => {
     let wh = 0
-    const total = contentList.length
+    const total = todoList.length
     if (total !== 0) {
-      const completedCount = contentList.filter(todo => todo.completed === true).length
+      const completedCount = todoList.filter(todo => todo.completed === true).length
       wh = Math.floor((completedCount / total) * 100)
     }
     return wh
@@ -218,26 +223,26 @@ const TodoList = ({
   }
 
   const filteredTodos = useMemo(() => {
-    return showCompleted ? contentList : contentList.filter(todo => !todo.completed)
-  }, [showCompleted, toggleCheck, contentList.length])
+    return showCompleted ? todoList : todoList.filter(todo => !todo.completed)
+  }, [showCompleted, toggleCheck, todoList])
 
   useEffect(() => {
     if (isEditId != null) {
       editInputRef.current?.focus()
-      const index = contentList.findIndex(todo => todo._id === isEditId)
+      const index = todoList.findIndex(todo => todo._id === isEditId)
       if (index >= 0) {
-        setEditTodoItem(contentList[index].content)
+        setEditTodoItem(todoList[index].content)
       }
     }
   }, [isEditId])
 
   useEffect(() => {
     calculateProgressWidth()
-  }, [toggleCheck, contentList.length])
+  }, [toggleCheck, todoList.length])
 
   useEffect(() => {
     setIsLoading(false)
-    console.log(showCompleted)
+    setTodoList(contentList)
     /*
      待優化：
      目前無法判斷是哪個list update，

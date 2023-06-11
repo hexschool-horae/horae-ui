@@ -1,4 +1,4 @@
-import { ICardDetail, ITag } from '@/apis/interface/api'
+import { ICardDetail, ITag, ITodoList } from '@/apis/interface/api'
 
 interface IPopups {
   [key: string]: boolean
@@ -100,6 +100,7 @@ type TReducerAction =
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
   | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
+  | { type: 'DELETE_TODO_LIST'; payload: { todolists: ITodoList[] } }
   | { type: 'SET_PRIORITY'; payload: { priority: string } }
   | { type: 'ADD_DATES'; payload: { startDate: number; endDate: number } }
   | { type: 'DELETE_DATES'; payload: any }
@@ -206,6 +207,15 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         cardDetail: {
           ...state.cardDetail,
           todolists,
+        },
+      }
+    }
+    case 'DELETE_TODO_LIST': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          todolists: payload.todolists,
         },
       }
     }
