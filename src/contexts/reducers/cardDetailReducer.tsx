@@ -18,6 +18,13 @@ export const initialState = {
     memberPopup: false,
     todoListPopup: false,
     tagsPopup: false,
+    calenderPopup: false,
+    filesPopup: false,
+    movePopup: false,
+    copyPopup: false,
+    sharePopup: false,
+    pripriorityPopup: false,
+    pompomodoroPopup: false,
   },
   // from API
   cardDetail: {
@@ -186,13 +193,16 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
       const todolists = [
         ...state.cardDetail.todolists,
         {
-          _id: new Date().getTime().toString(),
+          _id: '',
           title: payload.listTitle,
           contentList: [],
         },
       ]
       return {
         ...state,
+        popups: {
+          todoListPopup: false,
+        },
         cardDetail: {
           ...state.cardDetail,
           todolists,

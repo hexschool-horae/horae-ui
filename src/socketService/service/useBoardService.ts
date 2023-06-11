@@ -118,22 +118,87 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST_RESULT, () => undefined)
 
   // 監聽 新增卡片 todo 標題是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE_RESULT, data => {
+    console.log('監聽 新增卡片 todo 標題是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.addNewTodoList(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 修改卡片 todo 標題是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE_RESULT, () => undefined)
 
   // 監聽 刪除卡片 todo 標題是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_RESULT, data => {
+    console.log('監聽 刪除卡片 todo 標題是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateTodoLists(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 新增卡片細項是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT_RESULT, data => {
+    console.log('監聽 新增卡片細項是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateTodoLists(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 修改卡片細項是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT_RESULT, data => {
+    console.log('監聽 修改卡片細項是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateTodoLists(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 刪除卡片細項是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT_RESULT, data => {
+    console.log('監聽 刪除卡片細項是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateTodoLists(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽看板新增卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_CREATE_RESULT, data => {
@@ -319,6 +384,7 @@ const archiveBoardList = (payload: interfaces.IArchiveBoardListPayload) => {
 }
 
 const addNewTodoTitle = (payload: interfaces.IAddNewTodoTitle) => {
+  console.log(payload)
   boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE, payload)
 }
 

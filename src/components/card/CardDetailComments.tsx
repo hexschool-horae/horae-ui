@@ -51,6 +51,7 @@ export default function CardDetailComments() {
       })
     )
     setEditIsLoading(true)
+    setIsEditId(null)
   }
 
   const deleteComment = (commentId: string) => {
@@ -103,7 +104,6 @@ export default function CardDetailComments() {
   const clearStatus = () => {
     setComment('')
     setIsLoading(false)
-    setIsEditId(null)
     setEditIsLoading(false)
   }
 
@@ -148,8 +148,8 @@ export default function CardDetailComments() {
       </div>
       <ul className="relative">
         {editIsLoading && (
-          <li className="absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-white bg-opacity-50">
-            <ProgressSpinner style={{ width: '60px', height: '60px' }} />
+          <li className={style.loading_overlay}>
+            <ProgressSpinner strokeWidth="4" style={{ width: '60px', height: '60px' }} />
           </li>
         )}
         {comments.length > 0 &&

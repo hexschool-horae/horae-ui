@@ -60,3 +60,7 @@
     display: none;
   }
 }
+
+.loading_overlay {
+  @apply absolute top-0 left-0 bottom-0 right-0 flex items-center justify-center bg-white bg-opacity-50 z-50;
+}

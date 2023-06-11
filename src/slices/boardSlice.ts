@@ -168,8 +168,18 @@ export const boardSlice = createSlice({
       state.cardDetail = action.payload
     },
     updateCardComments(state, action: PayloadAction<ICardDetail>) {
-      if (state.cardDetail && state.cardDetail._id === action.payload._id) {
+      if (state.cardDetail?._id === action.payload._id) {
         state.cardDetail.comments = action.payload.comments
+      }
+    },
+    addNewTodoList(state, action: PayloadAction<ICardDetail>) {
+      if (state.cardDetail?._id === action.payload._id) {
+        state.cardDetail.todolists = action.payload.todolists
+      }
+    },
+    updateTodoLists(state, action: PayloadAction<ICardDetail>) {
+      if (state.cardDetail?._id === action.payload._id) {
+        state.cardDetail.todolists = action.payload.todolists
       }
     },
     reset: () => initialState,
