@@ -13,7 +13,7 @@ import axiosFetcher from '@/apis/axios'
 
 import router from 'next/router'
 import { GET_WORK_SPACE } from '@/apis/axios-service'
-import { IBoardResponse, IUserBoardDataRes } from '@/apis/interface/api'
+import { IBoardResponse, IUserBoardData } from '@/apis/interface/api'
 
 const { post } = axiosFetcher
 
@@ -48,7 +48,7 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
   ])
 
   const [selectedViewSet, setSelectedViewSet] = useState('public')
-  const [boardList, setBoardList] = useState<IUserBoardDataRes[]>([])
+  const [boardList, setBoardList] = useState<IUserBoardData[]>([])
   const [dataResList, setDataResList] = useState<IBoardResponse>({
     boards: [],
     discribe: '',

@@ -6,10 +6,10 @@ import IconBoard from '@/assets/icons/icon_layout.svg'
 import IconMembers from '@/assets/icons/icon_users.svg'
 import IconSetting from '@/assets/icons/icon_settings.svg'
 import WorkSpaceCard from './WorkSpaceCard'
-import { IUserBoardDataRes } from '@/apis/interface/api'
+import { IUserBoardData } from '@/apis/interface/api'
 
 interface Props {
-  userBoardItem: IUserBoardDataRes
+  userBoardItem: IUserBoardData
   handleGetUserBoardsData: () => Promise<void>
 }
 
