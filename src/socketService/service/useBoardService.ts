@@ -213,10 +213,37 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, () => undefined)
 
   // 監聽 新增卡片成員是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT, () => undefined)
+  // boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT, data => {
+    console.log('監聽 卡片新增成員是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateCardMembers(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 刪除卡片成員是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER_RESULT, data => {
+    console.log('監聽 刪除卡片成員是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateCardMembers(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽看板新增卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_CREATE_RESULT, data => {

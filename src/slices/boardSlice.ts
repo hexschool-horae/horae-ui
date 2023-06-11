@@ -182,6 +182,12 @@ export const boardSlice = createSlice({
         state.cardDetail.todolists = action.payload.todolists
       }
     },
+    updateCardMembers(state, action: PayloadAction<ICardDetail>) {
+      console.log('updateCardMembers', state)
+      if (state.cardDetail && state.cardDetail._id === action.payload._id) {
+        state.cardDetail.members = action.payload.members
+      }
+    },
     reset: () => initialState,
   },
 })

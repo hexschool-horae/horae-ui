@@ -124,7 +124,7 @@ const CardInternal = () => {
                 </div>
 
                 <CardDetailTitle />
-                <CardDetailMember label={popupLabels.member} cardId={cardId} handleGetCardDetail={getCardDetail} />
+                <CardDetailMember label={popupLabels.member} cardId={cardId} />
                 {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
                 {state.cardDetail.startDate != null && state.cardDetail.endDate != null && (
                   <CardDetailCalendar label={popupLabels.calender} />
@@ -169,12 +169,7 @@ const CardInternal = () => {
         )}
       </Dialog>
 
-      <CardPopupMember
-        label={popupLabels.member}
-        key={popupLabels.member + state.popupKey}
-        cardId={cardId}
-        handleGetCardDetail={getCardDetail}
-      />
+      <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} cardId={cardId} />
       <CardPopupTodoList label={popupLabels.todoList} key={popupLabels.todoList + state.popupKey} />
       {/* 與board共用 Wrapper放外層*/}
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>

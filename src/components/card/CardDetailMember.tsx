@@ -2,14 +2,12 @@ import style from './cardDetail.module.scss'
 import { Button } from 'primereact/button'
 import { useCardDetail } from '@/contexts/cardDetailContext'
 import { Fragment } from 'react'
-import { DELETE_CARD_MEMBER } from '@/apis/axios-service'
-import { errorSliceActions } from '@/slices/errorSlice'
-import { AxiosError } from 'axios'
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 interface ICardDetailMemberProps {
   label: string
   cardId: string
-  handleGetCardDetail: () => void
 }
 
 interface IMember {
@@ -19,9 +17,12 @@ interface IMember {
   _id: string
 }
 
-export default function CardDetailMember({ label, cardId, handleGetCardDetail }: ICardDetailMemberProps) {
-  const { dispatch, state } = useCardDetail()
-  const selectedMembers: IMember[] = state.cardDetail.members as unknown as IMember[]
+export default function CardDetailMember({ label, cardId }: ICardDetailMemberProps) {
+  const { dispatch } = useCardDetail()
+  const appDispatch = useAppDispatch()
+  const boardId = useAppSelector(state => state.board.boardId)
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
+  const selectedMembers: IMember[] = cardDetail?.members as unknown as IMember[]
 
   const getShortName = (name: string) => {
     return name.charAt(0)
@@ -30,26 +31,13 @@ export default function CardDetailMember({ label, cardId, handleGetCardDetail }:
    * B05-21 卡片成員刪除
    * */
   const handleDeleteCardMember = async (memberId: string) => {
-    try {
-      const req = { memberId: memberId }
-      const response = await DELETE_CARD_MEMBER(cardId, req)
-      if (!response) return
-      handleGetCardDetail()
-    } catch (e) {
-      let errorMessage = ''
-      if (e instanceof AxiosError) {
-        errorMessage = e.response?.data.message
-      } else {
-        errorMessage = '發生錯誤'
-      }
-
-      dispatch(
-        errorSliceActions.pushNewErrorMessage({
-          code: -1,
-          message: errorMessage,
-        })
-      )
-    }
+    appDispatch(
+      socketServiceActions.deleteCardMember({
+        boardId,
+        cardId,
+        memberId,
+      })
+    )
   }
 
   return (

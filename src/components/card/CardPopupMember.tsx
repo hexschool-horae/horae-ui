@@ -1,26 +1,36 @@
 import { InputText } from 'primereact/inputtext'
 import CardPopupWrapper from './CardPopupWrapper'
-import { DELETE_CARD_MEMBER, GET_BOARD_ALL_MEMBERS, POST_CARD_MEMBER } from '@/apis/axios-service'
+import { GET_BOARD_ALL_MEMBERS } from '@/apis/axios-service'
 import { AxiosError } from 'axios'
-import { Fragment, useEffect, useState } from 'react'
+import { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { errorSliceActions } from '@/slices/errorSlice'
 import cardPopupsStyle from './cardPopups.module.scss'
 import { useCardDetail } from '@/contexts/cardDetailContext'
-import { IMembers, IBoardMembers, IUserId } from '@/apis/interface/api'
+import { IBoardMembers, IUserId } from '@/apis/interface/api'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 interface ICardPopupMemberProps {
   label: string
   cardId: string
-  handleGetCardDetail: () => void
 }
 
-export default function CardPopupMember({ label, cardId, handleGetCardDetail }: ICardPopupMemberProps) {
+interface IMember {
+  avatar: string
+  email: string
+  name: string
+  _id: string
+}
+
+export default function CardPopupMember({ label, cardId }: ICardPopupMemberProps) {
   const boardId = useAppSelector(state => state.board.boardId)
-  const dispatch = useAppDispatch()
+  const appDispatch = useAppDispatch()
   const { state } = useCardDetail()
-  const selectedMembers: IMembers[] = state.cardDetail.members
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
+  const selectedMembers: IMember[] = cardDetail?.members as unknown as IMember[]
 
   const [memberList, setMemberList] = useState<IBoardMembers[]>([])
+
+  const [filterMemberList, setFilterMemberList] = useState<IBoardMembers[]>([])
   /**
    * B03-6 取得單一看板的所有成員
    * */
@@ -30,6 +40,7 @@ export default function CardPopupMember({ label, cardId, handleGetCardDetail }: 
       if (!response) return
       const data = response.data.members ?? []
       setMemberList(data)
+      setFilterMemberList(data)
     } catch (e) {
       let errorMessage = ''
       if (e instanceof AxiosError) {
@@ -38,7 +49,7 @@ export default function CardPopupMember({ label, cardId, handleGetCardDetail }: 
         errorMessage = '發生錯誤'
       }
 
-      dispatch(
+      appDispatch(
         errorSliceActions.pushNewErrorMessage({
           code: -1,
           message: errorMessage,
@@ -59,52 +70,26 @@ export default function CardPopupMember({ label, cardId, handleGetCardDetail }: 
    * B05-20 卡片成員新增
    * */
   const handleCreateCardMember = async (memberId: string) => {
-    try {
-      const req = { memberId: memberId }
-      const response = await POST_CARD_MEMBER(cardId, req)
-      if (!response) return
-      handleGetCardDetail()
-    } catch (e) {
-      let errorMessage = ''
-      if (e instanceof AxiosError) {
-        errorMessage = e.response?.data.message
-      } else {
-        errorMessage = '發生錯誤'
-      }
-
-      dispatch(
-        errorSliceActions.pushNewErrorMessage({
-          code: -1,
-          message: errorMessage,
-        })
-      )
-    }
+    appDispatch(
+      socketServiceActions.addCardMember({
+        boardId,
+        cardId,
+        memberId,
+      })
+    )
   }
 
   /**
    * B05-21 卡片成員刪除
    * */
   const handleDeleteCardMember = async (memberId: string) => {
-    try {
-      const req = { memberId: memberId }
-      const response = await DELETE_CARD_MEMBER(cardId, req)
-      if (!response) return
-      handleGetCardDetail()
-    } catch (e) {
-      let errorMessage = ''
-      if (e instanceof AxiosError) {
-        errorMessage = e.response?.data.message
-      } else {
-        errorMessage = '發生錯誤'
-      }
-
-      dispatch(
-        errorSliceActions.pushNewErrorMessage({
-          code: -1,
-          message: errorMessage,
-        })
-      )
-    }
+    appDispatch(
+      socketServiceActions.deleteCardMember({
+        boardId,
+        cardId,
+        memberId,
+      })
+    )
   }
 
   const getShortName = (name: string) => {
@@ -112,8 +97,22 @@ export default function CardPopupMember({ label, cardId, handleGetCardDetail }: 
   }
 
   const isSelectMember = (memberId: string, member: IBoardMembers) => {
-    member.userId.isSelected = selectedMembers.some((member: any) => member._id === memberId)
+    member.userId.isSelected = selectedMembers.some((member: IMember) => member._id === memberId)
     return member.userId.isSelected ? <i className="pi pi-check" style={{ fontSize: '1rem' }}></i> : ''
+  }
+
+  /**
+   *  模糊搜尋成員列表
+   * @param e input value
+   */
+  const handleSearchMembers = (e?: ChangeEvent<HTMLInputElement>) => {
+    const fuzzyValue = e?.target.value ?? ''
+    const cloneDeepMemberList = JSON.parse(JSON.stringify(memberList))
+    const filterList = cloneDeepMemberList.filter((member: IBoardMembers) => {
+      const memberUserStr = member.userId.name + member.userId.email
+      return memberUserStr.includes(fuzzyValue)
+    })
+    setFilterMemberList(filterList)
   }
 
   /**
@@ -128,9 +127,9 @@ export default function CardPopupMember({ label, cardId, handleGetCardDetail }: 
 
   return (
     <CardPopupWrapper title="成員" label={label}>
-      <InputText placeholder="搜尋成員" className="w-full my-2" />
+      <InputText placeholder="搜尋成員" className="w-full my-2" onChange={handleSearchMembers} />
       <ul className="member-list mt-4">
-        {memberList.map(member => (
+        {filterMemberList.map(member => (
           <Fragment key={member._id}>
             <li className="member-item">
               <div className={cardPopupsStyle.member_item_link} onClick={() => handleClickMember(member.userId)}>
