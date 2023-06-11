@@ -5,7 +5,7 @@ import { InputText } from 'primereact/inputtext'
 
 import MemberInfoGroup from './MemberInfoGroup'
 import { useAppSelector } from '@/hooks/useAppStore'
-import { GET_BOARD_ALL_MEMBERS_BY_ID, POST_BOARD_MEMBERS_BY_ID } from '@/apis/axios-service'
+import { GET_BOARD_ALL_MEMBERS_BY_ID } from '@/apis/axios-service'
 
 interface IBoardMember {
   userId: {
@@ -23,8 +23,8 @@ export default function InviteBoard() {
   const [boardMembersList, setBoardMembersList] = useState<IBoardMember[]>([])
   const boardId = useAppSelector(state => state.board.boardId)
 
-  const handleInviteMembers = (value: string) => {
-    POST_BOARD_MEMBERS_BY_ID(boardId, value)
+  const handleSendMail = (mail: string) => {
+    console.log(mail)
   }
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function InviteBoard() {
                 <InputText
                   className="w-3/4"
                   placeholder="請輸入郵件地址或名稱"
-                  onChange={e => handleInviteMembers(e.target.value)}
+                  onChange={e => handleSendMail(e.target.value)}
                 />
                 <Button label="成員" className="bg-secondary-4 text-secondary-1 ml-auto" rounded></Button>
                 <Button label="邀請" className="bg-secondary-1 ml-3" rounded></Button>

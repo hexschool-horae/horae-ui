@@ -91,8 +91,10 @@ export const GET_BOARD_ALL_MEMBERS_BY_ID = (boardId: string) => {
 }
 
 /** B03-7 單一看板新增成員 */
-export const POST_BOARD_MEMBERS_BY_ID = (boardId: string, data: unknown) => {
-  return axiosFetcher.post<interfaces.IBasicResponse>(`${apiPath.POST_BOARD_MEMBERS_BY_ID}/${boardId}/members`, data)
+export const POST_BOARD_MEMBERS_BY_ID = (boardId: string, hashData: string) => {
+  return axiosFetcher.post<interfaces.IBasicResponse>(
+    `${apiPath.POST_BOARD_MEMBERS_BY_ID}/${boardId}/members/${hashData}`
+  )
 }
 
 /** B03-8 單一看板設定成員權限 */
@@ -119,9 +121,9 @@ export const POST_BOARD_INVITATION_LINK_BY_ID = (boardId: string) => {
 }
 
 /** B03-12 取得看板邀請資料 */
-export const GET_BOARD_INVITATION_DATA_BY_ID = (boardId: string) => {
+export const GET_BOARD_INVITATION_DATA_BY_ID = (boardId: string, hashData: string) => {
   return axiosFetcher.post<interfaces.IBoardInvitationDataResponse>(
-    `${apiPath.GET_BOARD_INVITATION_DATA_BY_ID}/${boardId}/invitation-data`
+    `${apiPath.GET_BOARD_INVITATION_DATA_BY_ID}/${boardId}/invitation-data/${hashData}`
   )
 }
 
