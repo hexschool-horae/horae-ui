@@ -14,7 +14,7 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
   useEffect(() => {
     console.log(pathname)
     // 看板不受登入的影響
-    if (pathname === '/board/[boardId]') return
+    if (pathname === '/board/[boardId]' || pathname === '/board/[boardId]/members/[id]') return
 
     if (isLogin) {
       if (nonAuthPaths.indexOf(pathname) !== -1) {

@@ -16,8 +16,10 @@ const BoardGuard = ({ children }: { children?: ReactNode }) => {
 
     // if (isClosed) router.push('/board/boardClosed')
 
-    if (viewSet === 'private' || viewSet === 'workspace') {
+    if (viewSet === 'private') {
       if (yourRole !== 'admin') router.push('/board/boardWithoutPermission')
+    } else if (viewSet === 'workspace') {
+      if (yourRole !== 'admin' && yourRole !== 'editor') router.push('/board/boardWithoutPermission')
     }
   }, [isLogin, viewSet])
 

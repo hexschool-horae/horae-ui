@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 
 import AddCardButton from './AddCardButton'
 import ListSettingMenu from './ListSettingMenu'
@@ -12,15 +12,11 @@ import { IBoardListItem } from '@/types/pages'
 
 import { classNames } from 'primereact/utils'
 
-export default function List({
-  data,
-}: {
-  data: IBoardListItem
-  onCreateCard?: (listId: string, title: string) => void
-}) {
+const List = ({ data }: { data: IBoardListItem; onCreateCard?: (listId: string, title: string) => void }) => {
   /** 卡片陣列狀態 */
   const { cards } = data
   const router = useRouter()
+
   const [isDisabledLink, setIsDisabledLink] = useState(false)
 
   const onIsDragging = (isDragging: boolean) => {
@@ -31,10 +27,17 @@ export default function List({
   return (
     <>
       {/* 列表標題 */}
-      <div className="flex mb-3 ">
-        <h6 className="text-lg !text-secondary-3 mr-auto ">{data.title}</h6>
-        <ListSettingMenu />
-      </div>
+      <Droppable
+        id={`${data._id}`}
+        data={{
+          eventType: 'list-top',
+        }}
+      >
+        <div className="flex mb-3">
+          <h6 className="text-lg !text-secondary-3 mr-auto ">{data.title}</h6>
+          <ListSettingMenu />
+        </div>
+      </Droppable>
 
       {/* 卡片 */}
       {cards?.length ? (
@@ -64,7 +67,7 @@ export default function List({
                     className={classNames({ 'disabled-link': isDisabledLink })}
                     href={`/board/${router.query.boardId}/?cardId=${item._id}`}
                   >
-                    <Card key={index} title={item.title} labels={item.labels} />
+                    <Card key={index} title={item.title} tags={item.tags} />
                   </Link>
                 </Draggable>
               </Droppable>
@@ -74,8 +77,15 @@ export default function List({
       ) : (
         <></>
       )}
-
-      <AddCardButton listId={data._id} />
+      <Droppable
+        id={`${data._id}`}
+        data={{
+          eventType: 'list-bottom',
+        }}
+      >
+        <AddCardButton listId={data._id} />
+      </Droppable>
     </>
   )
 }
+export default memo(List)

@@ -31,11 +31,12 @@ instance.interceptors.response.use(
   error => {
     if (<AxiosError>error) {
       const { response }: { response: AxiosResponse } = error
-      console.log(response)
       const { status, data } = response
       const { message } = data
 
-      httpErrorHandler(status, message)
+      if (store !== null) httpErrorHandler(status, message, store)
+
+      // return Promise.resolve(response)
     }
 
     return Promise.reject(error)
@@ -83,7 +84,7 @@ async function post<T>(url: string, data?: unknown | null, isAuth = true) {
   }
 }
 
-async function patch<T>(url: string, data: unknown, isAuth = true) {
+async function patch<T>(url: string, data?: unknown, isAuth = true) {
   try {
     if (store === null) throw new Error('data from redux-toolkit store is null!')
 

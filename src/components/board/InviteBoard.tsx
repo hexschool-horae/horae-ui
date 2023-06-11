@@ -1,63 +1,45 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown'
 
 import MemberInfoGroup from './MemberInfoGroup'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { GET_BOARD_ALL_MEMBERS_BY_ID } from '@/apis/axios-service'
+import { boardSliceActions } from '@/slices/boardSlice'
 
-interface IPermissonOption {
-  name: string
-  code: string | number
-}
-
-const PermissionDropdown = ({
-  name = 'name',
-}: // onSelected,
-{
-  name?: string
-  onSelected?: (e: DropdownChangeEvent) => void
-}) => (
-  <Dropdown
-    value={{ name: '管理員', code: 0 }}
-    options={[
-      { name: '管理員', code: 0 },
-      {
-        name: '成員',
-        code: 1,
-        itemTemplate: (option: IPermissonOption) => (
-          <div>
-            {option.name}
-            <div className="text-sm text-gray-2">看板至少必須有一位管理員</div>
-          </div>
-        ),
-      },
-      { name: '離開看板', code: 2 },
-    ]}
-    optionLabel={name}
-    className="w-full md:w-14rem"
-  />
-)
-
-const memberModel = [
-  { img: '', title: '透過連結分享此看板', subtitle: '建立連結' },
-  {
-    img: '',
-    title: '成員名稱',
-    subtitle: '@nick name',
-    append: <PermissionDropdown />,
-  },
-  {
-    img: '',
-    title: '成員名稱',
-    subtitle: '@nick name',
-    append: <PermissionDropdown />,
-  },
-  { img: '', title: '成員名稱', subtitle: '@nick name', append: <PermissionDropdown /> },
-]
+// interface IBoardMember {
+//   userId: {
+//     _id: string
+//     name: string
+//     email: string
+//   }
+//   role: string
+//   inviteHashData: string
+//   _id: string
+// }
 
 export default function InviteBoard() {
   const [visible, setVisible] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
+  const boardId = useAppSelector(state => state.board.boardId)
+  const boardMembersList = useAppSelector(state => state.board.boardMembersList)
+
+  const handleSendMail = (mail: string) => {
+    console.log(mail)
+  }
+
+  const handleGetBoardMembersList = async () => {
+    const { data } = await GET_BOARD_ALL_MEMBERS_BY_ID(boardId)
+
+    dispatch(boardSliceActions.updateBoardMembersList(data.members))
+  }
+
+  useEffect(() => {
+    if (boardId) {
+      handleGetBoardMembersList()
+    }
+  }, [boardId])
 
   return (
     <>
@@ -69,16 +51,22 @@ export default function InviteBoard() {
             <div className="text-2xl text-secondary-1 mb-6">邀請成員加入看板</div>
             <div className="mb-6">
               <div className="flex">
-                <InputText className="w-3/4" placeholder="請輸入郵件地址或名稱" />
+                <InputText
+                  className="w-3/4"
+                  placeholder="請輸入郵件地址或名稱"
+                  onChange={e => handleSendMail(e.target.value)}
+                />
                 <Button label="成員" className="bg-secondary-4 text-secondary-1 ml-auto" rounded></Button>
                 <Button label="邀請" className="bg-secondary-1 ml-3" rounded></Button>
               </div>
             </div>
 
             <div className="mt-4">
-              {memberModel.map((item, i) => (
-                <MemberInfoGroup append={item.append} model={item} key={i}></MemberInfoGroup>
-              ))}
+              {boardMembersList !== null ? (
+                boardMembersList.map((item, i) => <MemberInfoGroup model={item} key={i}></MemberInfoGroup>)
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </Dialog>

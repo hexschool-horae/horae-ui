@@ -210,6 +210,33 @@ export interface IUserId {
   isSelected: boolean
 }
 
+/** B03-8 單一看板設定成員權限 */
+export interface IBoardMembersPermissionResponse extends IBasicResponse {
+  data: {
+    userId: {
+      _id: string
+      name: string
+      email: string
+    }
+    role: string
+    inviteHashData: string
+    _id: string
+  }[]
+}
+
+export interface IBoardInvitationLinkResponse extends IBasicResponse {
+  data: {
+    invitationLink: string
+  }
+}
+
+/** B03-12 取得看板邀請資料 */
+export interface IBoardInvitationDataResponse extends IBasicResponse {
+  data: {
+    title: string
+    inviter: string
+  }
+}
 /** B05-9 在卡片新增標籤 */
 export interface IPostCardTagRequest {
   tagId: string
@@ -250,6 +277,16 @@ export interface ITodo {
   completed: boolean
 }
 
+export interface IBoardMember {
+  userId: {
+    _id: string
+    name: string
+    email: string
+  }
+  inviteHashData: string
+  role: string
+  _id: string
+}
 export interface IMembers {
   userId: {
     _id: string
