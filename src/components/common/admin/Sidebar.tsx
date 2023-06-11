@@ -1,7 +1,7 @@
 import { useEffect, useState, FC } from 'react'
 import classes from '@/components/common/admin/Sidebar.module.scss'
 import WorkSpaceModel from '@/components/workSpace/WorkSpaceModel'
-import { IUserBoardDataRes } from '@/apis/interface/api'
+import { IUserBoardData } from '@/apis/interface/api'
 import { GET_ALL_WORK_SPACE } from '@/apis/axios-service'
 import Link from 'next/link'
 import IconBoard from '@/assets/icons/icon_board.svg'
@@ -29,7 +29,7 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
       return 'bg-white'
     }
   })()
-  const [userBoardList, setUserBoardList] = useState<IUserBoardDataRes[]>([])
+  const [userBoardList, setUserBoardList] = useState<IUserBoardData[]>([])
   const [userBoardMenuToggleStatus, setUserBoardMenuToggleStatus] = useState<IUserBoardMenuToggleStatus[]>([])
   const [showWorkSpaceModal, setShowWorkSpaceModal] = useState(false)
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(false)

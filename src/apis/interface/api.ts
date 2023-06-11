@@ -50,7 +50,11 @@ export interface IUserBoardDataResponse {
 /**
  * B02-2 登入者所有工作區標題清單
  */
-export interface IUserBoardDataRes {
+export interface IUserBoardDataRes extends IBasicResponse {
+  data: Array<IUserBoardData>
+}
+
+export interface IUserBoardData {
   title: string
   _id: string
 }
