@@ -113,41 +113,6 @@ export interface InvitationData {
   inviter: string
 }
 
-/** B05-4 取得單一卡片 */
-type Timestamp = number
-
-export interface ITag {
-  _id: string
-  title: string
-  color: string
-}
-
-export interface IComment {
-  _id?: string
-  content: string
-  date: string
-}
-
-export interface ICardDetail {
-  _id: string
-  title: string
-  describe: string
-  startDate: Timestamp
-  endDate: Timestamp
-  // members: []
-  comments: IComment[]
-  tags: ITag[]
-  // todolists: []
-  // attachments: []
-  proiority: string
-  coverPath: string
-  position: number
-}
-
-export interface ICardDetailResponse {
-  data: ICardDetail
-}
-
 /** B03-13 取得單一看板的所有標籤 */
 type IBoardTags = {
   boardId: string
@@ -277,4 +242,109 @@ export interface IBoardInvitationDataResponse extends IBasicResponse {
     title: string
     inviter: string
   }
+}
+/** B05-9 在卡片新增標籤 */
+export interface IPostCardTagRequest {
+  tagId: string
+}
+
+/** B05-10 在卡片移除標籤 */
+export interface IDeleteCardTagRequest {
+  tagId: string
+}
+
+/** B05-4 取得單一卡片 */
+type Timestamp = number
+
+export interface ITag {
+  _id: string
+  title: string
+  color: string
+}
+
+export interface IComment {
+  _id: string
+  comment: string
+  createdAt: string
+  user: {
+    _id: string
+    name: string
+  }
+}
+
+export interface ITodoList {
+  _id: string
+  title: string
+  contentList: ITodo[]
+}
+export interface ITodo {
+  _id: string
+  content: string
+  completed: boolean
+}
+
+export interface IMembers {
+  userId: {
+    _id: string
+    name: string
+  }
+  role: string
+  _id: string
+}
+
+export interface IAttachment {
+  id: string
+  createdAt: string
+  title: string
+  url: string
+}
+
+export interface ICardDetail {
+  _id: string
+  title: string
+  describe: string
+  startDate: null | Timestamp
+  endDate: null | Timestamp
+  members: IMembers[]
+  comments: IComment[]
+  tags: ITag[]
+  todolists: ITodoList[]
+  attachments: IAttachment[]
+  proiority: string
+  coverPath: string
+  position: number
+  updateUser: string
+  createdAt: string
+  updateAt: string
+}
+
+export interface ICardDetailResponse {
+  data: ICardDetail
+}
+
+/** B05-2 修改單一卡片(基本資訊) */
+export interface IPatchCardBasicInfoRequest {
+  title: string
+  describe: string
+  startDate: null | Timestamp
+  endDate: null | Timestamp
+  proiority: string
+}
+
+/** B05-11 卡片評論新增 */
+export interface IPostCardCommentRequest {
+  comment: string
+}
+export interface IPostCardCommentResponse {
+  data: string
+}
+/** B05-12 卡片評論修改 */
+export interface IPutCardCommentRequest {
+  commentId: string
+  comment: string
+}
+
+/** B05-13 卡片評論刪除 */
+export interface IDeleteCardCommentRequest {
+  commentId: string
 }

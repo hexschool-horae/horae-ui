@@ -1,4 +1,4 @@
-import { ICardDetail, ITag } from '@/apis/interface/api'
+import { ICardDetail, ITag, ITodoList } from '@/apis/interface/api'
 
 interface IPopups {
   [key: string]: boolean
@@ -18,22 +18,76 @@ export const initialState = {
     memberPopup: false,
     todoListPopup: false,
     tagsPopup: false,
+    calenderPopup: false,
+    filesPopup: false,
+    movePopup: false,
+    copyPopup: false,
+    sharePopup: false,
+    pripriorityPopup: false,
+    pompomodoroPopup: false,
   },
   // from API
   cardDetail: {
     _id: '',
     title: '',
     describe: '',
-    startDate: 0,
-    endDate: 0,
-    // members: [],
-    comments: [],
-    tags: [],
-    // todolists: [],
-    // attachments: [],
+    startDate: null,
+    endDate: null,
+    members: [
+      {
+        userId: {
+          _id: '',
+          name: '',
+        },
+        role: '',
+        _id: '',
+      },
+    ],
+    comments: [
+      {
+        _id: '',
+        comment: '',
+        createdAt: '',
+        user: {
+          _id: '',
+          name: '',
+        },
+      },
+    ],
+    tags: [
+      {
+        _id: '',
+        title: '',
+        color: '',
+      },
+    ],
+    todolists: [
+      {
+        _id: '',
+        title: '',
+        contentList: [
+          {
+            _id: '',
+            content: '',
+            completed: false,
+          },
+        ],
+      },
+    ],
+    attachments: [
+      {
+        id: '',
+        createdAt: '',
+        title: '',
+        url: '',
+      },
+    ],
     proiority: '',
     coverPath: '',
     position: 0,
+    updateUser: '',
+    createdAt: '',
+    updateAt: '',
   },
 }
 
@@ -42,10 +96,14 @@ type TReducerAction =
   | { type: 'TOTGGLE_POPUP'; payload: string }
   | { type: 'UPDATE_TITLE'; payload: { title: string } }
   | { type: 'UPDATE_DESCRIBE'; payload: { describe: string } }
-  | { type: 'UPDATE_COMMENT'; payload: { comment: string } }
   | { type: 'ADD_TAG'; payload: { tag: ITag } }
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
+  | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
+  | { type: 'DELETE_TODO_LIST'; payload: { todolists: ITodoList[] } }
+  | { type: 'SET_PRIORITY'; payload: { priority: string } }
+  | { type: 'ADD_DATES'; payload: { startDate: number; endDate: number } }
+  | { type: 'DELETE_DATES'; payload: any }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
   // console.log(state, type)
@@ -98,17 +156,6 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         },
       }
     }
-    case 'UPDATE_COMMENT': {
-      //需要user name, date...
-      const comments = [...state.cardDetail.comments, { content: payload.comment, date: '' }]
-      return {
-        ...state,
-        cardDetail: {
-          ...state.cardDetail,
-          comments,
-        },
-      }
-    }
     case 'ADD_TAG': {
       const tags = [...state.cardDetail.tags, payload.tag]
       return {
@@ -140,6 +187,64 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         cardDetail: {
           ...state.cardDetail,
           tags,
+        },
+      }
+    }
+    case 'ADD_TODO_LIST': {
+      const todolists = [
+        ...state.cardDetail.todolists,
+        {
+          _id: '',
+          title: payload.listTitle,
+          contentList: [],
+        },
+      ]
+      return {
+        ...state,
+        popups: {
+          todoListPopup: false,
+        },
+        cardDetail: {
+          ...state.cardDetail,
+          todolists,
+        },
+      }
+    }
+    case 'DELETE_TODO_LIST': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          todolists: payload.todolists,
+        },
+      }
+    }
+    case 'SET_PRIORITY': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          proiority: payload.priority,
+        },
+      }
+    }
+    case 'ADD_DATES': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+        },
+      }
+    }
+    case 'DELETE_DATES': {
+      return {
+        ...state,
+        cardDetail: {
+          ...state.cardDetail,
+          startDate: null,
+          endDate: null,
         },
       }
     }

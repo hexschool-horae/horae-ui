@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 // import { ISingleBoardResponse } from '@/apis/interface/api'
 import { ISingleBoardInterface } from '@/socketService/types/board'
+import { ICardDetail } from '@/apis/interface/api'
 
 // ---重構中，之後補回來---
 
@@ -96,11 +97,13 @@ type TViewSet = '' | 'private' | 'workspace' | 'public'
 interface IInitialState {
   singleBaord: ISingleBoardInterface | null
   boardId: string
+  cardDetail: ICardDetail | null
 }
 
 const initialState: IInitialState = {
   singleBaord: null,
   boardId: '',
+  cardDetail: null,
 }
 
 export const boardSlice = createSlice({
@@ -159,6 +162,24 @@ export const boardSlice = createSlice({
     updateBoardViewSet(state, action: PayloadAction<TViewSet>) {
       if (state.singleBaord) {
         state.singleBaord.viewSet = action.payload
+      }
+    },
+    setCardDetail(state, action: PayloadAction<ICardDetail>) {
+      state.cardDetail = action.payload
+    },
+    updateCardComments(state, action: PayloadAction<ICardDetail>) {
+      if (state.cardDetail?._id === action.payload._id) {
+        state.cardDetail.comments = action.payload.comments
+      }
+    },
+    addNewTodoList(state, action: PayloadAction<ICardDetail>) {
+      if (state.cardDetail?._id === action.payload._id) {
+        state.cardDetail.todolists = action.payload.todolists
+      }
+    },
+    updateTodoLists(state, action: PayloadAction<ICardDetail>) {
+      if (state.cardDetail?._id === action.payload._id) {
+        state.cardDetail.todolists = action.payload.todolists
       }
     },
     reset: () => initialState,

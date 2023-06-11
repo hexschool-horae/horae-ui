@@ -1,8 +1,10 @@
+import router from 'next/router'
 import style from './cardDetail.module.scss'
 import tagStyle from './tags.module.scss'
 import { Chip } from 'primereact/chip'
 import { Button } from 'primereact/button'
 import { useCardDetail } from '@/contexts/cardDetailContext'
+import { DELETE_CARD_TAG_BY_ID } from '@/apis/axios-service'
 
 interface ICardDetailTagsProps {
   label: string
@@ -10,15 +12,26 @@ interface ICardDetailTagsProps {
 
 export default function CardDetailTags({ label }: ICardDetailTagsProps) {
   const { state, dispatch } = useCardDetail()
+  const cardId = router.query.cardId as string
   // console.log('tag', state)
 
-  const handleRemove = (tagId: string) => {
-    dispatch({
-      type: 'REMOVE_TAG',
-      payload: {
+  const handleRemove = async (tagId: string) => {
+    try {
+      const data = {
         tagId: tagId,
-      },
-    })
+      }
+      const response = await DELETE_CARD_TAG_BY_ID(cardId, data)
+      if (response == undefined) return
+
+      dispatch({
+        type: 'REMOVE_TAG',
+        payload: {
+          tagId: tagId,
+        },
+      })
+    } catch (error) {
+      console.log('Error delete tag:', error)
+    }
   }
 
   return (

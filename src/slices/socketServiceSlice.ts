@@ -59,14 +59,62 @@ export const socketServiceSlice = createSlice({
     createCard(state, action: PayloadAction<interfaces.ICreateCardPayload>) {
       state.boardService?.createCard(action.payload)
     },
-    modifyCard(state, action: PayloadAction<interfaces.IModifyCardPayload>) {
-      state.boardService?.modifyCard(action.payload)
-    },
     attachTagToCard(state, action: PayloadAction<interfaces.IAttachTagToCard>) {
       state.boardService?.attachTagToCard(action.payload)
     },
     removeTagFromCard(state, action: PayloadAction<interfaces.IRemoveTagFromCard>) {
       state.boardService?.removeTagFromCard(action.payload)
+    },
+    addCardComment(state, action: PayloadAction<interfaces.IAddCardComment>) {
+      state.boardService?.addCardComment(action.payload)
+    },
+    modifyCardComment(state, action: PayloadAction<interfaces.IModifyCardComment>) {
+      state.boardService?.modifyCardComment(action.payload)
+    },
+    deleteCardComment(state, action: PayloadAction<interfaces.IDeleteCardComment>) {
+      state.boardService?.deleteCardComment(action.payload)
+    },
+    modifyListTitle(state, action: PayloadAction<interfaces.IBoardModifyListTitle>) {
+      state.boardService?.modifyListTitle(action.payload)
+    },
+    archiveBoardList(state, action: PayloadAction<interfaces.IArchiveBoardListPayload>) {
+      state.boardService?.archiveList(action.payload)
+    },
+    moveBoardList(state, action: PayloadAction<interfaces.IModifyBoardListPosition>) {
+      state.boardService?.moveBoardList(action.payload)
+    },
+    addNewTodoTitle(state, action: PayloadAction<interfaces.IAddNewTodoTitle>) {
+      state.boardService?.addNewTodoTitle(action.payload)
+    },
+    modifyTodoTitle(state, action: PayloadAction<interfaces.IModifyTodoTitle>) {
+      state.boardService?.modifyTodoTitle(action.payload)
+    },
+    deleteTodo(state, action: PayloadAction<interfaces.IDeleteTodo>) {
+      state.boardService?.deleteTodo(action.payload)
+    },
+    addTodoContent(state, action: PayloadAction<interfaces.IAddTodoContent>) {
+      state.boardService?.addTodoContent(action.payload)
+    },
+    modifyTodoContent(state, action: PayloadAction<interfaces.IModifyTodoContent>) {
+      state.boardService?.modifyTodoContent(action.payload)
+    },
+    deleteTodoContent(state, action: PayloadAction<interfaces.IDeleteTodoContent>) {
+      state.boardService?.deleteTodoContent(action.payload)
+    },
+    modifyBoardMemberPermission(state, action: PayloadAction<interfaces.IModifyBoardMemberPermission>) {
+      state.boardService?.modifyBoardMemberPermission(action.payload)
+    },
+    deleteBoardMember(state, action: PayloadAction<interfaces.IDeleteBoardMember>) {
+      state.boardService?.deleteBoardMember(action.payload)
+    },
+    addBoardMember(state, action: PayloadAction<interfaces.IAddBoardMember>) {
+      state.boardService?.addBoardMember(action.payload)
+    },
+    addCardMember(state, action: PayloadAction<interfaces.IAddCardMember>) {
+      state.boardService?.addCardMember(action.payload)
+    },
+    deleteCardMember(state, action: PayloadAction<interfaces.IDeleteCardMember>) {
+      state.boardService?.deleteCardMember(action.payload)
     },
     setBoardId(state, action: PayloadAction<string>) {
       state.boardId = action.payload

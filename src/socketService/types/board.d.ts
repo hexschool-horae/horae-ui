@@ -14,15 +14,15 @@ export interface ICreateCardPayload {
   listId: string
 }
 
-export interface IModifyCardPayload {
-  title: string
+// 修改單一卡片
+export interface IModifySingleCard {
   boardId: string
   cardId: string
   title: string
   describe: string
   startDate: Date
   endDate: Date
-  proiority: number
+  proiority: string
 }
 
 export interface IAttachTagToCard {
@@ -123,6 +123,117 @@ export interface IInitialBoardService {
   boardId: string
 }
 
+// 新增卡片評論
+export interface IAddCardComment {
+  comment: string
+  cardId: string
+  boardId: string
+}
+
+// 修改卡片評論
+export interface IModifyCardComment {
+  comment: string
+  commentId: string
+  cardId: string
+  boardId: string
+}
+
+// 刪除卡片評論
+export interface IDeleteCardComment {
+  commentId: string
+  cardId: string
+  boardId: string
+}
+
+export interface IBoardModifyListTitle {
+  title: string
+  listId: string
+  boardId: string
+}
+
+// 新增卡片 todo 標題
+export interface IAddNewTodoTitle {
+  cardId: string
+  boardId: string
+  title: string
+}
+
+// 修改卡片 todo 標題
+export interface IModifyTodoTitle {
+  cardId: string
+  titleId: string
+  boardId: string
+  title: string
+}
+
+// 刪除卡片 todo 標題
+export interface IDeleteTodo {
+  cardId: string
+  titleId: string
+  boardId: string
+}
+
+// 新增卡片細項
+export interface IAddTodoContent {
+  cardId: string
+  titleId: string
+  boardId: string
+  content: string
+}
+
+// 編輯卡片細項
+export interface IModifyTodoContent {
+  cardId: string
+  boardId: string
+  contentId: string
+  content: string
+  completed: boolean
+}
+
+// 編輯卡片細項
+export interface IDeleteTodoContent {
+  cardId: string
+  boardId: string
+  contentId: string
+}
+
+export interface IModifyBoardMemberPermission {
+  role: string
+  userId: string
+  boardId: string
+}
+
+export interface IDeleteBoardMember {
+  userId: string
+  boardId: string
+}
+
+export interface IAddBoardMember {
+  boardId: string
+  hashData: string
+}
+
+// 移動列表位置
+export interface IModifyBoardListPosition {
+  boardId: string
+  listId: string
+  finalPosition: number
+}
+
+// 卡片成員新增
+export interface IAddCardMember {
+  cardId: string
+  memberId: string
+  boardId: string
+}
+
+// 卡片成員移除
+export interface IDeleteCardMember {
+  cardId: string
+  memberId: string
+  boardId: string
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -133,12 +244,27 @@ export type IBoardService = {
   createNewBoardTag: (payload: ICreateNewBoardTagPayload) => void
   modifyBoardTag: (payload: IModifyBoardTagPayload) => void
   deleteBoardTag: (payload: IDeleteBoardTagPayload) => void
-  modifyCard: (payload: IModifyCardPayload) => void
+  modifyCard: (payload: IModifySingleCard) => void
   attachTagToCard: (payload: IAttachTagToCard) => void
   removeTagFromCard: (payload: IRemoveTagFromCard) => void
+  addCardComment: (payload: IAddCardComment) => void
+  modifyCardComment: (payload: IModifyCardComment) => void
+  deleteCardComment: (payload: IDeleteCardComment) => void
+  modifyListTitle: (payload: IBoardModifyListTitle) => void
+  addNewTodoTitle: (payload: IAddNewTodoTitle) => void
+  modifyTodoTitle: (payload: IModifyTodoTitle) => void
+  deleteTodo: (payload: IDeleteTodo) => void
+  addTodoContent: (payload: IAddTodoContent) => void
+  modifyTodoContent: (payload: IModifyTodoContent) => void
+  deleteTodoContent: (payload: IDeleteTodoContent) => void
+  moveBoardList: (payload: IModifyBoardListPosition) => void
   moveCard: () => undefined
   deleteCard: () => undefined
-  moveList: () => undefined
   deleteList: () => undefined
+  modifyBoardMemberPermission: (payload: IModifyBoardMemberPermission) => void
+  deleteBoardMember: (payload: IDeleteBoardMember) => void
+  addBoardMember: (payload: IAddBoardMember) => void
+  addCardMember: (payload: IAddCardMember) => void
+  deleteCardMember: (payload: IDeleteCardMember) => void
   terminateService: (boardId: string) => void
 }

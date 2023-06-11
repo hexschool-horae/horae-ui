@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-
-import style from './card.module.scss'
 import { Dialog } from 'primereact/dialog'
 import { ProgressSpinner } from 'primereact/progressspinner'
+import style from './card.module.scss'
 
+import { boardSliceActions } from '@/slices/boardSlice'
+import { useAppDispatch } from '@/hooks/useAppStore'
 import { CardDetailProvider, useCardDetail } from '@/contexts/cardDetailContext'
+
 import CardSidebarButton from '@/components/card/CardSidebarButton'
 import CardDetailTitle from '@/components/card/CardDetailTitle'
 import CardDetailMember from '@/components/card/CardDetailMember'
@@ -17,8 +19,11 @@ import CardDetailComments from '@/components/card/CardDetailComments'
 import CardPopupMember from '@/components/card/CardPopupMember'
 import CardPopupTodoList from '@/components/card/CardPopupTodoList'
 import CardPopupTags from '@/components/card/CardPopupTags'
+import CardPopupPriority from './CardPopupPriority'
 import CardPopupWrapper from '@/components/card/CardPopupWrapper'
 import { GET_CARD_BY_ID } from '@/apis/axios-service'
+import CardPopupCalendar from './CardPopupCalendar'
+import CardDetailCalendar from './CardDetailCalendar'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -43,6 +48,7 @@ export default function CardDetail() {
 
 const CardInternal = () => {
   const { state, dispatch } = useCardDetail()
+  const appDispatch = useAppDispatch()
   const router = useRouter()
   const cardId = router.query.cardId as string
 
@@ -90,6 +96,8 @@ const CardInternal = () => {
           cardDetail: response.data,
         },
       })
+
+      appDispatch(boardSliceActions.setCardDetail(response.data))
     } catch (error) {
       console.error('Error fetching card data:', error)
     }
@@ -118,6 +126,9 @@ const CardInternal = () => {
                 <CardDetailTitle />
                 <CardDetailMember label={popupLabels.member} />
                 {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
+                {state.cardDetail.startDate != null && state.cardDetail.endDate != null && (
+                  <CardDetailCalendar label={popupLabels.calender} />
+                )}
                 <CardDetailDescribe />
                 <CardDetailTodoList />
                 <CardDetailComments />
@@ -131,7 +142,7 @@ const CardInternal = () => {
                   md:grid-cols-1 md:gap-2"
                 >
                   <CardSidebarButton name="成員" label={popupLabels.member} />
-                  <CardSidebarButton name="代辦清單" label={popupLabels.todoList} />
+                  <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
                   <CardSidebarButton name="標籤" label={popupLabels.tags} />
                   <CardSidebarButton name="日期" label={popupLabels.calender} />
                   <CardSidebarButton name="附件" label={popupLabels.files} />
@@ -143,7 +154,7 @@ const CardInternal = () => {
                   md:grid-cols-1 md:gap-2"
                 >
                   <CardSidebarButton name="移動" label={popupLabels.move} />
-                  <CardSidebarButton name="複製" label={popupLabels.copy} />
+                  {/* <CardSidebarButton name="複製" label={popupLabels.copy} /> */}
                   <CardSidebarButton name="分享" label={popupLabels.share} />
                   <CardSidebarButton name="優先權" label={popupLabels.priority} />
                   <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
@@ -164,6 +175,8 @@ const CardInternal = () => {
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>
         <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />
       </CardPopupWrapper>
+      <CardPopupCalendar label={popupLabels.calender} key={popupLabels.calender + state.popupKey} />
+      <CardPopupPriority label={popupLabels.priority} key={popupLabels.priority + state.popupKey} />
     </>
   )
 }
