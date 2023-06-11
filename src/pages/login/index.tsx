@@ -1,24 +1,15 @@
 import Head from 'next/head'
 import Link from 'next/link'
-
-import { useState } from 'react'
+import classes from '@/pages/login/login.module.scss'
 import { useForm } from 'react-hook-form'
-
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
-
 import { useAppDispatch } from '@/hooks/useAppStore'
-import { setIsLogin, setToken } from '@/slices/userSlice'
-import axiosFetcher from '@/apis/axios'
-
+import { setIsLogin, setToken, setProfile } from '@/slices/userSlice'
 import { yupResolver } from '@hookform/resolvers/yup'
 import yup from '@/libs/yup'
-import { Dialog } from 'primereact/dialog'
-
 import ValidateController from '@/components/common/ValidateController'
-
-const { post } = axiosFetcher
-
+import { POST_USER_LOGIN } from '@/apis/axios-service'
 const schema = yup
   .object({
     email: yup.string().email().required(),
@@ -32,12 +23,6 @@ interface IRegisterForm {
   password: string
 }
 
-interface IRegisterResponse {
-  user: {
-    token: string
-  }
-}
-
 export default function Register() {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -48,20 +33,15 @@ export default function Register() {
   })
 
   const dispatch = useAppDispatch()
-  const [visible, setVisible] = useState(false)
 
   const onSubmit = async (submitData: IRegisterForm) => {
-    setVisible(true)
-
-    const result = await post<IRegisterResponse>('user/login', submitData, false)
-
-    setVisible(false)
-
+    const result = await POST_USER_LOGIN(submitData)
     if (result === undefined) return
     const { token } = result?.user ?? null
 
     dispatch(setToken(token))
     dispatch(setIsLogin(true))
+    dispatch(setProfile(submitData.email))
     // 重置表單
     reset()
   }
@@ -71,45 +51,25 @@ export default function Register() {
       <Head>
         <title>Horae - 登入</title>
       </Head>
-
-      <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-bold mb-5">登入</h1>
-
-        <div className="flex flex-col">
-          <ValidateController name="email" label="電子信箱" control={control}>
-            <InputText />
+      <div className="w-full h-full flex items-center justify-center">
+        <div className={classes['login-form-box']}>
+          <div className={classes.title}>Horae - 登入</div>
+          <ValidateController name="email" label="電子信箱" control={control} className="mt-5">
+            <InputText type="text" />
           </ValidateController>
-        </div>
-
-        <div className="flex flex-col mb-5">
-          <ValidateController name="password" label="密碼" control={control}>
-            <InputText />
+          <ValidateController name="password" label="密碼" control={control} className="mt-5">
+            <InputText type="password" />
           </ValidateController>
-        </div>
-
-        <Button className="bg-red-600 px-10 mb-6" onClick={handleSubmit(onSubmit)} rounded>
-          登入
-        </Button>
-
-        <div>
-          還沒有註冊帳號？
-          <Link href="sign-up">
-            <Button className="text-red-600 p-0" link>
+          <Button className={`${classes['btn-login']} mt-7`} onClick={handleSubmit(onSubmit)} rounded>
+            登入
+          </Button>
+          <div className="flex items-center mt-2">
+            <span>還沒有註冊帳號？</span>
+            <Link href="sign-up" className="text-red-600 underline">
               註冊
-            </Button>
-          </Link>
+            </Link>
+          </div>
         </div>
-
-        {/* 登入中 loading */}
-        <Dialog
-          header={<>載入中</>}
-          visible={visible}
-          focusOnShow={false}
-          style={{ width: '50vw' }}
-          onHide={() => setVisible(false)}
-        >
-          <p className="text-center text-lg">登入中，請稍候</p>
-        </Dialog>
       </div>
     </>
   )

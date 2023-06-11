@@ -8,7 +8,7 @@ import IconTwitter from '@/assets/icons/icon_twitter.svg'
 export default function FrontFooter() {
   return (
     <>
-      <footer>
+      <footer className="flex-shrink-0">
         <div className="front-max-container">
           <div className={styles.top_row}>
             <Link href="/" passHref>

@@ -8,20 +8,28 @@ import boardReducer from '@/slices/boardSlice'
 import workspaceReducer from '@/slices/workspaceSlice'
 import socketServiceReducer from '@/slices/socketServiceSlice'
 import errorReducer from '@/slices/errorSlice'
+import dialogReducer from '@/slices/dialogSlice'
+
+const userPersistConfig = {
+  key: 'user',
+  storage,
+  whitelist: ['token'],
+}
 
 const reducers = combineReducers({
-  user: userReducer,
+  user: persistReducer(userPersistConfig, userReducer),
   board: boardReducer,
   error: errorReducer,
   workspace: workspaceReducer,
   socketService: socketServiceReducer,
+  dialog: dialogReducer,
 })
 
 //預設位置 localstorage。說明：https://github.com/rt2zz/redux-persist
 const persistConfig = {
   key: 'app',
   storage,
-  whitelist: ['user'],
+  blacklist: ['board', 'error', 'workspace', 'socketService', 'dialog'],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers)

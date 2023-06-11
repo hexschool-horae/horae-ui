@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import classes from '@/pages/login/login.module.scss'
 
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -10,12 +11,11 @@ import { Button } from 'primereact/button'
 
 import { useAppDispatch } from '@/hooks/useAppStore'
 import { setIsLogin, setToken } from '@/slices/userSlice'
-import axiosFetcher from '@/apis/axios'
 import { useRouter } from 'next/router'
-
+import { IRegisterForm } from '@/apis/interface/api'
 import ValidateController from '@/components/common/ValidateController'
 
-const { post } = axiosFetcher
+import { POST_SIGN_UP } from '@/apis/axios-service'
 
 const schema = yup
   .object({
@@ -25,17 +25,6 @@ const schema = yup
   .required()
 
 // 註冊基本表單欄位
-interface IRegisterForm {
-  email: string
-  password: string
-}
-
-interface IRegisterResponse {
-  user: {
-    token: string
-  }
-}
-
 export default function Register() {
   const router = useRouter()
   // 取首頁輸入註冊email
@@ -51,8 +40,7 @@ export default function Register() {
   const dispatch = useAppDispatch()
 
   const onSubmit = async (submitData: IRegisterForm) => {
-    const result = await post<IRegisterResponse>('/user/sign-up', submitData, false)
-
+    const result = await POST_SIGN_UP(submitData)
     if (result === undefined) return
     const { token } = result?.user ?? {}
 
@@ -67,32 +55,24 @@ export default function Register() {
       <Head>
         <title>Horae - 註冊</title>
       </Head>
-
-      <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-bold mb-5">註冊</h1>
-
-        <div className="flex flex-col">
-          <ValidateController name="email" label="電子信箱" control={control}>
-            <InputText />
+      <div className="w-full h-full flex items-center justify-center">
+        <div className={classes['login-form-box']}>
+          <div className={classes.title}>Horae - 註冊</div>
+          <ValidateController name="email" label="電子信箱" control={control} className="mt-5">
+            <InputText type="email" />
           </ValidateController>
-        </div>
-
-        <div className="flex flex-col mb-5">
-          <ValidateController name="password" label="密碼" control={control}>
-            <InputText />
+          <ValidateController name="password" label="密碼" control={control} className="mt-5">
+            <InputText type="password" />
           </ValidateController>
-        </div>
-
-        <Button className=" bg-red-600 px-10 mb-6" onClick={handleSubmit(onSubmit)} rounded>
-          註冊
-        </Button>
-        <div>
-          已經有帳號了？
-          <Link href="login">
-            <Button className="text-red-600 p-0" link>
+          <Button className={`${classes['btn-login']} mt-7`} onClick={handleSubmit(onSubmit)} rounded>
+            註冊
+          </Button>
+          <div className="flex items-center mt-2">
+            <span>已經有帳號了？</span>
+            <Link href="login" className="text-red-600 underline">
               登入
-            </Button>
-          </Link>
+            </Link>
+          </div>
         </div>
       </div>
     </>

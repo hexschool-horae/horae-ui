@@ -8,6 +8,7 @@ import store from '@/app/store'
 
 import { boardSliceActions } from '@/slices/boardSlice'
 import { errorSliceActions } from '@/slices/errorSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 
 let boardSocket: Socket
 
@@ -263,6 +264,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽修改看板標題是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TITLE_RESULT, data => {
     console.log('監看修改看板標題是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TITLE_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateBoardTitle(data.title))
     } else {

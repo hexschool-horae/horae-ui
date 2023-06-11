@@ -1,0 +1,58 @@
+.workspace-list {
+  @apply flex-1 overflow-y-auto;
+  .workspace-list-item {
+    @apply flex flex-col mt-6;
+    &:first-child {
+      @apply mt-0;
+    }
+    .icon-arrow {
+      transition: transform 0.4s ease-in-out;
+      &.active {
+        transform: rotate(180deg);
+      }
+    }
+    .menus {
+      @apply overflow-hidden;
+      max-height: 0px;
+      transition: max-height 0.4s ease-in-out;
+
+      &.active {
+        max-height: 200px;
+      }
+    }
+  }
+}
+
+.sidebar {
+  @apply relative;
+  @apply inline-flex flex-col text-base leading-none;
+  @apply text-black;
+  max-width: 332px;
+  width: 332px;
+  transition: all 0.4s ease-in-out;
+
+  &.close {
+    max-width: 50px;
+    > div:not(.toggle-btn) {
+      display: none;
+    }
+  }
+}
+
+.toggle-btn {
+  @apply absolute right-0 rounded-full;
+  @apply bg-primary;
+  @apply transform translate-x-1/2;
+  @apply flex items-center justify-center;
+  @apply cursor-pointer;
+  top: 20px;
+  width: 30px;
+  height: 30px;
+  svg {
+    transition: transform 0.4s ease-in-out;
+    transform-origin: center center;
+    &.close {
+      transform: rotate(180deg);
+    }
+  }
+}

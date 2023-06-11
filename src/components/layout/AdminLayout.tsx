@@ -42,8 +42,12 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
       <div className="flex flex-col h-full">
         <Header boardId={boardId} />
         <div className="flex flex-1 overflow-y-auto">
-          <Sidebar className="h-full overflow-y-auto" boardId={boardId} />
-          <div className="w-full h-full overflow-y-auto">{children}</div>
+          <Sidebar boardId={boardId} />
+          <div
+            className={`w-full h-full overflow-y-auto py-[50px] px-[64px] ${boardId ? 'bg-white' : 'bg-secondary-4'}`}
+          >
+            {children}
+          </div>
         </div>
       </div>
       <Toast ref={toastRef} position="bottom-left" />

@@ -4,11 +4,18 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 interface IUserInitialState {
   isLogin: boolean
   token: string | null
+  profile: {
+    email: string
+  }
 }
 
 const initialState: IUserInitialState = {
   isLogin: false,
   token: null,
+
+  profile: {
+    email: '',
+  },
 }
 
 export const userSlice = createSlice({
@@ -21,9 +28,12 @@ export const userSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
     },
+    setProfile(state, action: PayloadAction<string>) {
+      state.profile.email = action.payload
+    },
   },
 })
 
-export const { setIsLogin, setToken } = userSlice.actions //給React組件個別使用
+export const { setIsLogin, setToken, setProfile } = userSlice.actions //給React組件個別使用
 
-export default userSlice.reducer //給store.js使用
+export default userSlice.reducer

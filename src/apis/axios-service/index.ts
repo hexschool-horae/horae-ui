@@ -38,6 +38,10 @@ export const DELETE_WORKSPACE = (workId: string, date: object) => {
   return axiosFetcher.DELETE(`${apiPath.GET_WORK_SPACE}/${workId}`, date)
 }
 
+export const GET_ALL_WORK_SPACE = () => {
+  return axiosFetcher.get<interfaces.IUserBoardDataRes[]>(`${apiPath.GET_WORK_SPACE}`)
+}
+
 /** B02-5 取得單一工作區 */
 export const GET_WORK_SPACE = (workId: string) => {
   return axiosFetcher.get<interfaces.IWorkSpaceByIdDataResponse>(`${apiPath.GET_WORK_SPACE}/${workId}`)
