@@ -46,7 +46,20 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽修改單一卡片是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_MODIFY_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_MODIFY_RESULT, data => {
+    console.log('監聽修改單一卡片是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateCard(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽新增看板標籤是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT, () => undefined)

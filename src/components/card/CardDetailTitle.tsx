@@ -1,3 +1,4 @@
+import router from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -6,11 +7,20 @@ import style from './cardDetail.module.scss'
 import priorityStyle from './priority.module.scss'
 import { InputText } from 'primereact/inputtext'
 
-import { useCardDetail } from '@/contexts/cardDetailContext'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 export default function CardDetailTitle() {
-  const { state, dispatch } = useCardDetail()
+  const cardId = router.query.cardId as string
+  const boardId = router.query.boardId as string
+
+  const appDispatch = useAppDispatch()
+  const socketCardTitle = useAppSelector(state => state.board.cardDetail?.title)
+  const socketPriority = useAppSelector(state => state.board.cardDetail?.proiority)
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
+
   const inputRef = useRef<HTMLInputElement>(null)
+  const [cardTitle, setCardTitle] = useState('')
   const [priorityColor, setPriorityColor] = useState('')
 
   const [isFocus, setIsFoucs] = useState(false)
@@ -36,17 +46,23 @@ export default function CardDetailTitle() {
     resolver: yupResolver(schema),
   })
 
-  const dispatchTitle = (title: string) => {
-    dispatch({
-      type: 'UPDATE_TITLE',
-      payload: {
-        title: title,
-      },
-    })
+  const updateTitle = (title: string) => {
+    if (cardDetail) {
+      appDispatch(
+        socketServiceActions.modifyCard({
+          boardId,
+          cardId,
+          title,
+          describe: cardDetail.describe,
+          startDate: cardDetail.startDate,
+          endDate: cardDetail.endDate,
+          proiority: cardDetail.proiority,
+        })
+      )
+    }
   }
 
-  const onSubmit = (submitData: ITitle) => {
-    dispatchTitle(submitData.title)
+  const onSubmit = () => {
     if (inputRef.current) {
       inputRef.current.blur()
     }
@@ -54,14 +70,21 @@ export default function CardDetailTitle() {
 
   const handleBlur = () => {
     const submitData = getValues()
-    dispatchTitle(submitData.title)
+    if (submitData.title == cardTitle) return
+    updateTitle(submitData.title)
     setIsFoucs(false)
   }
 
   useEffect(() => {
-    setValue('title', state.cardDetail.title)
-    setPriorityColor(getPriorityColor(state.cardDetail.proiority))
-  }, [state.cardDetail.title, state.cardDetail.proiority])
+    if (socketCardTitle == undefined) return
+    setValue('title', socketCardTitle)
+    setCardTitle(socketCardTitle)
+  }, [socketCardTitle])
+
+  useEffect(() => {
+    if (socketPriority == undefined) return
+    setPriorityColor(getPriorityColor(socketPriority))
+  }, [socketPriority])
 
   const getPriorityColor = (val: string) => {
     switch (val) {
@@ -93,7 +116,7 @@ export default function CardDetailTitle() {
               onBlur={() => handleBlur()}
               className={`w-full text-3xl ${isFocus || fieldState.error ? '' : style.card_title_view} 
                 ${fieldState.error ? 'p-invalid' : ''}
-                ${state.cardDetail.proiority != '' && 'pl-[54px]'}
+                ${socketPriority != '' && 'pl-[54px]'}
               `}
             />
           </>
@@ -101,7 +124,7 @@ export default function CardDetailTitle() {
       />
       {errors.title && <small className="p-error">{errors.title.message}</small>}
 
-      {state.cardDetail.proiority != '' && (
+      {socketPriority != '' && (
         <div
           className={`w-[40px] h-[40px] rounded-full text-center leading-[40px] 
           absolute left-2 top-1/2 -translate-y-1/2 ${priorityStyle[priorityColor]}

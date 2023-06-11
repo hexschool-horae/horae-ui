@@ -1,9 +1,14 @@
+import router from 'next/router'
 import { useEffect, useState } from 'react'
 import style from './cardPopups.module.scss'
 import { Calendar } from 'primereact/calendar'
 import { Divider } from 'primereact/divider'
 import { Button } from 'primereact/button'
+
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { useCardDetail } from '@/contexts/cardDetailContext'
+
 import CardPopupWrapper from './CardPopupWrapper'
 
 interface ICardPopupCalendarProps {
@@ -13,10 +18,19 @@ type TCalendar = null | string | Date | Date[]
 
 /* eslint-disable */
 export default function CardPopupCalendar({ label }: ICardPopupCalendarProps) {
-  const { state, dispatch } = useCardDetail()
+  const cardId = router.query.cardId as string
+  const boardId = router.query.boardId as string
+
+  const appDispatch = useAppDispatch()
+  const socketStartDate = useAppSelector(state => state.board.cardDetail?.startDate)
+  const socketEndDate = useAppSelector(state => state.board.cardDetail?.endDate)
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
+  const { dispatch } = useCardDetail()
+
   const [dates, setDates] = useState<Date[]>([])
   const [startTime, setStartTime] = useState<TCalendar>(new Date())
   const [endTime, setEndTime] = useState<TCalendar>(new Date())
+  const [isEdit, setIsEdit] = useState(false)
 
   const getTomorrow = () => {
     const today = new Date()
@@ -25,16 +39,6 @@ export default function CardPopupCalendar({ label }: ICardPopupCalendarProps) {
     return tomorrow
   }
 
-  useEffect(() => {
-    if (state.cardDetail.startDate != null && state.cardDetail.endDate != null) {
-      setDates([new Date(state.cardDetail.startDate), new Date(state.cardDetail.endDate)])
-      setStartTime(new Date(state.cardDetail.startDate))
-      setEndTime(new Date(state.cardDetail.endDate))
-    } else {
-      setDates([new Date(), getTomorrow()])
-    }
-  }, [state.cardDetail.startDate, state.cardDetail.endDate])
-
   const handleChangeDate = (e: any) => {
     setDates(e.value)
   }
@@ -42,16 +46,32 @@ export default function CardPopupCalendar({ label }: ICardPopupCalendarProps) {
   const dispatchDates = () => {
     const start = `${formatDate(dates[0])} ${formatTime(startTime)}`
     const end = `${formatDate(dates[1])} ${formatTime(endTime)}`
-    console.log(dates[0], formatDate(dates[0]))
-    console.log(startTime, formatTime(startTime))
-    dispatch({
-      type: 'ADD_DATES',
-      payload: {
-        startDate: new Date(start).getTime(),
-        endDate: new Date(end).getTime(),
-      },
-    })
+    if (cardDetail) {
+      appDispatch(
+        socketServiceActions.modifyCard({
+          boardId,
+          cardId,
+          title: cardDetail.title,
+          describe: cardDetail.describe,
+          startDate: new Date(start).getTime(),
+          endDate: new Date(end).getTime(),
+          proiority: cardDetail.proiority,
+        })
+      )
+    }
   }
+
+  useEffect(() => {
+    if (socketStartDate != null && socketEndDate != null) {
+      setDates([new Date(socketStartDate), new Date(socketEndDate)])
+      setStartTime(new Date(socketStartDate))
+      setEndTime(new Date(socketEndDate))
+      setIsEdit(true)
+    } else {
+      setDates([new Date(), getTomorrow()])
+      setIsEdit(false)
+    }
+  }, [socketStartDate, socketEndDate])
 
   return (
     <CardPopupWrapper title="日期" label={label}>
@@ -106,7 +126,7 @@ export default function CardPopupCalendar({ label }: ICardPopupCalendarProps) {
       </div>
 
       <Button
-        label="建立"
+        label={isEdit ? '儲存' : '建立'}
         severity="secondary"
         rounded
         className="w-full mt-4"

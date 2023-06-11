@@ -1,7 +1,12 @@
-import style from './cardDetail.module.scss'
+import router from 'next/router'
 import { useEffect, useState } from 'react'
+import style from './cardDetail.module.scss'
 import { Button } from 'primereact/button'
+
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { useCardDetail } from '@/contexts/cardDetailContext'
+
 import IconDelete from '@/assets/icons/icon_delete.svg'
 
 interface ICardDetailCalendarProps {
@@ -9,7 +14,14 @@ interface ICardDetailCalendarProps {
 }
 
 export default function CardDetailCalendar({ label }: ICardDetailCalendarProps) {
-  const { state, dispatch } = useCardDetail()
+  const cardId = router.query.cardId as string
+  const boardId = router.query.boardId as string
+
+  const appDispatch = useAppDispatch()
+  const socketStartDate = useAppSelector(state => state.board.cardDetail?.startDate)
+  const socketEndDate = useAppSelector(state => state.board.cardDetail?.endDate)
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
+  const { dispatch } = useCardDetail()
   const [showDates, setShowDates] = useState('')
 
   function formatDate(dateString: string | number) {
@@ -24,43 +36,57 @@ export default function CardDetailCalendar({ label }: ICardDetailCalendarProps) 
     return `${year}.${month}.${day} ${hours}:${minutes}`
   }
 
-  useEffect(() => {
-    if (state.cardDetail.startDate != null && state.cardDetail.endDate != null) {
-      const startDate = formatDate(state.cardDetail.startDate)
-      const endDate = formatDate(state.cardDetail.endDate)
-      setShowDates(`${startDate} ~ ${endDate}`)
+  const deleteDate = () => {
+    if (cardDetail) {
+      appDispatch(
+        socketServiceActions.modifyCard({
+          boardId,
+          cardId,
+          title: cardDetail.title,
+          describe: cardDetail.describe,
+          startDate: null,
+          endDate: null,
+          proiority: cardDetail.proiority,
+        })
+      )
     }
-  }, [state.cardDetail.startDate, state.cardDetail.endDate])
+  }
+
+  useEffect(() => {
+    if (socketStartDate != null && socketEndDate != null) {
+      const startDate = formatDate(socketStartDate)
+      const endDate = formatDate(socketEndDate)
+      setShowDates(`${startDate} ~ ${endDate}`)
+    } else {
+      setShowDates('')
+    }
+  }, [socketStartDate, socketEndDate])
+
   return (
-    <div className={style.detail_list}>
-      <div>日期</div>
-      <Button
-        icon="pi pi-calendar"
-        rounded
-        aria-label="calendar"
-        className={style.detail_list_add_btn}
-        onClick={() => {
-          dispatch({
-            type: 'TOTGGLE_POPUP',
-            payload: label,
-          })
-        }}
-      />
-      <div className="flex items-center">
-        <div>{showDates}</div>
-        <Button
-          size="small"
-          text
-          className={`hover:bg-transparent ${style.icon_btn_delete}`}
-          onClick={() => {
-            dispatch({
-              type: 'DELETE_DATES',
-            })
-          }}
-        >
-          <IconDelete />
-        </Button>
-      </div>
-    </div>
+    <>
+      {showDates != '' && (
+        <div className={style.detail_list}>
+          <div>日期</div>
+          <Button
+            icon="pi pi-calendar"
+            rounded
+            aria-label="calendar"
+            className={style.detail_list_add_btn}
+            onClick={() => {
+              dispatch({
+                type: 'TOTGGLE_POPUP',
+                payload: label,
+              })
+            }}
+          />
+          <div className="flex items-center">
+            <div>{showDates}</div>
+            <Button size="small" text className={`hover:bg-transparent ${style.icon_btn_delete}`} onClick={deleteDate}>
+              <IconDelete />
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

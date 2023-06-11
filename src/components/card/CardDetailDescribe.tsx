@@ -9,10 +9,13 @@ import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 import 'react-markdown-editor-lite/lib/index.css'
 
 import { useEffect, useState } from 'react'
-import { Button } from 'primereact/button'
-import { useCardDetail } from '@/contexts/cardDetailContext'
 import style from './cardDetail.module.scss'
-import { PATCH_CARD_BASIC_INFO_BY_ID } from '@/apis/axios-service'
+import { Button } from 'primereact/button'
+
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+
+// import { PATCH_CARD_BASIC_INFO_BY_ID } from '@/apis/axios-service'
 
 /*
 建議使用 client-side render 
@@ -39,43 +42,56 @@ const MdEditor = dynamic(
 )
 
 export default function CardDetailDescribe() {
-  const { state, dispatch } = useCardDetail()
+  const cardId = router.query.cardId as string
+  const boardId = router.query.boardId as string
+
+  const appDispatch = useAppDispatch()
+  const socketDescribe = useAppSelector(state => state.board.cardDetail?.describe)
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
+
   const [description, setDescription] = useState('')
   const [isEdit, setIsEdit] = useState(false)
 
-  const cardId = router.query.cardId as string
+  // const handleUpdate = async () => {
+  //   try {
+  //     const data = {
+  //       title: state.cardDetail.title,
+  //       describe: description,
+  //       startDate: state.cardDetail.startDate,
+  //       endDate: state.cardDetail.endDate,
+  //       proiority: state.cardDetail.proiority,
+  //     }
 
-  const handleUpdate = async () => {
-    try {
-      const data = {
-        title: state.cardDetail.title,
-        describe: description,
-        startDate: state.cardDetail.startDate,
-        endDate: state.cardDetail.endDate,
-        proiority: state.cardDetail.proiority,
-      }
+  //     const response = await PATCH_CARD_BASIC_INFO_BY_ID(cardId, data)
 
-      const response = await PATCH_CARD_BASIC_INFO_BY_ID(cardId, data)
+  //     if (response == undefined) return
+  //     dispatchDescribe()
+  //     setIsEdit(false)
+  //   } catch (error) {
+  //     console.log('Error update card basic info:', error)
+  //   }
+  // }
 
-      if (response == undefined) return
-      dispatchDescribe()
+  const handleUpdate = () => {
+    if (cardDetail) {
+      appDispatch(
+        socketServiceActions.modifyCard({
+          boardId,
+          cardId,
+          title: cardDetail.title,
+          describe: description,
+          startDate: cardDetail.startDate,
+          endDate: cardDetail.endDate,
+          proiority: cardDetail.proiority,
+        })
+      )
       setIsEdit(false)
-    } catch (error) {
-      console.log('Error update card basic info:', error)
     }
   }
 
-  const dispatchDescribe = () => {
-    dispatch({
-      type: 'UPDATE_DESCRIBE',
-      payload: {
-        describe: description,
-      },
-    })
-  }
-
   const handleCancel = () => {
-    setDescription(state.cardDetail.describe)
+    if (socketDescribe == undefined) return
+    setDescription(socketDescribe)
     setIsEdit(false)
   }
 
@@ -89,8 +105,9 @@ export default function CardDetailDescribe() {
   }
 
   useEffect(() => {
-    setDescription(state.cardDetail.describe)
-  }, [state.cardDetail.describe])
+    if (socketDescribe == undefined) return
+    setDescription(socketDescribe)
+  }, [socketDescribe])
 
   return (
     <div className="my-5" onClick={() => !isEdit && setIsEdit(true)}>

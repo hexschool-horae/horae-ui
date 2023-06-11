@@ -1,3 +1,5 @@
+import { Timestamp } from '@/apis/interface/api'
+
 export interface ICreateListPayload {
   title: string
   boardId: string
@@ -20,8 +22,8 @@ export interface IModifySingleCard {
   cardId: string
   title: string
   describe: string
-  startDate: Date
-  endDate: Date
+  startDate: Timestamp
+  endDate: Timestamp
   proiority: string
 }
 
