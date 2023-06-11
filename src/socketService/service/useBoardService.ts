@@ -108,6 +108,12 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 看板新增成員是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, () => undefined)
 
+  // 監聽 新增卡片成員是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT, () => undefined)
+
+  // 監聽 刪除卡片成員是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER_RESULT, () => undefined)
+
   // 監聽看板新增卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_CREATE_RESULT, data => {
     if (data.code !== -1) {
@@ -202,6 +208,8 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     modifyBoardMemberPermission,
     deleteBoardMember,
     addBoardMember,
+    addCardMember,
+    deleteCardMember,
     terminateService,
   }
 }
@@ -274,65 +282,91 @@ const removeTagFromCard = (payload: interfaces.IRemoveTagFromCard) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.REMOVE_TAG_FROM_CARD, payload)
 }
 
+// 新增卡片評論
 const addCardComment = (payload: interfaces.IAddCardComment) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_NEW_CARD_COMMENT, payload)
 }
 
+// 修改卡片評論
 const modifyCardComment = (payload: interfaces.IModifyCardComment) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.MODIFT_CARD_COMMENT, payload)
 }
 
+// 刪除卡片評論
 const deleteCardComment = (payload: interfaces.IDeleteCardComment) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.DELETE_CARD_COMMENT, payload)
 }
 
+// 修改列表標題
 const modifyListTitle = (payload: interfaces.IBoardModifyListTitle) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_LIST_TITLE, payload)
 }
 
+// 封存看板列表
 const archiveBoardList = (payload: interfaces.IArchiveBoardListPayload) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST, payload)
 }
 
+// 新增卡片 todo 標題
 const addNewTodoTitle = (payload: interfaces.IAddNewTodoTitle) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE, payload)
 }
 
+// 修改卡片 todo 標題
 const modifyTodoTitle = (payload: interfaces.IModifyTodoTitle) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE, payload)
 }
 
+// 刪除卡片 todo 標題
 const deleteTodo = (payload: interfaces.IDeleteTodo) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO, payload)
 }
 
+// 新增卡片 todo 內容
 const addTodoContent = (payload: interfaces.IAddTodoContent) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT, payload)
 }
 
+// 修改 todo 內容
 const modifyTodoContent = (payload: interfaces.IModifyTodoContent) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT, payload)
 }
 
+// 刪除 todo 內容
 const deleteTodoContent = (payload: interfaces.IDeleteTodoContent) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT, payload)
 }
 
+// 移動看板列表
 const moveBoardList = (payload: interfaces.IModifyBoardListPosition) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION, payload)
 }
 
+// 修改看板成員權限
 const modifyBoardMemberPermission = (payload: interfaces.IModifyBoardMemberPermission) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION, payload)
 }
 
+// 刪除看板成員
 const deleteBoardMember = (payload: interfaces.IDeleteBoardMember) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER, payload)
 }
 
+// 新增看板成員
 const addBoardMember = (payload: interfaces.IAddBoardMember) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER, payload)
 }
+
+// 新增卡片成員
+const addCardMember = (payload: interfaces.IAddCardMember) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER, payload)
+}
+
+// 刪除卡片成員
+const deleteCardMember = (payload: interfaces.IDeleteCardMember) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER, payload)
+}
+
 const moveCard = () => undefined
 const deleteCard = () => undefined
 const deleteList = () => undefined
