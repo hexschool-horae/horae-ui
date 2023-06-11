@@ -1,98 +1,68 @@
 import router from 'next/router'
 import { useEffect, useRef, useState } from 'react'
-import style from './cardDetail.module.scss'
 import { InputText } from 'primereact/inputtext'
-import { useCardDetail } from '@/contexts/cardDetailContext'
-import { IComment } from '@/apis/interface/api'
-import {
-  DELETE_CARD_COMMENT_BY_ID,
-  GET_USER_PROFILE,
-  POST_CARD_COMMENT_BY_ID,
-  PUT_CARD_COMMENT_BY_ID,
-} from '@/apis/axios-service'
 import { ProgressSpinner } from 'primereact/progressspinner'
 import { Button } from 'primereact/button'
+import style from './cardDetail.module.scss'
+
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+
+import { IComment } from '@/apis/interface/api'
 import IconDelete from '@/assets/icons/icon_delete.svg'
 
 export default function CardDetailComments() {
-  const { state } = useCardDetail()
+  const cardId = router.query.cardId as string
+  const boardId = router.query.boardId as string
+
+  const appDispatch = useAppDispatch()
+  const socketComments = useAppSelector(state => state.board.cardDetail?.comments)
+
   const inputRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [username, setUsername] = useState('')
   const [comments, setComments] = useState<IComment[]>([])
   const [comment, setComment] = useState('')
   const editInputRef = useRef<HTMLInputElement>(null)
   const [isEditId, setIsEditId] = useState<null | string>(null)
   const [editComment, setEditComment] = useState('')
+  const [editIsLoading, setEditIsLoading] = useState(false)
 
-  const cardId = router.query.cardId as string
-
-  const getUserData = async () => {
-    try {
-      const response = await GET_USER_PROFILE()
-      if (response == undefined) return
-      setUsername(response.data.name)
-    } catch (error) {
-      console.log('Error get user profile', error)
-    }
-  }
-
-  useEffect(() => {
-    getUserData()
-  }, [])
-
-  const createComment = async () => {
+  const createComment = () => {
     if (comment == '') return
-    try {
-      setIsLoading(true)
-      const data = {
-        comment: comment,
-      }
-      const response = await POST_CARD_COMMENT_BY_ID(cardId, data)
-      if (response == undefined) return
-      console.log(response)
-      const obj = {
-        _id: new Date().getTime().toString(), //待換成API給的ＩＤ
-        comment: comment,
-        createdAt: '剛剛',
-        user: {
-          _id: '',
-          name: username,
-        },
-      }
-      setComments(prev => [obj, ...prev])
-      // dispatch({
-      //   type: 'CREATE_COMMENT',
-      //   payload: {
-      //     comment: comment,
-      //   },
-      // })
-      setComment('')
-      setIsLoading(false)
-    } catch (error) {
-      console.log('Error create comment', error)
-      setIsLoading(false)
-    }
+
+    appDispatch(
+      socketServiceActions.addCardComment({
+        boardId,
+        cardId,
+        comment,
+      })
+    )
+    setIsLoading(true)
   }
 
-  const updateComment = async (commentId: string) => {
+  const updateComment = (commentId: string) => {
     if (editComment == '') return
-    try {
-      const data = {
-        commentId: commentId,
+    appDispatch(
+      socketServiceActions.modifyCardComment({
         comment: editComment,
-      }
+        commentId,
+        cardId,
+        boardId,
+      })
+    )
+    setEditIsLoading(true)
+    setIsEditId(null)
+  }
 
-      const response = await PUT_CARD_COMMENT_BY_ID(cardId, data)
-      if (response == undefined) return
-      const list = [...comments]
-      const index = comments.findIndex(comment => comment._id === commentId)
-      list[index].comment = editComment
-      setComments(list)
-      setIsEditId(null)
-    } catch (error) {
-      console.log('Error update comment:', error)
-    }
+  const deleteComment = (commentId: string) => {
+    appDispatch(
+      socketServiceActions.deleteCardComment({
+        commentId,
+        cardId,
+        boardId,
+      })
+    )
+    setEditIsLoading(true)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, type = 'create', commentId?: string) => {
@@ -108,27 +78,6 @@ export default function CardDetailComments() {
         }
     }
   }
-
-  const deleteComment = async (id: string) => {
-    try {
-      const data = {
-        commentId: id,
-      }
-      const response = await DELETE_CARD_COMMENT_BY_ID(cardId, data)
-      if (response == undefined) return
-      setComments(prev => prev.filter(comment => comment._id !== id))
-    } catch (error) {
-      console.log('Error delete comment:', error)
-    }
-  }
-
-  useEffect(() => {
-    const list = state.cardDetail.comments.map(comment => ({
-      ...comment,
-      createdAt: formatDate(comment.createdAt),
-    }))
-    setComments(list)
-  }, [state.cardDetail.comments])
 
   function formatDate(dateString: string) {
     if (dateString == undefined) return 'YYYY/MM/DD HH:mm'
@@ -151,6 +100,28 @@ export default function CardDetailComments() {
       }
     }
   }, [isEditId])
+
+  const clearStatus = () => {
+    setComment('')
+    setIsLoading(false)
+    setEditIsLoading(false)
+  }
+
+  // useEffect(() => {
+
+  // }, [state.cardDetail.comments])
+
+  //改成都先透過socket更新狀態
+  useEffect(() => {
+    if (socketComments == undefined) return
+
+    const list = socketComments.map(comment => ({
+      ...comment,
+      createdAt: formatDate(comment.createdAt),
+    }))
+    setComments(list)
+    clearStatus()
+  }, [socketComments])
 
   return (
     <div>
@@ -175,13 +146,20 @@ export default function CardDetailComments() {
           )}
         </div>
       </div>
-      <ul>
+      <ul className="relative">
+        {editIsLoading && (
+          <li className={style.loading_overlay}>
+            <ProgressSpinner strokeWidth="4" style={{ width: '60px', height: '60px' }} />
+          </li>
+        )}
         {comments.length > 0 &&
           comments.map((item, i) => (
             <li
               key={i}
-              className="flex gap-4 items-center p-2 mb-2
-                border-solid border-b-[1px] border-gray-200"
+              className={`flex gap-4 items-center p-2 mb-2
+                border-solid border-b-[1px] border-gray-200
+                ${style.comment_item}
+              `}
             >
               <div className="w-[42px] h-[42px] rounded-full  bg-black"></div>
               <div className="grow" onClick={() => setIsEditId(item._id)}>
@@ -205,7 +183,7 @@ export default function CardDetailComments() {
               <Button
                 size="small"
                 text
-                className={`hover:bg-transparent ${style.icon_btn_delete}`}
+                className={`hover:bg-transparent ${style.icon_btn_delete} ${style.comment_delete_btn}`}
                 onClick={() => deleteComment(item._id)}
               >
                 <IconDelete />

@@ -1,8 +1,11 @@
+import router from 'next/router'
 import { useState } from 'react'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import CardPopupWrapper from './CardPopupWrapper'
 
+import { useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { useCardDetail } from '@/contexts/cardDetailContext'
 
 interface ICardPopupTodoListProps {
@@ -10,19 +13,26 @@ interface ICardPopupTodoListProps {
 }
 
 export default function CardPopupTodoList({ label }: ICardPopupTodoListProps) {
+  const cardId = router.query.cardId as string
+  const boardId = router.query.boardId as string
+
+  const appDispatch = useAppDispatch()
   const { dispatch } = useCardDetail()
   const [todoListTitle, setTodoListTitle] = useState('')
 
   const cteateTodoList = () => {
+    appDispatch(
+      socketServiceActions.addNewTodoTitle({
+        boardId,
+        cardId,
+        title: todoListTitle,
+      })
+    )
     dispatch({
       type: 'ADD_TODO_LIST',
       payload: {
         listTitle: todoListTitle,
       },
-    })
-    dispatch({
-      type: 'TOTGGLE_POPUP',
-      payload: label,
     })
   }
 

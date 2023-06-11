@@ -288,6 +288,9 @@ export interface IPatchCardBasicInfoRequest {
 export interface IPostCardCommentRequest {
   comment: string
 }
+export interface IPostCardCommentResponse {
+  data: string
+}
 /** B05-12 卡片評論修改 */
 export interface IPutCardCommentRequest {
   commentId: string
