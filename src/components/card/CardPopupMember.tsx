@@ -1,6 +1,6 @@
 import { InputText } from 'primereact/inputtext'
 import CardPopupWrapper from './CardPopupWrapper'
-import { GET_BOARD_ALL_MEMBERS } from '@/apis/axios-service'
+import { GET_BOARD_ALL_MEMBERS_BY_ID } from '@/apis/axios-service'
 import { AxiosError } from 'axios'
 import { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
@@ -36,7 +36,7 @@ export default function CardPopupMember({ label, cardId }: ICardPopupMemberProps
    * */
   const handleGetBoardAllMembers = async () => {
     try {
-      const response = await GET_BOARD_ALL_MEMBERS(boardId)
+      const response = await GET_BOARD_ALL_MEMBERS_BY_ID(boardId)
       if (!response) return
       const data = response.data.members ?? []
       setMemberList(data)
