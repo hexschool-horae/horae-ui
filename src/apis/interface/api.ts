@@ -283,6 +283,16 @@ export interface ITodo {
   completed: boolean
 }
 
+export interface IBoardMember {
+  userId: {
+    _id: string
+    name: string
+    email: string
+  }
+  inviteHashData: string
+  role: string
+  _id: string
+}
 export interface IMembers {
   userId: {
     _id: string

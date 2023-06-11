@@ -53,7 +53,7 @@ const BoardSettingTemplate = () => {
 
       <hr className="my-5" />
       <div>卡片封面已啟用</div>
-      <div className="text-gray-2 text-xs font-light mb-1">@Lia_333</div>
+      <div className="text-gray-2 text-xs font-light mb-1">在卡片正面顯示圖片附件和顏色。</div>
 
       {/* <hr className="my-5" />
       <div className="mb-1">留言權限...</div>

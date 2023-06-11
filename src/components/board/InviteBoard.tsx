@@ -4,36 +4,41 @@ import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
 
 import MemberInfoGroup from './MemberInfoGroup'
-import { useAppSelector } from '@/hooks/useAppStore'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { GET_BOARD_ALL_MEMBERS_BY_ID } from '@/apis/axios-service'
+import { boardSliceActions } from '@/slices/boardSlice'
 
-interface IBoardMember {
-  userId: {
-    _id: string
-    name: string
-    email: string
-  }
-  role: string
-  inviteHashData: string
-  _id: string
-}
+// interface IBoardMember {
+//   userId: {
+//     _id: string
+//     name: string
+//     email: string
+//   }
+//   role: string
+//   inviteHashData: string
+//   _id: string
+// }
 
 export default function InviteBoard() {
   const [visible, setVisible] = useState<boolean>(false)
-  const [boardMembersList, setBoardMembersList] = useState<IBoardMember[]>([])
+  const dispatch = useAppDispatch()
   const boardId = useAppSelector(state => state.board.boardId)
+  const boardMembersList = useAppSelector(state => state.board.boardMembersList)
 
   const handleSendMail = (mail: string) => {
     console.log(mail)
   }
 
-  useEffect(() => {
-    const loadFn = async () => {
-      const { data } = await GET_BOARD_ALL_MEMBERS_BY_ID(boardId)
-      setBoardMembersList(data.members)
-    }
+  const handleGetBoardMembersList = async () => {
+    const { data } = await GET_BOARD_ALL_MEMBERS_BY_ID(boardId)
 
-    Boolean(boardId) && loadFn()
+    dispatch(boardSliceActions.updateBoardMembersList(data.members))
+  }
+
+  useEffect(() => {
+    if (boardId) {
+      handleGetBoardMembersList()
+    }
   }, [boardId])
 
   return (
@@ -57,9 +62,11 @@ export default function InviteBoard() {
             </div>
 
             <div className="mt-4">
-              {boardMembersList.map((item, i) => (
-                <MemberInfoGroup model={item} key={i}></MemberInfoGroup>
-              ))}
+              {boardMembersList !== null ? (
+                boardMembersList.map((item, i) => <MemberInfoGroup model={item} key={i}></MemberInfoGroup>)
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </Dialog>

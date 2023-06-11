@@ -43,15 +43,15 @@ const Board: FC = () => {
     const tempArr = cloneDeep(lists)
     if (!Boolean(tempArr.length)) return
 
+    const {
+      current: { cardPosition: activeCardPosition, listPosition: activeListPosition, listId: activeListId },
+    } = event.active.data
+    const {
+      current: { cardPosition: overCardPosition, listPosition: overListPosition, listId: overListId },
+    } = event.over.data
+
     if (event.active.data.current.eventType === 'card') {
       if (event.over.data.current.eventType === 'list') {
-        const {
-          current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
-        } = event.active.data as { current: { cardPosition: number; listPosition: number } }
-        const {
-          current: { cardPosition: overCardPosition, listPosition: overListPosition },
-        } = event.over.data as { current: { cardPosition: number; listPosition: number } }
-
         if (event.over.data.current.cardPosition === 0) {
           tempArr[overListPosition].cards.unshift(tempArr[activeListPosition].cards[activeCardPosition])
           tempArr[activeListPosition].cards.splice(activeCardPosition, 1)
@@ -60,13 +60,6 @@ const Board: FC = () => {
           tempArr[activeListPosition].cards.splice(activeCardPosition, 1)
         }
       } else {
-        const {
-          current: { cardPosition: activeCardPosition, listPosition: activeListPosition },
-        } = event.active.data as { current: { cardPosition: number; listPosition: number } }
-        const {
-          current: { cardPosition: overCardPosition, listPosition: overListPosition },
-        } = event.over.data as { current: { cardPosition: number; listPosition: number } }
-
         /* @ts-ignore */
         const temp =
           activeCardPosition === undefined
@@ -77,28 +70,27 @@ const Board: FC = () => {
         /* @ts-ignore */
         tempArr[overListPosition].cards[overCardPosition] = temp
       }
+      // console.log('tempArr', tempArr)
+      dispatch(boardSliceActions.updateBoardList(tempArr))
     } else {
-      const {
-        current: { listPosition: activeListPosition },
-      } = event.active.data
-      const {
-        current: { listPosition: overListPosition },
-      } = event.over.data
-
-      const temp = tempArr[activeListPosition]
-      tempArr[activeListPosition] = tempArr[overListPosition]
-      tempArr[overListPosition] = temp
+      dispatch(
+        socketServiceActions.moveBoardList({
+          boardId,
+          listId: activeListId,
+          finalPosition: overListPosition,
+        })
+      )
     }
-    console.log('tempArr', tempArr)
-    dispatch(boardSliceActions.updateBoardList(tempArr))
   }
 
   /** 取得單一看板資訊 */
   const handleGetSingleBoard = async () => {
     try {
       const result = await GET_BOARD_BY_ID(boardId)
-
-      dispatch(boardSliceActions.setSingleBoard(result?.data))
+      if (result !== undefined) {
+        const { data } = result
+        dispatch(boardSliceActions.setSingleBoard(data))
+      }
     } catch (e) {
       let errorMessage = ''
       if (e instanceof AxiosError) {

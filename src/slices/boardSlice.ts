@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 // import { ISingleBoardResponse } from '@/apis/interface/api'
 import { ISingleBoardInterface } from '@/socketService/types/board'
-import { ICardDetail } from '@/apis/interface/api'
+import { ICardDetail, IBoardMember } from '@/apis/interface/api'
 
 // ---重構中，之後補回來---
 
@@ -98,12 +98,14 @@ interface IInitialState {
   singleBaord: ISingleBoardInterface | null
   boardId: string
   cardDetail: ICardDetail | null
+  boardMembersList: IBoardMember[] | null
 }
 
 const initialState: IInitialState = {
   singleBaord: null,
   boardId: '',
   cardDetail: null,
+  boardMembersList: null,
 }
 
 export const boardSlice = createSlice({
@@ -158,6 +160,9 @@ export const boardSlice = createSlice({
       if (state.singleBaord) {
         state.singleBaord.lists = action.payload
       }
+    },
+    updateBoardMembersList(state, action: PayloadAction<IBoardMember[]>) {
+      state.boardMembersList = action.payload
     },
     updateBoardViewSet(state, action: PayloadAction<TViewSet>) {
       if (state.singleBaord) {

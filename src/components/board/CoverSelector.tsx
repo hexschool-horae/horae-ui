@@ -1,12 +1,12 @@
 import { memo, useEffect, useState } from 'react'
 import axios from 'axios'
-import { Button } from 'primereact/button'
+// import { Button } from 'primereact/button'
 
-type TCoverType = 'local' | 'unsplash' | 'color' | null
+// type TCoverType = 'local' | 'unsplash' | 'color' | null
 
 const CoverSelector = () => {
   const [imgList, setImgList] = useState<string[]>([])
-  const [coverType, setCoverType] = useState<TCoverType>(null)
+  // const [coverType, setCoverType] = useState<TCoverType>(null)
 
   const hanldeGetUnsplash = async () => {
     const result = await axios.get(
@@ -21,32 +21,38 @@ const CoverSelector = () => {
     console.log(result)
   }
 
+  // useEffect(() => {
+  //   if (coverType === 'unsplash') {
+  //   hanldeGetUnsplash()
+  //   }
+  // }, [coverType])
+
   useEffect(() => {
-    if (coverType === 'unsplash') {
-      hanldeGetUnsplash()
-    }
-  }, [coverType])
+    // if (coverType === 'unsplash') {
+    hanldeGetUnsplash()
+    // }
+  }, [])
 
   return (
     <div className="p-8">
       <h5 className="text-center">更換背景</h5>
       <div className="flex flex-col items-center">
-        {coverType === null && (
+        {/* {coverType === null && (
           <div className="mr-4">
             <Button onClick={() => setCoverType('unsplash')}>照片</Button>
             <Button severity="secondary" onClick={() => setCoverType('color')}>
               顏色
             </Button>
           </div>
-        )}
+        )} */}
 
-        {coverType === 'unsplash' && (
-          <div className="w-[200px] flex flex-wrap">
-            {imgList.map((item, index: number) => (
-              <img width={50} height={50} key={index} src={item} />
-            ))}
-          </div>
-        )}
+        {/* {coverType === 'unsplash' && ( */}
+        <div className="w-[200px] flex flex-wrap">
+          {imgList.map((item, index: number) => (
+            <img width={50} height={50} key={index} src={item} />
+          ))}
+        </div>
+        {/* )} */}
       </div>
     </div>
   )

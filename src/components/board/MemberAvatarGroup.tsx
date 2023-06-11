@@ -1,6 +1,5 @@
 import { Avatar } from 'primereact/avatar'
 import { AvatarGroup } from 'primereact/avatargroup'
-
 /** 看板上方主選單的團隊成員群組 */
 export default function MemberAvatarGroup() {
   return (

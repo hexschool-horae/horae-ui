@@ -122,7 +122,7 @@ export const POST_BOARD_INVITATION_LINK_BY_ID = (boardId: string) => {
 
 /** B03-12 取得看板邀請資料 */
 export const GET_BOARD_INVITATION_DATA_BY_ID = (boardId: string, hashData: string) => {
-  return axiosFetcher.post<interfaces.IBoardInvitationDataResponse>(
+  return axiosFetcher.get<interfaces.IBoardInvitationDataResponse>(
     `${apiPath.GET_BOARD_INVITATION_DATA_BY_ID}/${boardId}/invitation-data/${hashData}`
   )
 }

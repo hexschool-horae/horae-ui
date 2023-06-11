@@ -3,19 +3,10 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown'
 import { classNames } from 'primereact/utils'
 import Style from './MemberInfoGroup.module.scss'
 
+import { IBoardMember } from '@/apis/interface/api'
+
 import { useAppSelector } from '@/hooks/useAppStore'
 import { PATCH_BOARD_MEMBERS_BY_ID, DELETE_BOARD_MEMBERS_BY_ID } from '@/apis/axios-service'
-/** 團隊成員資訊 */
-interface IBoardMember {
-  userId: {
-    _id: string
-    name: string
-    email: string
-  }
-  role: string
-  inviteHashData: string
-  _id: string
-}
 
 interface IPermissonOption {
   name: string

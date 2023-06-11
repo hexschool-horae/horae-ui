@@ -30,10 +30,12 @@ instance.interceptors.response.use(
   error => {
     if (<AxiosError>error) {
       const { response }: { response: AxiosResponse } = error
-      console.log(response)
       const { status, data } = response
       const { message } = data
+
       if (store !== null) httpErrorHandler(status, message, store)
+
+      // return Promise.resolve(response)
     }
 
     return Promise.reject(error)

@@ -201,10 +201,36 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽 移動看板列表是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION_RESULT, data => {
+    console.log('監聽 移動看板列表是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardList(data.result.lists))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 修改看板成員權限是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION_RESULT, data => {
+    console.log('監聽 修改看板成員權限是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardMembersList(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 刪除看板成員是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER_RESULT, () => undefined)

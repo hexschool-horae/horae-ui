@@ -77,14 +77,16 @@ export interface ISingleBoardInterface {
   discribe: string
   coverPath: string
   viewSet: '' | 'workspace' | 'public' | 'private'
-  members: {
-    userId: {
+  members: [
+    {
+      userId: {
+        _id: string
+        name: string
+      }
+      role: string
       _id: string
-      name: string
     }
-    role: string
-    _id: string
-  }[]
+  ]
   lists: {
     _id: string
     title: string
