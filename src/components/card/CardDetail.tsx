@@ -24,6 +24,8 @@ import CardPopupWrapper from '@/components/card/CardPopupWrapper'
 import { GET_CARD_BY_ID } from '@/apis/axios-service'
 import CardPopupCalendar from './CardPopupCalendar'
 import CardDetailCalendar from './CardDetailCalendar'
+import CardPopupFiles from './CardPopupFiles'
+import CardDetailFiles from './CardDetailFiles'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -130,6 +132,7 @@ const CardInternal = () => {
                   <CardDetailCalendar label={popupLabels.calender} />
                 )}
                 <CardDetailDescribe />
+                <CardDetailFiles />
                 <CardDetailTodoList />
                 <CardDetailComments />
               </div>
@@ -171,6 +174,7 @@ const CardInternal = () => {
 
       <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} cardId={cardId} />
       <CardPopupTodoList label={popupLabels.todoList} key={popupLabels.todoList + state.popupKey} />
+      <CardPopupFiles label={popupLabels.files} key={popupLabels.files + state.popupKey}></CardPopupFiles>
       {/* 與board共用 Wrapper放外層*/}
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>
         <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />
