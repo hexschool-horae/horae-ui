@@ -43,6 +43,17 @@ export default function CardDetailTodoList() {
     })
   }
 
+  const onUpdateTodoTitle = (listId: string, title: string) => {
+    appDispatch(
+      socketServiceActions.modifyTodoTitle({
+        boardId,
+        cardId,
+        title,
+        titleId: listId,
+      })
+    )
+  }
+
   const onToggleComplete = (checked: boolean, listId: string, todoId: string) => {
     const lists = JSON.parse(JSON.stringify(todoLists))
     const listIndex = findListIndex(lists, listId)
@@ -83,6 +94,7 @@ export default function CardDetailTodoList() {
           contentList={todolist.contentList}
           listId={todolist._id}
           onDeleteTodoList={onDeleteTodoList}
+          onUpdateTodoTitle={onUpdateTodoTitle}
           onToggleComplete={onToggleComplete}
         />
       ))}
@@ -103,6 +115,7 @@ interface ITodoListProps {
   contentList: ITodo[]
   listId: string
   onDeleteTodoList: (listId: string) => void
+  onUpdateTodoTitle: (listId: string, title: string) => void
   onToggleComplete: (checked: boolean, listId: string, todoId: string) => void
 }
 
@@ -113,12 +126,16 @@ const TodoList = ({
   contentList,
   listId,
   onDeleteTodoList,
+  onUpdateTodoTitle,
   onToggleComplete,
 }: ITodoListProps) => {
   const appDispatch = useAppDispatch()
   const inputRef = useRef<HTMLInputElement>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
+  const titleRef = useRef<HTMLInputElement>(null)
   const [todoList, setTodoList] = useState<ITodo[]>([])
+  const [todoTitle, setTodoTitle] = useState('')
+  const [isEditTitle, setIsEditTitle] = useState(false)
   const [todoItem, setTodoItem] = useState('')
   const [editTodoItem, setEditTodoItem] = useState('')
   const [toggleCheck, setToggleCheck] = useState(false)
@@ -140,6 +157,11 @@ const TodoList = ({
 
   const handleDeleteTodoList = () => {
     onDeleteTodoList(listId)
+    setIsLoading(true)
+  }
+
+  const handleUpdateTodoListTitle = () => {
+    onUpdateTodoTitle(listId, todoTitle)
     setIsLoading(true)
   }
 
@@ -219,6 +241,11 @@ const TodoList = ({
           setIsEditId(null)
         }
         break
+      case 'editTitle':
+        if (todoTitle) {
+          handleUpdateTodoListTitle()
+          setIsEditTitle(false)
+        }
     }
   }
 
@@ -235,6 +262,12 @@ const TodoList = ({
       }
     }
   }, [isEditId])
+
+  useEffect(() => {
+    if (isEditTitle) {
+      titleRef.current?.focus()
+    }
+  }, [isEditTitle])
 
   useEffect(() => {
     calculateProgressWidth()
@@ -254,13 +287,34 @@ const TodoList = ({
   return (
     <div className="relative">
       <div className="flex justify-between">
-        <div className="flex items-center">
-          <h5 className="text-lg">{listTitle}</h5>
-          <ConfirmPopup />
-          <Button size="small" text className={`py-0 ${style.icon_btn_delete}`} onClick={confirmDeleteTodoList}>
-            <IconDelete />
-          </Button>
-        </div>
+        {isEditTitle ? (
+          <div className="flex items-center grow mr-4">
+            <InputText
+              className="grow cursor-pointer"
+              onChange={e => setTodoTitle(e.target.value)}
+              value={todoTitle}
+              ref={titleRef}
+              onBlur={() => setIsEditTitle(false)}
+              onKeyPress={e => handleKeyPress(e, 'editTitle')}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center">
+            <h5
+              className="text-lg"
+              onClick={() => {
+                setTodoTitle(listTitle)
+                setIsEditTitle(true)
+              }}
+            >
+              {listTitle}
+            </h5>
+            <ConfirmPopup />
+            <Button size="small" text className={`py-0 ${style.icon_btn_delete}`} onClick={confirmDeleteTodoList}>
+              <IconDelete />
+            </Button>
+          </div>
+        )}
 
         {calculateProgressWidth() !== 0 && (
           <Button

@@ -167,6 +167,18 @@ export const boardSlice = createSlice({
     setCardDetail(state, action: PayloadAction<ICardDetail>) {
       state.cardDetail = action.payload
     },
+    updateCard(state, action: PayloadAction<ICardDetail>) {
+      if (state.cardDetail?._id === action.payload._id) {
+        state.cardDetail = {
+          ...action.payload,
+          title: action.payload.title,
+          describe: action.payload.describe,
+          startDate: action.payload.startDate,
+          endDate: action.payload.endDate,
+          proiority: action.payload.proiority,
+        }
+      }
+    },
     updateCardComments(state, action: PayloadAction<ICardDetail>) {
       if (state.cardDetail?._id === action.payload._id) {
         state.cardDetail.comments = action.payload.comments

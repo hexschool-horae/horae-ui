@@ -1,6 +1,10 @@
+import router from 'next/router'
 import { Button } from 'primereact/button'
 import priorityStyle from './priority.module.scss'
-import { useCardDetail } from '@/contexts/cardDetailContext'
+
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+
 import CardPopupWrapper from './CardPopupWrapper'
 
 interface ICardPopupPriorityProps {
@@ -26,19 +30,31 @@ const list = [
 ]
 
 export default function CardPopupPriority({ label }: ICardPopupPriorityProps) {
-  const { state, dispatch } = useCardDetail()
+  const cardId = router.query.cardId as string
+  const boardId = router.query.boardId as string
+
+  const appDispatch = useAppDispatch()
+  const socketPriority = useAppSelector(state => state.board.cardDetail?.proiority)
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
 
   const handlePriority = (value: string) => {
     let priority = ''
-    if (value !== state.cardDetail.proiority) {
+    if (value !== socketPriority) {
       priority = value
     }
-    dispatch({
-      type: 'SET_PRIORITY',
-      payload: {
-        priority,
-      },
-    })
+    if (cardDetail) {
+      appDispatch(
+        socketServiceActions.modifyCard({
+          boardId,
+          cardId,
+          title: cardDetail.title,
+          describe: cardDetail.describe,
+          startDate: cardDetail.startDate,
+          endDate: cardDetail.endDate,
+          proiority: priority,
+        })
+      )
+    }
   }
 
   return (
@@ -49,7 +65,7 @@ export default function CardPopupPriority({ label }: ICardPopupPriorityProps) {
             outlined
             key={item.value}
             className={`w-full mb-3 border-gray-300 text-black
-              ${state.cardDetail.proiority === item.value ? 'bg-secondary-4 border-secondary-3' : ''}`}
+              ${socketPriority === item.value ? 'bg-secondary-4 border-secondary-3' : ''}`}
             onClick={() => handlePriority(item.value)}
           >
             <div className="relative w-full flex items-center justify-center">

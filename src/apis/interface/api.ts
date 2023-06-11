@@ -221,7 +221,7 @@ export interface IDeleteCardTagRequest {
 }
 
 /** B05-4 取得單一卡片 */
-type Timestamp = number
+export type Timestamp = number | null
 
 export interface ITag {
   _id: string

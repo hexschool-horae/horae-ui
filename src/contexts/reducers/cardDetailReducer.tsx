@@ -94,16 +94,11 @@ export const initialState = {
 type TReducerAction =
   | { type: 'INITIALIZE_CARD'; payload: any }
   | { type: 'TOTGGLE_POPUP'; payload: string }
-  | { type: 'UPDATE_TITLE'; payload: { title: string } }
-  | { type: 'UPDATE_DESCRIBE'; payload: { describe: string } }
   | { type: 'ADD_TAG'; payload: { tag: ITag } }
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
   | { type: 'ADD_TODO_LIST'; payload: { listTitle: string } }
   | { type: 'DELETE_TODO_LIST'; payload: { todolists: ITodoList[] } }
-  | { type: 'SET_PRIORITY'; payload: { priority: string } }
-  | { type: 'ADD_DATES'; payload: { startDate: number; endDate: number } }
-  | { type: 'DELETE_DATES'; payload: any }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
   // console.log(state, type)
@@ -138,24 +133,6 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         ...state,
         popups: updatedPopups,
         popupKey: state.popupKey + 1,
-      }
-    }
-    case 'UPDATE_TITLE': {
-      return {
-        ...state,
-        cardDetail: {
-          ...state.cardDetail,
-          title: payload.title,
-        },
-      }
-    }
-    case 'UPDATE_DESCRIBE': {
-      return {
-        ...state,
-        cardDetail: {
-          ...state.cardDetail,
-          describe: payload.describe,
-        },
       }
     }
     case 'ADD_TAG': {
@@ -218,35 +195,6 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         cardDetail: {
           ...state.cardDetail,
           todolists: payload.todolists,
-        },
-      }
-    }
-    case 'SET_PRIORITY': {
-      return {
-        ...state,
-        cardDetail: {
-          ...state.cardDetail,
-          proiority: payload.priority,
-        },
-      }
-    }
-    case 'ADD_DATES': {
-      return {
-        ...state,
-        cardDetail: {
-          ...state.cardDetail,
-          startDate: payload.startDate,
-          endDate: payload.endDate,
-        },
-      }
-    }
-    case 'DELETE_DATES': {
-      return {
-        ...state,
-        cardDetail: {
-          ...state.cardDetail,
-          startDate: null,
-          endDate: null,
         },
       }
     }

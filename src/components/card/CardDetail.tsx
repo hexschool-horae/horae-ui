@@ -54,38 +54,6 @@ const CardInternal = () => {
   const router = useRouter()
   const cardId = router.query.cardId as string
 
-  // useEffect(() => {
-  //   // 測試用
-  //   const timer = setTimeout(() => {
-  //     dispatch({
-  //       type: 'INITIALIZE_CARD',
-  //       payload: {
-  //         cardDetail: {
-  //           title: '測試卡片',
-  //           describe: '卡片描述文字',
-  //           tags: [
-  //             {
-  //               id: '001',
-  //               title: '標籤001',
-  //               color: '#ffe4e2',
-  //             },
-  //             {
-  //               id: '003',
-  //               title: 'Tag003',
-  //               color: '#fce8f7',
-  //             },
-  //           ],
-  //           comments: [{ content: '測試文字', date: '2023/10/20' }],
-  //         },
-  //       },
-  //     })
-  //   }, 500)
-
-  //   return () => {
-  //     clearTimeout(timer)
-  //   }
-  // }, [])
-
   const getCardDetail = async () => {
     try {
       const response = await GET_CARD_BY_ID(cardId)
@@ -128,9 +96,7 @@ const CardInternal = () => {
                 <CardDetailTitle />
                 <CardDetailMember label={popupLabels.member} cardId={cardId} />
                 {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
-                {state.cardDetail.startDate != null && state.cardDetail.endDate != null && (
-                  <CardDetailCalendar label={popupLabels.calender} />
-                )}
+                <CardDetailCalendar label={popupLabels.calender} />
                 <CardDetailDescribe />
                 <CardDetailFiles />
                 <CardDetailTodoList />
