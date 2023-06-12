@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { memo, useState, useRef, useEffect } from 'react'
-// import { useAppSelector } from '@/hooks/useAppStore'
-// import { useAppDispatch } from '@/hooks/useAppStore'
+
 import { InputText } from 'primereact/inputtext'
 import AddCardButton from './AddCardButton'
 import ListSettingMenu from './ListSettingMenu'
