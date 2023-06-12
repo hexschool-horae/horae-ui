@@ -9,12 +9,12 @@ import { MenuItem } from 'primereact/menuitem'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { TieredMenu } from 'primereact/tieredmenu'
+import { Message } from 'primereact/message'
 
 import Style from './BoardSettingMenu.module.scss'
 import CardPopupTags from '../card/CardPopupTags'
 import CoverSelector from './CoverSelector'
 import { POST_BOARD_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
-import { classNames } from 'primereact/utils'
 
 const BoardAboutTemplate = () => {
   const members = useAppSelector(state => state.board?.singleBaord?.members)
@@ -178,11 +178,7 @@ export default function BoardSettingMenu() {
             onBlur={() => setIsCopied(false)}
           />
 
-          {isCopied && (
-            <p style={{ color: '#487BFF' }} className={classNames('mb-2', Style.setting_item_label)}>
-              已複製連結
-            </p>
-          )}
+          {isCopied && <Message className="my-4" severity="success" text={'連結已複製到剪貼簿'} />}
 
           <p style={{ color: '#606060' }} className={Style.setting_item_label}>
             所有人都能查看這個看板，但只有看板成員可以編輯

@@ -25,7 +25,7 @@ const BoardInvitation = () => {
 
     try {
       const result = await POST_BOARD_MEMBERS_BY_ID(boardId, id)
-      console.log(result)
+
       if (result === undefined) return
       const { success } = result
 
@@ -34,7 +34,8 @@ const BoardInvitation = () => {
       }
     } catch (error) {
       console.log(error)
-      // if (message == '成員已經存在此看板，不可新增') {
+
+      // if (error.message == '成員已經存在此看板，不可新增') {
       //   router.push(`/board/${boardId}`)
       // }
     }

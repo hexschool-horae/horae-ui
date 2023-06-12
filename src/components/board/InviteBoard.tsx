@@ -8,17 +8,6 @@ import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { GET_BOARD_ALL_MEMBERS_BY_ID } from '@/apis/axios-service'
 import { boardSliceActions } from '@/slices/boardSlice'
 
-// interface IBoardMember {
-//   userId: {
-//     _id: string
-//     name: string
-//     email: string
-//   }
-//   role: string
-//   inviteHashData: string
-//   _id: string
-// }
-
 export default function InviteBoard() {
   const [visible, setVisible] = useState<boolean>(false)
   const dispatch = useAppDispatch()
@@ -60,10 +49,12 @@ export default function InviteBoard() {
                 <Button label="邀請" className="bg-secondary-1 ml-3" rounded></Button>
               </div>
             </div>
-
+            {/* 只有一人時（此人一定為管理員權限），不可操作權限選單 */}
             <div className="mt-4">
               {boardMembersList !== null ? (
-                boardMembersList.map((item, i) => <MemberInfoGroup model={item} key={i}></MemberInfoGroup>)
+                boardMembersList.map((item, i) => (
+                  <MemberInfoGroup model={item} key={i} disabled={boardMembersList.length < 2}></MemberInfoGroup>
+                ))
               ) : (
                 <></>
               )}
