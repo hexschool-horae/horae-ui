@@ -1,5 +1,5 @@
 .cover_selector_item {
-  height: 150px;
+  height: 100px;
   border-radius: 16px;
   cursor: pointer;
 
@@ -9,11 +9,11 @@
 }
 
 .img_item {
-  // padding: 4px;
   border-radius: 8px;
   width: 160px;
   cursor: pointer;
   margin-bottom: 8px;
+
   :nth-of-type(2n + 1) {
     margin-right: 4px;
   }
@@ -22,8 +22,9 @@
   border-radius: 8px;
   width: 160px;
   height: 90px;
-  cursor: pointer;
   margin-bottom: 8px;
+  cursor: pointer;
+
   :nth-of-type(2n + 1) {
     margin-right: 4px;
   }

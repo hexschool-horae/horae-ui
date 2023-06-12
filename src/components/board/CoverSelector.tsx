@@ -51,7 +51,9 @@ const CoverSelector = () => {
           />
         )}
 
-        <h5 className="w-full text-center">更換背景</h5>
+        <h5 className="w-full text-center">
+          {coverType === null ? '更換背景' : coverType === 'unsplash' ? '照片由 Unsplash 提供' : '顏色主題'}
+        </h5>
 
         {coverType === 'unsplash' && (
           <Button className="p-0" icon="pi pi-sync" severity="secondary" text onClick={hanldeGetUnsplash} />
