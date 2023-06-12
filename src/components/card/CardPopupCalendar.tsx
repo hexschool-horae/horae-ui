@@ -8,7 +8,9 @@ import { Button } from 'primereact/button'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { useCardDetail } from '@/contexts/cardDetailContext'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 import CardPopupWrapper from './CardPopupWrapper'
 
 interface ICardPopupCalendarProps {
@@ -58,6 +60,11 @@ export default function CardPopupCalendar({ label }: ICardPopupCalendarProps) {
           proiority: cardDetail.proiority,
         })
       )
+      appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_MODIFY_RESULT))
+      dispatch({
+        type: 'TOTGGLE_POPUP',
+        payload: label,
+      })
     }
   }
 

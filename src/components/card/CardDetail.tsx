@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Dialog } from 'primereact/dialog'
-import { ProgressSpinner } from 'primereact/progressspinner'
 import style from './card.module.scss'
 
 import { boardSliceActions } from '@/slices/boardSlice'
@@ -84,58 +83,50 @@ const CardInternal = () => {
   return (
     <>
       <Dialog visible={true} onHide={handleCloseCardDetail} className="w-full md:w-[800px] mx-3">
-        {state.initialized ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
-              {/* main col */}
-              <div className="md:col-span-5">
-                <div className="text-[14px] mb-3">
-                  在列表<span className="pl-1 text-secondary-3 cursor-pointer">測試列表</span>
-                </div>
-
-                <CardDetailTitle />
-                <CardDetailMember label={popupLabels.member} cardId={cardId} />
-                {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
-                <CardDetailCalendar label={popupLabels.calender} />
-                <CardDetailDescribe />
-                <CardDetailFiles />
-                <CardDetailTodoList />
-                <CardDetailComments />
-              </div>
-
-              {/* sidebar */}
-              <div className="md:col-span-2">
-                <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
-                <div
-                  className="grid grid-cols-2 gap-4 
-                  md:grid-cols-1 md:gap-2"
-                >
-                  <CardSidebarButton name="成員" label={popupLabels.member} />
-                  <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
-                  <CardSidebarButton name="標籤" label={popupLabels.tags} />
-                  <CardSidebarButton name="日期" label={popupLabels.calender} />
-                  <CardSidebarButton name="附件" label={popupLabels.files} />
-                </div>
-
-                <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
-                <div
-                  className="grid grid-cols-2 gap-4 
-                  md:grid-cols-1 md:gap-2"
-                >
-                  <CardSidebarButton name="移動" label={popupLabels.move} />
-                  {/* <CardSidebarButton name="複製" label={popupLabels.copy} /> */}
-                  <CardSidebarButton name="分享" label={popupLabels.share} />
-                  <CardSidebarButton name="優先權" label={popupLabels.priority} />
-                  <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
-                </div>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
+          {/* main col */}
+          <div className="md:col-span-5">
+            <div className="text-[14px] mb-3">
+              在列表<span className="pl-1 text-secondary-3 cursor-pointer">測試列表</span>
             </div>
-          </>
-        ) : (
-          <div className="flex justify-center items-center h-80">
-            <ProgressSpinner />
+
+            <CardDetailTitle />
+            <CardDetailMember label={popupLabels.member} cardId={cardId} />
+            {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
+            <CardDetailCalendar label={popupLabels.calender} />
+            <CardDetailDescribe />
+            <CardDetailFiles />
+            <CardDetailTodoList />
+            <CardDetailComments />
           </div>
-        )}
+
+          {/* sidebar */}
+          <div className="md:col-span-2">
+            <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
+            <div
+              className="grid grid-cols-2 gap-4 
+              md:grid-cols-1 md:gap-2"
+            >
+              <CardSidebarButton name="成員" label={popupLabels.member} />
+              <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
+              <CardSidebarButton name="標籤" label={popupLabels.tags} />
+              <CardSidebarButton name="日期" label={popupLabels.calender} />
+              <CardSidebarButton name="附件" label={popupLabels.files} />
+            </div>
+
+            <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
+            <div
+              className="grid grid-cols-2 gap-4 
+              md:grid-cols-1 md:gap-2"
+            >
+              <CardSidebarButton name="移動" label={popupLabels.move} />
+              {/* <CardSidebarButton name="複製" label={popupLabels.copy} /> */}
+              <CardSidebarButton name="分享" label={popupLabels.share} />
+              <CardSidebarButton name="優先權" label={popupLabels.priority} />
+              <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
+            </div>
+          </div>
+        </div>
       </Dialog>
 
       <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} cardId={cardId} />
