@@ -4,7 +4,7 @@ import { memo, useState, useRef, useEffect } from 'react'
 
 import { InputText } from 'primereact/inputtext'
 import AddCardButton from './AddCardButton'
-import ListSettingMenu from './ListSettingMenu'
+// import ListSettingMenu from './ListSettingMenu'
 import Card from './Card'
 import Draggable from './Draggable'
 import Droppable from './Droppable'
@@ -73,7 +73,7 @@ const List = ({ data }: { data: IBoardListItem; onCreateCard?: (listId: string, 
           ) : (
             <h6 className="text-lg !text-secondary-3 mr-auto ">{listTitle}</h6>
           )}
-          <ListSettingMenu />
+          {/* <ListSettingMenu /> */}
         </div>
       </Droppable>
 
