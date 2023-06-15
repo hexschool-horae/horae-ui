@@ -82,11 +82,11 @@ export default function CardPopupCalendar({ label }: ICardPopupCalendarProps) {
 
   return (
     <CardPopupWrapper title="日期" label={label}>
-      <div className="px-12">
+      <div className="flex justify-center">
         {/*   @ts-ignore  */}
         <Calendar
           onChange={e => handleChangeDate(e)}
-          className="w-full"
+          className="w-[420px]"
           value={dates}
           inline
           selectionMode="range"
