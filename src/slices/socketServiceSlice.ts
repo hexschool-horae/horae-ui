@@ -86,6 +86,10 @@ export const socketServiceSlice = createSlice({
     moveBoardList(state, action: PayloadAction<interfaces.IModifyBoardListPosition>) {
       state.boardService?.moveBoardList(action.payload)
     },
+    moveCard(state, action: PayloadAction<interfaces.IModifyBoardCardPosition>) {
+      console.log('slice')
+      state.boardService?.moveCard(action.payload)
+    },
     addNewTodoTitle(state, action: PayloadAction<interfaces.IAddNewTodoTitle>) {
       state.boardService?.addNewTodoTitle(action.payload)
     },

@@ -242,6 +242,21 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
       )
     }
   })
+  // 監聽 移動看板卡片是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MOVE_CARD_POSITION_RESULT, data => {
+    console.log('監聽 移動看板卡片是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardList(data.result.lists))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 修改看板成員權限是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION_RESULT, data => {
@@ -528,6 +543,12 @@ const moveBoardList = (payload: interfaces.IModifyBoardListPosition) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION, payload)
 }
 
+// 移動卡片位置
+const moveCard = (payload: interfaces.IModifyBoardCardPosition) => {
+  console.log('card emit')
+  boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MOVE_CARD_POSITION, payload)
+}
+
 // 修改看板成員權限
 const modifyBoardMemberPermission = (payload: interfaces.IModifyBoardMemberPermission) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION, payload)
@@ -553,7 +574,6 @@ const deleteCardMember = (payload: interfaces.IDeleteCardMember) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER, payload)
 }
 
-const moveCard = () => undefined
 const deleteCard = () => undefined
 const deleteList = () => undefined
 export default useBoardService

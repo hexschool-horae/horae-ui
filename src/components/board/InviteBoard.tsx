@@ -17,15 +17,16 @@ import { POST_BOARD_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
 export default function InviteBoard() {
   const [visible, setVisible] = useState<boolean>(false)
   const dispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const boardId = useAppSelector(state => state.board.boardId)
   const boardMembersList = useAppSelector(state => state.board.boardMembersList)
   const [invitationLink, setInvitationLink] = useState('')
   const [isCopied, setIsCopied] = useState(false)
   const linkInputRef = useRef<HTMLInputElement>(null)
 
-  const handleSendMail = (mail: string) => {
-    console.log(mail)
-  }
+  // const handleSendMail = (mail: string) => {
+  //   console.log(mail)
+  // }
 
   const handleGetBoardMembersList = async () => {
     const { data } = await GET_BOARD_ALL_MEMBERS_BY_ID(boardId)
@@ -57,8 +58,10 @@ export default function InviteBoard() {
 
   useEffect(() => {
     if (boardId) {
-      handleGetBoardMembersList()
-      handleGetInvitationLink()
+      if (token) {
+        handleGetBoardMembersList()
+        handleGetInvitationLink()
+      }
     }
   }, [boardId])
 
@@ -70,7 +73,7 @@ export default function InviteBoard() {
         <Dialog visible={visible} style={{ width: '62vw' }} onHide={() => setVisible(false)}>
           <div className="px-[36px]">
             <div className="text-2xl text-secondary-1 mb-6">邀請成員加入看板</div>
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <div className="flex">
                 <InputText
                   className="w-3/4"
@@ -80,7 +83,7 @@ export default function InviteBoard() {
                 <Button label="成員" className="bg-secondary-4 text-secondary-1 ml-auto" rounded></Button>
                 <Button label="邀請" className="bg-secondary-1 ml-3" rounded></Button>
               </div>
-            </div>
+            </div> */}
 
             <div
               className="flex items-center cursor-pointer"

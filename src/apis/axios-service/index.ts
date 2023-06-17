@@ -83,8 +83,8 @@ export const GET_INVITATION_DATA = (workId: string) => {
 }
 
 /** B03-5 取得單一看板 */
-export const GET_BOARD_BY_ID = (boardId: string) => {
-  return axiosFetcher.get<interfaces.ISingleBoardResponse>(`${apiPath.GET_BOARD_BY_ID}/${boardId}`)
+export const GET_BOARD_BY_ID = (boardId: string, isAuth: boolean) => {
+  return axiosFetcher.get<interfaces.ISingleBoardResponse>(`${apiPath.GET_BOARD_BY_ID}/${boardId}`, isAuth)
 }
 
 /** B03-6 取得單一看板的所有成員 */

@@ -141,6 +141,7 @@ const CloseBoardItem = () => {
 // }))
 
 export default function BoardSettingMenu() {
+  const token = useAppSelector(state => state.user.token) || ''
   const boardId = useAppSelector(state => state.board.boardId)
   const [invitationLink, setInvitationLink] = useState('')
   const [isCopied, setIsCopied] = useState(false)
@@ -241,7 +242,7 @@ export default function BoardSettingMenu() {
   }
 
   useEffect(() => {
-    if (boardId) {
+    if (boardId && token) {
       handleGetInvitationLink()
     }
   }, [boardId])
