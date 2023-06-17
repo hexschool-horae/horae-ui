@@ -101,7 +101,10 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
         >
           登出
         </span>
-        <div className="w-[48px] h-[48px] rounded-full bg-primary ml-auto flex justify-center items-center select-none cursor-pointer">
+        <div
+          className="w-[48px] h-[48px] rounded-full bg-primary ml-auto flex justify-center items-center select-none cursor-pointer"
+          style={{ backgroundColor: profile.avatar }}
+        >
           <span className="text-black">{avatorDisplayName}</span>
         </div>
       </div>
