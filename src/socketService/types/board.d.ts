@@ -1,4 +1,4 @@
-import { Timestamp } from '@/apis/interface/api'
+import { Timestamp, ITag } from '@/apis/interface/api'
 
 export interface ICreateListPayload {
   title: string
@@ -25,6 +25,19 @@ export interface IModifySingleCard {
   startDate: Timestamp
   endDate: Timestamp
   proiority: string
+}
+
+export interface IListCard {
+  listId: string
+  cardId: string
+  title: string
+  proiority: string
+}
+
+export interface IListCardTags {
+  listId: string
+  cardId: string
+  tags: ITag[]
 }
 
 export interface IAttachTagToCard {

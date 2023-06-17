@@ -52,6 +52,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_MODIFY_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateCard(data.result))
+      store.dispatch(boardSliceActions.updateListCard(data.result))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -64,19 +65,86 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽新增看板標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT, data => {
+    console.log('監聽新增看板標籤是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽修改看板標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT, data => {
+    console.log('監聽修改看板標籤是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽刪除看板標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT, data => {
+    console.log('監聽刪除看板標籤是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽看板卡片加入標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.ATTACH_TAG_TO_CARD_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.ATTACH_TAG_TO_CARD_RESULT, data => {
+    console.log('監聽看板卡片加入標籤是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateCardTags(data.result))
+      store.dispatch(boardSliceActions.updateListCardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽看板卡片刪除標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.REMOVE_TAG_FROM_CARD_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.REMOVE_TAG_FROM_CARD_RESULT, data => {
+    console.log('監聽看板卡片刪除標籤是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateCardTags(data.result))
+      store.dispatch(boardSliceActions.updateListCardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽卡片新增評論是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.ADD_NEW_CARD_COMMENT_RESULT, data => {

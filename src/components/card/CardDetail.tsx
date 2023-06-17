@@ -93,7 +93,7 @@ const CardInternal = () => {
 
               <CardDetailTitle />
               <CardDetailMember label={popupLabels.member} cardId={cardId} />
-              {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
+              <CardDetailTags label={popupLabels.tags} />
               <CardDetailCalendar label={popupLabels.calender} />
               <CardDetailDescribe />
               <CardDetailFiles />
