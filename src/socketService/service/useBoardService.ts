@@ -362,6 +362,12 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     }
   })
 
+  // 監聽卡片上傳附件是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_UPLOAD_ATTACHMENT_RESULT, () => undefined)
+
+  // 監聽卡片刪除附件是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_ATTACHMENT_RESULT, () => undefined)
+
   return {
     createList,
     modifyBoardViewPermission,
@@ -394,6 +400,8 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     deleteBoardMember,
     addBoardMember,
     addCardMember,
+    addCardAttachment,
+    deleteCardAttachment,
     deleteCardMember,
     terminateService,
   }
@@ -551,6 +559,16 @@ const addCardMember = (payload: interfaces.IAddCardMember) => {
 // 刪除卡片成員
 const deleteCardMember = (payload: interfaces.IDeleteCardMember) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER, payload)
+}
+
+// 增加卡片附件
+const addCardAttachment = (payload: interfaces.IAddCardAttachment) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_CARD_UPLOAD_ATTACHMENT, payload)
+}
+
+// 增加卡片附件
+const deleteCardAttachment = (payload: interfaces.IDeleteCardAttachment) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_ATTACHMENT, payload)
 }
 
 const moveCard = () => undefined
