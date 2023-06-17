@@ -13,7 +13,7 @@ import dialogReducer from '@/slices/dialogSlice'
 const userPersistConfig = {
   key: 'user',
   storage,
-  whitelist: ['token'],
+  whitelist: ['token', 'profile'],
 }
 
 const reducers = combineReducers({

@@ -1,12 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
+interface IUserProfile {
+  email: string
+  avatar: string
+  name: string
+}
 interface IUserInitialState {
   isLogin: boolean
   token: string | null
-  profile: {
-    email: string
-  }
+  profile: IUserProfile
 }
 
 const initialState: IUserInitialState = {
@@ -15,6 +18,8 @@ const initialState: IUserInitialState = {
 
   profile: {
     email: '',
+    avatar: '',
+    name: '',
   },
 }
 
@@ -28,8 +33,8 @@ export const userSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
     },
-    setProfile(state, action: PayloadAction<string>) {
-      state.profile.email = action.payload
+    setProfile(state, action: PayloadAction<IUserProfile>) {
+      state.profile = action.payload
     },
   },
 })

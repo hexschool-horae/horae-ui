@@ -11,6 +11,9 @@ export interface IRegisterForm {
 export interface IRegisterResponse {
   user: {
     token: string
+    avatar: string
+    email: string
+    name: string
   }
 }
 
