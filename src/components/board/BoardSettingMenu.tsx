@@ -7,7 +7,7 @@ import { Dropdown } from 'primereact/dropdown'
 import { Menu } from 'primereact/menu'
 import { MenuItem } from 'primereact/menuitem'
 import { InputText } from 'primereact/inputtext'
-import { InputTextarea } from 'primereact/inputtextarea'
+// import { InputTextarea } from 'primereact/inputtextarea'
 import { TieredMenu } from 'primereact/tieredmenu'
 import { Message } from 'primereact/message'
 
@@ -18,6 +18,7 @@ import { POST_BOARD_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
 
 const BoardAboutTemplate = () => {
   const members = useAppSelector(state => state.board?.singleBaord?.members)
+  // const token = useAppSelector(state => state.user?.token)
   const admins = members?.filter(item => item.role === 'admin')
   const admin = admins?.[0]
 
@@ -37,10 +38,10 @@ const BoardAboutTemplate = () => {
         </div>
       </div>
 
-      <hr className="my-5" />
-      <div className="mb-1">描述</div>
+      {/* <hr className="my-5" />
+      <div className="mb-1">描述</div> */}
 
-      <InputTextarea rows={30} className="w-full h-[100px]" placeholder="新增描述說明..." />
+      {/* <InputTextarea rows={30} className="w-full h-[100px]" placeholder="新增描述說明..." /> */}
     </div>
   )
 }
@@ -170,14 +171,16 @@ export default function BoardSettingMenu() {
       label: 'share',
       template: () => (
         <div className={Style.setting_item_shared}>
-          <InputText
-            ref={linkInputRef}
-            placeholder="分享連結"
-            value={invitationLink}
-            style={{ width: '100%', marginBottom: '0.25rem' }}
-            onClick={handleCopyIvitationLink}
-            onBlur={() => setIsCopied(false)}
-          />
+          {token && (
+            <InputText
+              ref={linkInputRef}
+              placeholder="分享連結"
+              value={invitationLink}
+              style={{ width: '100%', marginBottom: '0.25rem' }}
+              onClick={handleCopyIvitationLink}
+              onBlur={() => setIsCopied(false)}
+            />
+          )}
 
           {isCopied && <Message className="my-4" severity="success" text={'連結已複製到剪貼簿'} />}
 
@@ -185,11 +188,11 @@ export default function BoardSettingMenu() {
             所有人都能查看這個看板，但只有看板成員可以編輯
           </p>
 
-          <Button style={{ padding: 0, fontWeight: '200' }} text>
+          {/* <Button style={{ padding: 0, fontWeight: '200' }} text>
             <span className="font-light" style={{ fontSize: '14px' }}>
               顯示QR Code
             </span>
-          </Button>
+          </Button> */}
         </div>
       ),
     },

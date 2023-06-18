@@ -67,7 +67,14 @@ export default function InviteBoard() {
 
   return (
     <>
-      <Button label="邀請成員" severity="secondary" size="small" rounded onClick={() => setVisible(true)}></Button>
+      <Button
+        disabled={!token}
+        label="邀請成員"
+        severity="secondary"
+        size="small"
+        rounded
+        onClick={() => setVisible(true)}
+      ></Button>
 
       <div className="card flex justify-content-center">
         <Dialog visible={visible} style={{ width: '62vw' }} onHide={() => setVisible(false)}>

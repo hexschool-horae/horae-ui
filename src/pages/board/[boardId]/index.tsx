@@ -33,8 +33,8 @@ import {
   // arrayMove,
   // defaultAnimateLayoutChanges,
   verticalListSortingStrategy,
-  // SortingStrategy,
   horizontalListSortingStrategy,
+  // SortingStrategy,
 } from '@dnd-kit/sortable'
 
 import CardDetail from '@/components/card/CardDetail'
@@ -48,6 +48,9 @@ import { GET_BOARD_BY_ID } from '@/apis/axios-service'
 import SortableCard from '@/components/board/SortableCard'
 import SortableList from '@/components/board/SortableList'
 import BoardCard from '@/components/board/BoardCard'
+import { classNames } from 'primereact/utils'
+
+import BoardGuard from '@/app/BoardGuard'
 // import axiosFetcher from '@/apis/axios'
 
 const Board: FC = () => {
@@ -230,16 +233,13 @@ const Board: FC = () => {
     const {
       current: { cardPosition: overCardPosition, listPosition: overListPosition },
     } = over.data
-    const overAListId = over?.data?.current?.listId
-    // const activeListId = active?.data?.current?.listId
+
     const overCardId = over?.data?.current?.cardId
     const activeCardId = active?.data?.current?.cardId
 
     const clonedList = cloneDeep(lists)
 
-    console.log(overListId, activeListId, overCardId, activeCardId)
     if (!clonedList || !clonedList.length) return
-    // if (overListId === activeListId) return
 
     let newLists = []
     let newIndex: number
@@ -250,18 +250,19 @@ const Board: FC = () => {
       const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
       const [overListItem] = clonedList?.filter(item => item._id === overListId)
       const activeCards = activeListItem.cards
+      const overCards = overListItem.cards
       const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
 
       const newActiveListItem = {
         ...activeListItem,
         position: overListItem.position,
-        cards: activeCards.filter(item => item._id !== activeCardId),
+        cards: activeCards,
       }
 
       const newOverListItem = {
         ...overListItem,
         position: activeListItem.position,
-        cards: [activeCardItem],
+        cards: overCards,
       }
 
       newLists = [...otherListItems, newActiveListItem, newOverListItem].sort((a, b) => a.position - b.position)
@@ -443,225 +444,228 @@ const Board: FC = () => {
   }, [boardId])
 
   return (
-    <>
+    <div className={classNames({ 'p-9': !token })}>
       <Head>
         <title>Horae - 看板</title>
       </Head>
-      <div className="flex flex-col">
-        <div className="mb-6">
-          <MenuBar />
-        </div>
+      <BoardGuard>
+        <div className="flex flex-col">
+          <div className="mb-6">
+            <MenuBar />
+          </div>
 
-        <DndContext
-          sensors={sensors}
-          // collisionDetection={args => {
-          //   const result = collisionDetectionStrategy(args)
+          <DndContext
+            sensors={sensors}
+            // collisionDetection={args => {
+            //   const result = collisionDetectionStrategy(args)
 
-          //   return result
-          // }}
-          onDragStart={({ active }) => {
-            if (!active.data.current) return
-            setActiveType(active.data.current?.type)
+            //   return result
+            // }}
+            onDragStart={({ active }) => {
+              if (!active.data.current) return
+              setActiveType(active.data.current?.type)
 
-            if (active.data.current.type === 'card') {
-              setActiveCardId(active.data.current.cardId)
-            }
-
-            setActiveListId(active.data.current.listId)
-          }}
-          onDragOver={({ active, over }) => {
-            console.log(active, over)
-            const overAListId = over?.data?.current?.listId
-            // const activeCardId = active?.data?.current?.cardId
-            const overCardId = over?.data?.current?.cardId
-            const activeCardId = active?.data?.current?.cardId
-
-            const clonedList = cloneDeep(lists)
-            if (active.data.current?.listId == over?.data.current?.listId) {
-              if (over && over.rect) {
-                setActiveItemTop(over.rect.bottom)
-              }
-            }
-
-            if (active.data.current?.listId !== over?.data.current?.listId) {
-              if (over) {
-                setOverListId(over.data.current?.listId)
-              }
-              // setOverLastListItem(over)
-            } else {
-              setOverListId(active.data.current?.listId)
-            }
-
-            if (!clonedList || !clonedList.length || !overAListId || !activeListId) return
-            if (overAListId === activeListId || overCardId === activeCardId) return
-
-            let newLists = []
-            let newIndex: number
-            const otherListItems = clonedList.filter(item => item._id !== activeListId && item._id !== overAListId)
-
-            if (active.data.current?.type === 'list') {
-              if (overListId === activeListId) return
-
-              const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-              const [overListItem] = clonedList?.filter(item => item._id === overAListId)
-              const activeCards = activeListItem.cards
-              const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
-
-              const newActiveListItem = {
-                ...activeListItem,
-                position: overListItem.position,
-                cards: activeCards.filter(item => item._id !== activeCardId),
+              if (active.data.current.type === 'card') {
+                setActiveCardId(active.data.current.cardId)
               }
 
-              const newOverListItem = {
-                ...overListItem,
-                position: activeListItem.position,
-                cards: [activeCardItem],
+              setActiveListId(active.data.current.listId)
+            }}
+            onDragOver={({ active, over }) => {
+              const overAListId = over?.data?.current?.listId
+              const overCardId = over?.data?.current?.cardId
+              const activeCardId = active?.data?.current?.cardId
+
+              const clonedList = cloneDeep(lists)
+              if (active.data.current?.listId == over?.data.current?.listId) {
+                if (over && over.rect) {
+                  setActiveItemTop(over.rect.bottom)
+                }
               }
 
-              newLists = [...otherListItems, newActiveListItem, newOverListItem].sort((a, b) => a.position - b.position)
-            } else {
-              // if (!overCardId || !activeCardId) return
-
-              const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-              const [overListItem] = clonedList?.filter(item => item._id === overAListId)
-              const activeCards = activeListItem.cards
-              const overCards = overListItem.cards
-              const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
-              const [overCardItem] = overListItem.cards.filter(item => item._id === overCardId)
-              const activeIndex = activeCardItem?.position
-              let overIndex = overCardItem?.position
-
-              // const isBelowOverItem =
-              //   over &&
-              //   active.rect.current.translated &&
-              //   active.rect.current.translated.top > over.rect.top + over.rect.height / 3
-
-              // const isAboveOverItem =
-              //   over &&
-              //   active.rect.current.translated &&
-              //   active.rect.current.translated.bottom < over.rect.top + over.rect.height / 3
-
-              // console.log('isBelowOverItem', isBelowOverItem, overIndex)
-              // console.log('isAboveOverItem', isAboveOverItem)
-
-              // const modifier = isAboveOverItem ? -1 : isBelowOverItem ? 1 : 0
-
-              // if (overIndex === undefined || overIndex === 0) {
-              //   newIndex = 0
-              // } else if (overIndex > 0) {
-              //   newIndex = overIndex + modifier >= 0 ? overIndex + modifier : 0
-              // } else {
-              //   newIndex = overListItem.cards.length
-              // }
-
-              // const isBelowOverItem =
-              //   over &&
-              //   active.rect.current.translated &&
-              //   active.rect.current.translated.top > over.rect.top + over.rect.height
-
-              const isBelowOverItem = activeItemTop && activeItemTop > over.rect.top + over.rect.height
-
-              console.log(isBelowOverItem)
-              if (!activeListItem || !activeCardItem) return
-              const modifier = isBelowOverItem ? 1 : 0
-              if (overIndex === undefined || overIndex === 0) {
-                newIndex = 0
+              if (active.data.current?.listId !== over?.data.current?.listId) {
+                if (over) {
+                  setOverListId(over.data.current?.listId)
+                }
               } else {
-                newIndex = overIndex >= 0 ? overIndex + modifier : overListItem.cards.length + 1
+                setOverListId(active.data.current?.listId)
               }
 
-              const newActiveListItem = {
-                ...activeListItem,
-                cards: activeCards.filter(item => item._id !== activeCardId),
-              }
+              if (!clonedList || !clonedList.length || !overAListId || !activeListId) return
+              if (overAListId === activeListId || overCardId === activeCardId) return
 
-              let newOverListItem =
-                overIndex === undefined
-                  ? {
-                      ...overListItem,
-                      cards: [{ ...activeCardItem, position: newIndex }, ...overCards],
-                    }
-                  : {
-                      ...overListItem,
-                      cards: [
-                        ...overCards.slice(0, newIndex),
-                        { ...activeCardItem, position: newIndex },
-                        ...overCards.slice(newIndex, overCards.length),
-                      ],
-                    }
+              let newLists = []
+              let newIndex: number
+              const otherListItems = clonedList.filter(item => item._id !== activeListId && item._id !== overAListId)
 
-              newLists = [...otherListItems, newActiveListItem, newOverListItem].sort((a, b) => a.position - b.position)
-            }
+              if (active.data.current?.type === 'list') {
+                if (overListId === activeListId) return
 
-            console.log(newLists)
+                const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
+                const [overListItem] = clonedList?.filter(item => item._id === overAListId)
+                const activeCards = activeListItem.cards
+                const overCards = overListItem.cards
+                // const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
 
-            dispatch(boardSliceActions.updateBoardList(newLists))
-          }}
-          onDragEnd={({ active, over }) => handleDragEnd(active, over)}
-          onDragCancel={() => {
-            console.log('onDragCancel')
-          }}
-          measuring={{
-            droppable: {
-              strategy: MeasuringStrategy.Always,
-            },
-          }}
-        >
-          <div className="w-auto grid gap-4 auto-cols-[286px] px-4">
-            <SortableContext items={lists || [{ id: 0 }]} strategy={horizontalListSortingStrategy}>
-              {lists?.map((listsItem, key) => {
-                return (
-                  <SortableList
-                    id={listsItem._id}
-                    listItems={lists}
-                    listTitle={listsItem.title}
-                    listPosition={listsItem.position}
-                  >
-                    <div>{listsItem._id}</div>
-                    <SortableContext
-                      items={listsItem.cards?.map(item => ({ id: item._id, ...item })) || []}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      {listsItem.cards?.length ? (
-                        listsItem.cards.map((cardItem, index) => {
-                          return (
-                            <>
-                              <SortableCard
-                                key={index}
-                                id={cardItem._id}
-                                listId={listsItem.id}
-                                cardItem={cardItem}
-                                listPosition={listsItem.position}
-                              ></SortableCard>
-                              {/* 拖曳中的卡片 */}
-                              {createPortal(
-                                <DragOverlay dropAnimation={dropAnimation}>{handleRenderOverlay()}</DragOverlay>,
-                                document.body
-                              )}
-                            </>
-                          )
-                        })
-                      ) : (
-                        <></>
-                      )}
-                    </SortableContext>
-                  </SortableList>
+                const newActiveListItem = {
+                  ...activeListItem,
+                  position: overListItem.position,
+                  cards: activeCards,
+                }
+
+                const newOverListItem = {
+                  ...overListItem,
+                  position: activeListItem.position,
+                  cards: overCards,
+                }
+
+                newLists = [...otherListItems, newActiveListItem, newOverListItem].sort(
+                  (a, b) => a.position - b.position
                 )
-              })}
-            </SortableContext>
+              } else {
+                const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
+                const [overListItem] = clonedList?.filter(item => item._id === overAListId)
+                const activeCards = activeListItem.cards
+                const overCards = overListItem.cards
+                const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
+                const [overCardItem] = overListItem.cards.filter(item => item._id === overCardId)
+                const activeIndex = activeCardItem?.position
+                let overIndex = overCardItem?.position
 
-            <div className="row-span-full">
-              <div className="h-auto">
-                <AddListButton />
+                // const isBelowOverItem =
+                //   over &&
+                //   active.rect.current.translated &&
+                //   active.rect.current.translated.top > over.rect.top + over.rect.height / 3
+
+                // const isAboveOverItem =
+                //   over &&
+                //   active.rect.current.translated &&
+                //   active.rect.current.translated.bottom < over.rect.top + over.rect.height / 3
+
+                // console.log('isBelowOverItem', isBelowOverItem, overIndex)
+                // console.log('isAboveOverItem', isAboveOverItem)
+
+                // const modifier = isAboveOverItem ? -1 : isBelowOverItem ? 1 : 0
+
+                // if (overIndex === undefined || overIndex === 0) {
+                //   newIndex = 0
+                // } else if (overIndex > 0) {
+                //   newIndex = overIndex + modifier >= 0 ? overIndex + modifier : 0
+                // } else {
+                //   newIndex = overListItem.cards.length
+                // }
+
+                // const isBelowOverItem =
+                //   over &&
+                //   active.rect.current.translated &&
+                //   active.rect.current.translated.top > over.rect.top + over.rect.height
+
+                const isBelowOverItem = activeItemTop && activeItemTop > over.rect.top + over.rect.height
+
+                console.log(isBelowOverItem)
+                if (!activeListItem || !activeCardItem) return
+                const modifier = isBelowOverItem ? 1 : 0
+                if (overIndex === undefined || overIndex === 0) {
+                  newIndex = 0
+                } else {
+                  newIndex = overIndex >= 0 ? overIndex + modifier : overListItem.cards.length + 1
+                }
+
+                const newActiveListItem = {
+                  ...activeListItem,
+                  cards: activeCards.filter(item => item._id !== activeCardId),
+                }
+
+                let newOverListItem =
+                  overIndex === undefined
+                    ? {
+                        ...overListItem,
+                        cards: [{ ...activeCardItem, position: newIndex }, ...overCards],
+                      }
+                    : {
+                        ...overListItem,
+                        cards: [
+                          ...overCards.slice(0, newIndex),
+                          { ...activeCardItem, position: newIndex },
+                          ...overCards.slice(newIndex, overCards.length),
+                        ],
+                      }
+
+                newLists = [...otherListItems, newActiveListItem, newOverListItem].sort(
+                  (a, b) => a.position - b.position
+                )
+              }
+
+              console.log(newLists)
+
+              dispatch(boardSliceActions.updateBoardList(newLists))
+            }}
+            onDragEnd={({ active, over }) => handleDragEnd(active, over)}
+            onDragCancel={() => {
+              console.log('onDragCancel')
+            }}
+            measuring={{
+              droppable: {
+                strategy: MeasuringStrategy.Always,
+              },
+            }}
+          >
+            <div className="w-auto grid gap-4 auto-cols-[286px] px-4">
+              <SortableContext disabled={!token} items={lists || [{ id: 0 }]} strategy={horizontalListSortingStrategy}>
+                {lists?.map((listsItem, key) => {
+                  return (
+                    <SortableList
+                      id={listsItem._id}
+                      listItems={lists}
+                      listTitle={listsItem.title}
+                      listPosition={listsItem.position}
+                    >
+                      {/* <div>{listsItem._id}</div> */}
+                      <SortableContext
+                        disabled={!token}
+                        items={listsItem.cards?.map(item => ({ id: item._id, ...item })) || []}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        {listsItem.cards?.length ? (
+                          listsItem.cards.map((cardItem, index) => {
+                            return (
+                              <>
+                                <SortableCard
+                                  key={index}
+                                  id={cardItem._id}
+                                  listId={listsItem.id}
+                                  cardItem={cardItem}
+                                  listPosition={listsItem.position}
+                                ></SortableCard>
+                                {/* 拖曳中的卡片 */}
+                                {createPortal(
+                                  <DragOverlay dropAnimation={dropAnimation}>{handleRenderOverlay()}</DragOverlay>,
+                                  document.body
+                                )}
+                              </>
+                            )
+                          })
+                        ) : (
+                          <></>
+                        )}
+                      </SortableContext>
+                    </SortableList>
+                  )
+                })}
+              </SortableContext>
+
+              <div className="row-span-full">
+                <div className="h-auto">
+                  <AddListButton />
+                </div>
               </div>
             </div>
-          </div>
-        </DndContext>
-        {/* 卡片元件 */}
-        {router.query.cardId && <CardDetail />}
-      </div>
-    </>
+          </DndContext>
+          {/* 卡片元件 */}
+          {router.query.cardId && <CardDetail />}
+        </div>
+      </BoardGuard>
+    </div>
   )
 }
 

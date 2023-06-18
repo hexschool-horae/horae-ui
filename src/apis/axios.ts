@@ -130,7 +130,7 @@ async function get<T>(url: string, isAuth = true) {
     // 取得 store 裡的 token
     const { user } = rootState
     const { token } = user
-    console.log(isAuth)
+
     if (isAuth) {
       instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
     } else {
