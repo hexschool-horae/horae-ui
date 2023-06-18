@@ -6,7 +6,6 @@ import Sidebar from '@/components/common/admin/Sidebar'
 import { Toast } from 'primereact/toast'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { errorSliceActions } from '@/slices/errorSlice'
-import classes from '@/components/layout/AdminLayout.module.scss'
 
 interface IAdminLayoutProps {
   children: ReactNode
@@ -49,7 +48,7 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
   }, [])
   return (
     <AdminLayoutContextProvider>
-      <div className={`flex flex-col h-full ${classes.theme1}`}>
+      <div className="flex flex-col h-full">
         <Header boardId={boardId} theme={theme} />
         <div className="flex flex-1 overflow-y-auto">
           <Sidebar boardId={boardId} theme={theme} />
