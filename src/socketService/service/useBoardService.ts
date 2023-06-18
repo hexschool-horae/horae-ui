@@ -77,6 +77,12 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽看板卡片刪除標籤是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.REMOVE_TAG_FROM_CARD_RESULT, () => undefined)
 
+  // 監聽看板更新封面成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, () => undefined)
+
+  // 監聽看板刪除封面成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER, () => undefined)
+
   // 監聽卡片新增評論是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.ADD_NEW_CARD_COMMENT_RESULT, data => {
     console.log('監聽卡片新增評論是否成功:', data)
@@ -403,6 +409,10 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     addCardAttachment,
     deleteCardAttachment,
     deleteCardMember,
+    addCardAttachment,
+    deleteCardAttachment,
+    updateBoardCover,
+    deleteBoardCover,
     terminateService,
   }
 }
@@ -569,6 +579,16 @@ const addCardAttachment = (payload: interfaces.IAddCardAttachment) => {
 // 增加卡片附件
 const deleteCardAttachment = (payload: interfaces.IDeleteCardAttachment) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_ATTACHMENT, payload)
+}
+
+// 更新看板封面
+const updateBoardCover = (payload: interfaces.IBoardUpdateCover) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, payload)
+}
+
+// 刪除看板封面
+const deleteBoardCover = (payload: interfaces.IBoardDeleteCover) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER, payload)
 }
 
 const moveCard = () => undefined

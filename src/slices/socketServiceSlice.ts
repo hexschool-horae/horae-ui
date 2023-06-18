@@ -125,6 +125,12 @@ export const socketServiceSlice = createSlice({
     deleteCardAttachment(state, action: PayloadAction<interfaces.IDeleteCardAttachment>) {
       state.boardService?.deleteCardAttachment(action.payload)
     },
+    updateBoardCover(state, action: PayloadAction<interfaces.IBoardUpdateCover>) {
+      state.boardService?.updateBoardCover(action.payload)
+    },
+    deleteBoardCover(state, action: PayloadAction<interfaces.IBoardDeleteCover>) {
+      state.boardService?.deleteBoardCover(action.payload)
+    },
     setBoardId(state, action: PayloadAction<string>) {
       state.boardId = action.payload
     },

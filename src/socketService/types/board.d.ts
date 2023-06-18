@@ -252,6 +252,17 @@ export interface IDeleteCardAttachment {
   fileId: string
 }
 
+// 看板新增封面
+export interface IBoardUpdateCover {
+  boardId: string
+  fileURL: string
+}
+
+// 看板刪除封面
+export interface IBoardDeleteCover {
+  boardId: string
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -286,5 +297,7 @@ export type IBoardService = {
   deleteCardMember: (payload: IDeleteCardMember) => void
   addCardAttachment: (payload: IAddCardAttachment) => void
   deleteCardAttachment: (payload: IDeleteCardAttachment) => void
+  updateBoardCover: (payload: IBoardUpdateCover) => void
+  deleteBoardCover: (payload: IBoardDeleteCover) => void
   terminateService: (boardId: string) => void
 }
