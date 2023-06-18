@@ -301,10 +301,11 @@ export interface IMembers {
 }
 
 export interface IAttachment {
-  id: string
+  _id: string
   createdAt: string
   title: string
-  url: string
+  fileUrl: string
+  fileName: string
 }
 
 export interface ICardDetail {
@@ -364,4 +365,24 @@ export interface IPostCardMemberRequest {
 /** B05-21 卡片成員刪除 */
 export interface IDeleteCardMemberRequest {
   memberId: string
+}
+
+/** B05-22 卡片附件上傳 */
+export interface IUploadFileRequest {
+  fileData: File
+  dto: Dto
+}
+/** B05-22 卡片附件上傳 */
+export interface UploadType {
+  dto?: Dto
+}
+export interface Dto {
+  /**
+   * 上傳檔案type (document/file/multiFile)
+   */
+  type: string
+}
+/** B05-23 卡片中附件刪除 */
+export interface IDeleteCardFileRequest {
+  fileId: string
 }

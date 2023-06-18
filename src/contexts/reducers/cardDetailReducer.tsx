@@ -76,10 +76,10 @@ export const initialState = {
     ],
     attachments: [
       {
-        id: '',
+        _id: '',
         createdAt: '',
-        title: '',
-        url: '',
+        fileName: '',
+        fileUrl: '',
       },
     ],
     proiority: '',

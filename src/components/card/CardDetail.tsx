@@ -68,6 +68,7 @@ const CardInternal = () => {
       })
 
       appDispatch(boardSliceActions.setCardDetail(response.data))
+      console.log('etCardDetail', response.data)
     } catch (error) {
       console.error('Error fetching card data:', error)
     }
@@ -98,7 +99,7 @@ const CardInternal = () => {
                 {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
                 <CardDetailCalendar label={popupLabels.calender} />
                 <CardDetailDescribe />
-                <CardDetailFiles />
+                <CardDetailFiles cardId={cardId} handleGetCardDetail={getCardDetail} />
                 <CardDetailTodoList />
                 <CardDetailComments />
               </div>
@@ -140,7 +141,12 @@ const CardInternal = () => {
 
       <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} cardId={cardId} />
       <CardPopupTodoList label={popupLabels.todoList} key={popupLabels.todoList + state.popupKey} />
-      <CardPopupFiles label={popupLabels.files} key={popupLabels.files + state.popupKey}></CardPopupFiles>
+      <CardPopupFiles
+        label={popupLabels.files}
+        key={popupLabels.files + state.popupKey}
+        cardId={cardId}
+        handleGetCardDetail={getCardDetail}
+      ></CardPopupFiles>
       {/* 與board共用 Wrapper放外層*/}
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>
         <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />
