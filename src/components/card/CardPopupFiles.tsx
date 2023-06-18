@@ -3,23 +3,24 @@ import CardPopupWrapper from './CardPopupWrapper'
 import cardPopupsStyle from './cardPopups.module.scss'
 import { Fragment, useRef, useState } from 'react'
 import IconDelete from '@/assets/icons/icon_delete_circle.svg'
-import { Dto, IUploadFileRequest } from '@/apis/interface/api'
+// import { Dto, IUploadFileRequest } from '@/apis/interface/api'
 import { UploadFileType } from '@/apis/enum/api'
-import { UPLOAD_CARD_FILE } from '@/apis/axios-service'
-import { AxiosError } from 'axios'
-import { useAppDispatch } from '@/hooks/useAppStore'
-import { errorSliceActions } from '@/slices/errorSlice'
+// import { UPLOAD_CARD_FILE } from '@/apis/axios-service'
+// import { AxiosError } from 'axios'
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
+// import { errorSliceActions } from '@/slices/errorSlice'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 interface ICardPopupPriorityProps {
   label: string
   cardId: string
-  handleGetCardDetail: () => void
+  // handleGetCardDetail: () => void
 }
 
-export default function CardPopupFiles({ label, cardId, handleGetCardDetail }: ICardPopupPriorityProps) {
-  // const boardId = useAppSelector(state => state.board.boardId)
+export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProps) {
+  const boardId = useAppSelector(state => state.board.boardId)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [fileList, setFileList] = useState<File[]>([])
   const appDispatch = useAppDispatch()
@@ -48,40 +49,40 @@ export default function CardPopupFiles({ label, cardId, handleGetCardDetail }: I
     const formData = new FormData()
     formData.append(UploadFileType.FILE, fileList[0])
 
-    // appDispatch(
-    //   socketServiceActions.addCardAttachment({
-    //     boardId,
-    //     cardId,
-    //     file:  fileList[0],
-    //   })
-    // )
-    try {
-      const dto: Dto = {
-        type: UploadFileType.FILE,
-      }
-      const req: IUploadFileRequest = {
-        fileData: fileList[0],
-        dto,
-      }
-      console.log('req', req)
-      const response = await UPLOAD_CARD_FILE(cardId, req)
-      if (!response) return
-      handleGetCardDetail()
-    } catch (e) {
-      let errorMessage = ''
-      if (e instanceof AxiosError) {
-        errorMessage = e.response?.data.message
-      } else {
-        errorMessage = '發生錯誤'
-      }
+    appDispatch(
+      socketServiceActions.addCardAttachment({
+        boardId,
+        cardId,
+        file: fileList[0],
+      })
+    )
+    // try {
+    //   const dto: Dto = {
+    //     type: UploadFileType.FILE,
+    //   }
+    //   const req: IUploadFileRequest = {
+    //     fileData: fileList[0],
+    //     dto,
+    //   }
+    //   console.log('req', req)
+    //   const response = await UPLOAD_CARD_FILE(cardId, req)
+    //   if (!response) return
+    //   handleGetCardDetail()
+    // } catch (e) {
+    //   let errorMessage = ''
+    //   if (e instanceof AxiosError) {
+    //     errorMessage = e.response?.data.message
+    //   } else {
+    //     errorMessage = '發生錯誤'
+    //   }
 
-      appDispatch(
-        errorSliceActions.pushNewErrorMessage({
-          code: -1,
-          message: errorMessage,
-        })
-      )
-    }
+    //   appDispatch(
+    //     errorSliceActions.pushNewErrorMessage({
+    //       code: -1,
+    //       message: errorMessage,
+    //     })
+    //   )
+    // }
   }
 
   const onSubmit = (event: React.FormEvent) => {

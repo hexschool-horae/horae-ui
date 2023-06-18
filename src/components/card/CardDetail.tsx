@@ -149,8 +149,8 @@ const CardInternal = () => {
         label={popupLabels.files}
         key={popupLabels.files + state.popupKey}
         cardId={cardId}
-        handleGetCardDetail={getCardDetail}
       ></CardPopupFiles>
+      {/* handleGetCardDetail={getCardDetail} */}
       {/* 與board共用 Wrapper放外層*/}
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>
         <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />
