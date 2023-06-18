@@ -4,19 +4,17 @@ import filesStyle from './files.module.scss'
 import Image from 'next/image'
 import { useCardDetail } from '@/contexts/cardDetailContext'
 import { Button } from 'primereact/button'
-// import { useAppSelector } from '@/hooks/useAppStore'
-import { IAttachment, IDeleteCardFileRequest } from '@/apis/interface/api'
-import { DELETE_CARD_FILE } from '@/apis/axios-service'
-import { AxiosError } from 'axios'
-import { errorSliceActions } from '@/slices/errorSlice'
+import { IAttachment } from '@/apis/interface/api'
 import { ConfirmDialog } from 'primereact/confirmdialog'
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 interface ICardDetailFileProps {
   cardId: string
-  handleGetCardDetail: () => void
 }
 
-export default function CardDetailFiles({ cardId, handleGetCardDetail }: ICardDetailFileProps) {
+export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
   const { state, dispatch } = useCardDetail()
+  const appDispatch = useAppDispatch()
   // const socketFileList = useAppSelector(state => state.board.cardDetail?.attachments)
   console.log('state.cardDetail', state.cardDetail.attachments)
   const selectedFileList: IAttachment[] = state.cardDetail.attachments
@@ -24,6 +22,7 @@ export default function CardDetailFiles({ cardId, handleGetCardDetail }: ICardDe
   const [showFileConfirmation, setShowFileConfirmation] = useState(false)
   const [confirmConfig, setConfirmConfig] = useState({ message: '' })
   const [fileId, setFileId] = useState('')
+  const boardId = useAppSelector(state => state.board.boardId)
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -58,29 +57,36 @@ export default function CardDetailFiles({ cardId, handleGetCardDetail }: ICardDe
    * B05-23 卡片中附件刪除
    * */
   const handleDeleteCardFile = async () => {
-    try {
-      const req: IDeleteCardFileRequest = {
+    appDispatch(
+      socketServiceActions.deleteCardAttachment({
+        boardId,
+        cardId,
         fileId: fileId,
-      }
-      console.log('req', req)
-      const response = await DELETE_CARD_FILE(cardId, req)
-      if (!response) return
-      handleGetCardDetail()
-    } catch (e) {
-      let errorMessage = ''
-      if (e instanceof AxiosError) {
-        errorMessage = e.response?.data.message
-      } else {
-        errorMessage = '發生錯誤'
-      }
+      })
+    )
+    // try {
+    //   const req: IDeleteCardFileRequest = {
+    //     fileId: fileId,
+    //   }
+    //   console.log('req', req)
+    //   const response = await DELETE_CARD_FILE(cardId, req)
+    //   if (!response) return
+    //   handleGetCardDetail()
+    // } catch (e) {
+    //   let errorMessage = ''
+    //   if (e instanceof AxiosError) {
+    //     errorMessage = e.response?.data.message
+    //   } else {
+    //     errorMessage = '發生錯誤'
+    //   }
 
-      dispatch(
-        errorSliceActions.pushNewErrorMessage({
-          code: -1,
-          message: errorMessage,
-        })
-      )
-    }
+    //   dispatch(
+    //     errorSliceActions.pushNewErrorMessage({
+    //       code: -1,
+    //       message: errorMessage,
+    //     })
+    //   )
+    // }
   }
 
   const accept = () => {

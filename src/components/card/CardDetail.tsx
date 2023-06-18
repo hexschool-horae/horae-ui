@@ -5,7 +5,7 @@ import { ProgressSpinner } from 'primereact/progressspinner'
 import style from './card.module.scss'
 
 import { boardSliceActions } from '@/slices/boardSlice'
-import { useAppDispatch } from '@/hooks/useAppStore'
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { CardDetailProvider, useCardDetail } from '@/contexts/cardDetailContext'
 
 import CardSidebarButton from '@/components/card/CardSidebarButton'
@@ -53,6 +53,7 @@ const CardInternal = () => {
   const appDispatch = useAppDispatch()
   const router = useRouter()
   const cardId = router.query.cardId as string
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
 
   const getCardDetail = async () => {
     try {
@@ -95,11 +96,14 @@ const CardInternal = () => {
                 </div>
 
                 <CardDetailTitle />
-                <CardDetailMember label={popupLabels.member} cardId={cardId} />
+                {cardDetail?.members && cardDetail?.members.length > 0 && (
+                  <CardDetailMember label={popupLabels.member} cardId={cardId} />
+                )}
+                {/* <CardDetailMember label={popupLabels.member} cardId={cardId} /> */}
                 {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
                 <CardDetailCalendar label={popupLabels.calender} />
                 <CardDetailDescribe />
-                <CardDetailFiles cardId={cardId} handleGetCardDetail={getCardDetail} />
+                {cardDetail?.attachments && cardDetail?.attachments.length > 0 && <CardDetailFiles cardId={cardId} />}
                 <CardDetailTodoList />
                 <CardDetailComments />
               </div>

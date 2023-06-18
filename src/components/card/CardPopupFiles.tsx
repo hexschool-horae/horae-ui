@@ -10,6 +10,7 @@ import { AxiosError } from 'axios'
 import { useAppDispatch } from '@/hooks/useAppStore'
 import { errorSliceActions } from '@/slices/errorSlice'
 // import { socketServiceActions } from '@/slices/socketServiceSlice'
+// import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 interface ICardPopupPriorityProps {
   label: string
@@ -44,12 +45,14 @@ export default function CardPopupFiles({ label, cardId, handleGetCardDetail }: I
    * B05-22 卡片中附件上傳
    * */
   const handleUploadCardFile = async (fileList: File[]) => {
+    const formData = new FormData()
+    formData.append(UploadFileType.FILE, fileList[0])
+
     // appDispatch(
-    //   socketServiceActions.uploadCardAttachment({
+    //   socketServiceActions.addCardAttachment({
     //     boardId,
     //     cardId,
-    //     file: fileList[0],
-    //     // dto: UploadFileType.FILE
+    //     file:  fileList[0],
     //   })
     // )
     try {
