@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 // import { ISingleBoardResponse } from '@/apis/interface/api'
-import { ISingleBoardInterface } from '@/socketService/types/board'
-import { ICardDetail, IBoardMember } from '@/apis/interface/api'
+import { ISingleBoardInterface, IListCard, IListCardTags } from '@/socketService/types/board'
+import { ICardDetail, IBoardMember, ITag } from '@/apis/interface/api'
 
 // ---重構中，之後補回來---
 
@@ -99,6 +99,9 @@ interface IInitialState {
   boardId: string
   cardDetail: ICardDetail | null
   boardMembersList: IBoardMember[] | null
+  listCard: IListCard
+  listCardTags: IListCardTags
+  boardTags: ITag[]
 }
 
 const initialState: IInitialState = {
@@ -106,6 +109,18 @@ const initialState: IInitialState = {
   boardId: '',
   cardDetail: null,
   boardMembersList: null,
+  listCard: {
+    listId: '',
+    cardId: '',
+    title: '',
+    proiority: '',
+  },
+  listCardTags: {
+    listId: '',
+    cardId: '',
+    tags: [],
+  },
+  boardTags: [],
 }
 
 export const boardSlice = createSlice({
@@ -203,6 +218,32 @@ export const boardSlice = createSlice({
       console.log('updateCardMembers', state)
       if (state.cardDetail && state.cardDetail._id === action.payload._id) {
         state.cardDetail.members = action.payload.members
+      }
+    },
+    updateListCard(state, action: PayloadAction<ICardDetail>) {
+      if (state.listCard) {
+        state.listCard.listId = action.payload.listId
+        state.listCard.cardId = action.payload._id
+        state.listCard.title = action.payload.title
+        state.listCard.proiority = action.payload.proiority
+        // console.log(state.listCard)
+      }
+    },
+    updateListCardTags(state, action: PayloadAction<ICardDetail>) {
+      if (state.listCardTags) {
+        state.listCardTags.listId = action.payload.listId
+        state.listCardTags.cardId = action.payload._id
+        state.listCardTags.tags = action.payload.tags
+      }
+    },
+    updateBoardTags(state, action: PayloadAction<ITag[]>) {
+      if (state.boardTags) {
+        state.boardTags = action.payload
+      }
+    },
+    updateCardTags(state, action: PayloadAction<ICardDetail>) {
+      if (state.cardDetail?._id === action.payload._id) {
+        state.cardDetail.tags = action.payload.tags
       }
     },
     reset: () => initialState,

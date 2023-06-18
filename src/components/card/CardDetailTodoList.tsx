@@ -6,13 +6,13 @@ import { ProgressBar } from 'primereact/progressbar'
 import { Checkbox } from 'primereact/checkbox'
 import { InputText } from 'primereact/inputtext'
 import { Divider } from 'primereact/divider'
-import { ProgressSpinner } from 'primereact/progressspinner'
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup'
 
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
-import { useCardDetail } from '@/contexts/cardDetailContext'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 import { ITodoList, ITodo } from '@/apis/interface/api'
 import IconDelete from '@/assets/icons/icon_delete.svg'
 
@@ -22,10 +22,8 @@ export default function CardDetailTodoList() {
 
   const appDispatch = useAppDispatch()
   const socketTodoLists = useAppSelector(state => state.board.cardDetail?.todolists)
-  const { state, dispatch } = useCardDetail()
 
   const [todoLists, setTodoLists] = useState<ITodoList[]>([])
-  const [addTodoLoading, setAddTodoLoading] = useState(false)
 
   const onDeleteTodoList = (listId: string) => {
     appDispatch(
@@ -35,12 +33,7 @@ export default function CardDetailTodoList() {
         titleId: listId,
       })
     )
-    dispatch({
-      type: 'DELETE_TODO_LIST',
-      payload: {
-        todolists: todoLists,
-      },
-    })
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_RESULT))
   }
 
   const onUpdateTodoTitle = (listId: string, title: string) => {
@@ -52,6 +45,7 @@ export default function CardDetailTodoList() {
         titleId: listId,
       })
     )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE_RESULT))
   }
 
   const onToggleComplete = (checked: boolean, listId: string, todoId: string) => {
@@ -73,15 +67,7 @@ export default function CardDetailTodoList() {
   useEffect(() => {
     if (socketTodoLists == undefined) return
     setTodoLists(socketTodoLists)
-    setAddTodoLoading(false)
   }, [socketTodoLists])
-
-  useEffect(() => {
-    const listLength = socketTodoLists?.length
-    const updateListLength = state.cardDetail.todolists.length
-    if (updateListLength == 0 || listLength == updateListLength) return
-    setAddTodoLoading(true)
-  }, [state.cardDetail.todolists])
 
   return (
     <>
@@ -98,11 +84,6 @@ export default function CardDetailTodoList() {
           onToggleComplete={onToggleComplete}
         />
       ))}
-      {addTodoLoading && (
-        <div className="flex items-center justify-center">
-          <ProgressSpinner style={{ width: '40px', height: '40px' }} strokeWidth="4" />
-        </div>
-      )}
       <Divider />
     </>
   )
@@ -141,7 +122,6 @@ const TodoList = ({
   const [toggleCheck, setToggleCheck] = useState(false)
   const [isEditId, setIsEditId] = useState<null | string>(null)
   const [showCompleted, setShowCompleted] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
 
   const confirmDeleteTodoList = (event: React.MouseEvent<HTMLButtonElement>) => {
     confirmPopup({
@@ -157,12 +137,10 @@ const TodoList = ({
 
   const handleDeleteTodoList = () => {
     onDeleteTodoList(listId)
-    setIsLoading(true)
   }
 
   const handleUpdateTodoListTitle = () => {
     onUpdateTodoTitle(listId, todoTitle)
-    setIsLoading(true)
   }
 
   const handleCreateTodoItem = () => {
@@ -175,8 +153,8 @@ const TodoList = ({
         content: todoItem,
       })
     )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT_RESULT))
     setTodoItem('')
-    setIsLoading(true)
   }
 
   const handleUpdateTodoItem = (todo: ITodo) => {
@@ -191,7 +169,7 @@ const TodoList = ({
         completed: todo.completed,
       })
     )
-    setIsLoading(true)
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT_RESULT))
   }
 
   const handleToggleComplete = (checked: boolean, todo: ITodo) => {
@@ -207,7 +185,7 @@ const TodoList = ({
     )
   }
 
-  const handleDeleteTdodItem = (todoId: string) => {
+  const handleDeleteTodoItem = (todoId: string) => {
     appDispatch(
       socketServiceActions.deleteTodoContent({
         cardId,
@@ -215,7 +193,7 @@ const TodoList = ({
         contentId: todoId,
       })
     )
-    setIsLoading(true)
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT_RESULT))
   }
 
   const calculateProgressWidth = () => {
@@ -274,14 +252,7 @@ const TodoList = ({
   }, [toggleCheck, todoList.length])
 
   useEffect(() => {
-    setIsLoading(false)
     setTodoList(contentList)
-    /*
-     待優化：
-     目前無法判斷是哪個list update，
-     因此同時編輯多個先回來的會取消後面的loading狀態
-     之後應該將listId也從socket回傳來做分辨
-    */
   }, [contentList])
 
   return (
@@ -366,7 +337,7 @@ const TodoList = ({
               size="small"
               text
               className={`hover:bg-transparent ${style.icon_btn_delete}`}
-              onClick={() => handleDeleteTdodItem(todo._id)}
+              onClick={() => handleDeleteTodoItem(todo._id)}
             >
               <IconDelete />
             </Button>
@@ -385,12 +356,6 @@ const TodoList = ({
           />
         </li>
       </ul>
-
-      {isLoading && (
-        <div className={style.loading_overlay}>
-          <ProgressSpinner style={{ width: '40px', height: '40px' }} strokeWidth="4" />
-        </div>
-      )}
     </div>
   )
 }

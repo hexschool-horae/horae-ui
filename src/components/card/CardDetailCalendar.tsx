@@ -6,7 +6,9 @@ import { Button } from 'primereact/button'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { useCardDetail } from '@/contexts/cardDetailContext'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 import IconDelete from '@/assets/icons/icon_delete.svg'
 
 interface ICardDetailCalendarProps {
@@ -49,6 +51,7 @@ export default function CardDetailCalendar({ label }: ICardDetailCalendarProps) 
           proiority: cardDetail.proiority,
         })
       )
+      appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_MODIFY_RESULT))
     }
   }
 

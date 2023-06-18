@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import router from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import style from './tags.module.scss'
 
@@ -7,16 +7,14 @@ import { Button } from 'primereact/button'
 import { Divider } from 'primereact/divider'
 import { Chip } from 'primereact/chip'
 
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
+
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 import { IInitialState } from '@/contexts/reducers/cardDetailReducer'
 import { ITag } from '@/apis/interface/api'
-import {
-  DELETE_BOARD_TAGS_BY_ID,
-  DELETE_CARD_TAG_BY_ID,
-  GET_BOARD_TAGS_BY_ID,
-  POST_BOARD_TAGS_BY_ID,
-  POST_CARD_TAG_BY_ID,
-  PUT_BOARD_TAGS_BY_ID,
-} from '@/apis/axios-service'
+import { GET_BOARD_TAGS_BY_ID } from '@/apis/axios-service'
 
 interface ICardPopupTagsProps {
   page: string
@@ -29,6 +27,9 @@ type TStep = 'list' | 'create' | 'edit'
 const tagColorList = ['#ffe4e2', '#ffe1d6', '#fff1bc', '#D8F9C7', '#e8f1fc', '#f2e8fc', '#fce8f7', '#eaeaea', '#f7f7f7']
 
 export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsProps) {
+  const appDispatch = useAppDispatch()
+  const socketBoardTags = useAppSelector(state => state.board.boardTags)
+
   const [currentStep, setCurrentStep] = useState<TStep>('list')
   const [tagList, setTagList] = useState<ITag[]>([])
   const [search, setSearch] = useState('')
@@ -37,7 +38,6 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
   const [tagTitle, setTagTitle] = useState('')
   const [editTagId, setEditTagId] = useState('')
 
-  const router = useRouter()
   const boardId = router.query.boardId as string
   const cardId = router.query.cardId as string
 
@@ -54,6 +54,10 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
   useEffect(() => {
     getTags()
   }, [])
+
+  useEffect(() => {
+    setTagList(socketBoardTags)
+  }, [socketBoardTags])
 
   const isActiveTag = (tag: string) => {
     if (page !== 'card' || dispatch == undefined) return true
@@ -73,26 +77,16 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
     }, 100)
   }
 
-  const creatTag = async () => {
-    try {
-      const data = {
+  const creatTag = () => {
+    appDispatch(
+      socketServiceActions.createNewBoardTag({
+        boardId,
         title: tagTitle,
         color: tagColor,
-      }
-      // console.log(data)
-      const response = await POST_BOARD_TAGS_BY_ID(boardId, data)
-      if (response == undefined) return
-      const tag = {
-        _id: response.data,
-        title: tagTitle,
-        color: tagColor,
-      }
-      addTagToCard(tag)
-      setTagList([...tagList, tag])
-      goList()
-    } catch (error) {
-      console.error('Error create tag:', error)
-    }
+      })
+    )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT))
+    goList()
   }
 
   const goCreateTag = () => {
@@ -102,42 +96,30 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
     setCurrentStep('create')
   }
 
-  const EditTag = async () => {
-    try {
-      const data = {
+  const EditTag = () => {
+    appDispatch(
+      socketServiceActions.modifyBoardTag({
+        boardId,
+        title: tagTitle,
+        color: tagColor,
         tagId: editTagId,
-        title: tagTitle,
-        color: tagColor,
-      }
+      })
+    )
 
-      const response = await PUT_BOARD_TAGS_BY_ID(boardId, data)
-      if (response == undefined) return
-
-      if (page === 'card' && dispatch !== undefined) {
-        dispatch({
-          type: 'EDIT_TAG',
-          payload: {
-            tag: {
-              _id: editTagId,
-              title: tagTitle,
-              color: tagColor,
-            },
+    if (page === 'card' && dispatch !== undefined) {
+      dispatch({
+        type: 'EDIT_TAG',
+        payload: {
+          tag: {
+            _id: editTagId,
+            title: tagTitle,
+            color: tagColor,
           },
-        })
-      }
-
-      const tags = [...tagList]
-      const i = tags.findIndex(tag => tag._id === editTagId)
-      tags[i] = {
-        _id: editTagId,
-        title: tagTitle,
-        color: tagColor,
-      }
-      setTagList(tags)
-      goList()
-    } catch (error) {
-      console.error('Error editing tag:', error)
+        },
+      })
     }
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT))
+    goList()
   }
 
   const goEditTag = (tag: ITag) => {
@@ -150,20 +132,16 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
     }, 100)
   }
 
-  const deleteTag = async () => {
-    try {
-      const data = {
+  const deleteTag = () => {
+    appDispatch(
+      socketServiceActions.deleteBoardTag({
+        boardId,
         tagId: editTagId,
-      }
-      const response = await DELETE_BOARD_TAGS_BY_ID(boardId, data)
-      if (response == undefined) return
-
-      deleteTagFromCard(editTagId)
-      setTagList(tags => tags.filter(tag => tag._id !== editTagId))
-      goList()
-    } catch (error) {
-      console.log('Error delete tag:', error)
-    }
+      })
+    )
+    deleteTagFromCard(editTagId)
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT))
+    goList()
   }
 
   const toggleTag = (tag: ITag) => {
@@ -176,43 +154,36 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
     }
   }
 
-  const addTagToCard = async (tag: ITag) => {
+  const addTagToCard = (tag: ITag) => {
     if (page !== 'card' || dispatch == undefined) return
-    try {
-      const data = {
+    appDispatch(
+      socketServiceActions.attachTagToCard({
+        boardId,
+        cardId,
         tagId: tag._id,
-      }
-      const response = await POST_CARD_TAG_BY_ID(cardId, data)
-      if (response == undefined) return
-
-      dispatch({
-        type: 'ADD_TAG',
-        payload: { tag },
       })
-    } catch (error) {
-      console.log('Error add tag to card:', error)
-    }
+    )
+    dispatch({
+      type: 'ADD_TAG',
+      payload: { tag },
+    })
   }
 
-  const deleteTagFromCard = async (tagId: string) => {
+  const deleteTagFromCard = (tagId: string) => {
     if (page !== 'card' || dispatch == undefined) return
-
-    try {
-      const data = {
-        tagId: tagId,
-      }
-      const response = await DELETE_CARD_TAG_BY_ID(cardId, data)
-      if (response == undefined) return
-
-      dispatch({
-        type: 'REMOVE_TAG',
-        payload: {
-          tagId: tagId,
-        },
+    appDispatch(
+      socketServiceActions.removeTagFromCard({
+        boardId,
+        cardId,
+        tagId,
       })
-    } catch (error) {
-      console.log('Error delete tag from card:', error)
-    }
+    )
+    dispatch({
+      type: 'REMOVE_TAG',
+      payload: {
+        tagId: tagId,
+      },
+    })
   }
 
   return (

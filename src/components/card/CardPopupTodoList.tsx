@@ -6,7 +6,10 @@ import CardPopupWrapper from './CardPopupWrapper'
 
 import { useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 import { useCardDetail } from '@/contexts/cardDetailContext'
+
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 
 interface ICardPopupTodoListProps {
   label: string
@@ -28,11 +31,11 @@ export default function CardPopupTodoList({ label }: ICardPopupTodoListProps) {
         title: todoListTitle,
       })
     )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE_RESULT))
+
     dispatch({
-      type: 'ADD_TODO_LIST',
-      payload: {
-        listTitle: todoListTitle,
-      },
+      type: 'TOTGGLE_POPUP',
+      payload: label,
     })
   }
 

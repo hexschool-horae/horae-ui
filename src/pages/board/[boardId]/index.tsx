@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { AxiosError } from 'axios'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
@@ -18,14 +18,75 @@ import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { errorSliceActions } from '@/slices/errorSlice'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { GET_BOARD_BY_ID } from '@/apis/axios-service'
+import { ICardList } from '@/types/pages'
 
 const Board: FC = () => {
   const router = useRouter()
   const token = useAppSelector(state => state.user.token) || ''
   const boardId = useAppSelector(state => state.board.boardId)
   const singleBaord = useAppSelector(state => state.board.singleBaord)
-  const lists = singleBaord?.lists
+  const boardLists = singleBaord?.lists
   const dispatch = useAppDispatch()
+
+  const [lists, setLists] = useState(boardLists)
+
+  // 卡片更新標題、優先權
+  const listCard = useAppSelector(state => state.board.listCard)
+  useEffect(() => {
+    if (lists == undefined) return
+    const temp: ICardList[] = JSON.parse(JSON.stringify(lists))
+    const listIndex = temp.findIndex(list => list._id === listCard.listId)
+    const cardIndex = temp[listIndex]?.cards.findIndex(card => card._id === listCard.cardId)
+
+    if (cardIndex != -1) {
+      temp[listIndex].cards[cardIndex].title = listCard.title
+      temp[listIndex].cards[cardIndex].proiority = listCard.proiority
+      setLists(temp)
+    }
+  }, [listCard])
+
+  // 卡片新增、刪除標籤
+  const listCardTag = useAppSelector(state => state.board.listCardTags)
+  useEffect(() => {
+    if (lists == undefined) return
+    const temp: ICardList[] = JSON.parse(JSON.stringify(lists))
+    const listIndex = temp.findIndex(list => list._id === listCardTag.listId)
+    const cardIndex = temp[listIndex]?.cards.findIndex(card => card._id === listCardTag.cardId)
+
+    if (cardIndex != -1) {
+      temp[listIndex].cards[cardIndex].tags = listCardTag.tags
+      setLists(temp)
+    }
+  }, [listCardTag])
+
+  // 看板修改、刪除標籤連動卡片
+  const boardTags = useAppSelector(state => state.board.boardTags)
+  useEffect(() => {
+    if (lists == undefined) return
+    const temp: ICardList[] = JSON.parse(JSON.stringify(lists))
+    temp.forEach(list => {
+      list.cards.forEach(card => {
+        if (card.tags.length > 0) {
+          card.tags = card.tags.filter(tag => boardTags.some(boardTag => boardTag._id === tag._id))
+          card.tags.forEach(tag => {
+            boardTags.forEach(boardTag => {
+              if (tag._id == boardTag._id) {
+                tag._id = boardTag._id
+                tag.color = boardTag.color
+                tag.title = boardTag.title
+              }
+            })
+          })
+        }
+      })
+    })
+    setLists(temp)
+  }, [boardTags])
+
+  useEffect(() => {
+    if (boardLists == undefined) return
+    setLists(boardLists)
+  }, [boardLists])
 
   /** 讓 draggable、droppable 內的 pointer 事件不會被 prevent */
   const pointerSensor = useSensor(PointerSensor, {

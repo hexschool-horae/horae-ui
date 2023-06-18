@@ -49,8 +49,10 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽修改單一卡片是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_MODIFY_RESULT, data => {
     console.log('監聽修改單一卡片是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_MODIFY_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateCard(data.result))
+      store.dispatch(boardSliceActions.updateListCard(data.result))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -63,19 +65,89 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽新增看板標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT, data => {
+    console.log('監聽新增看板標籤是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT))
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽修改看板標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT, data => {
+    console.log('監聽修改看板標籤是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT))
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽刪除看板標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT, data => {
+    console.log('監聽刪除看板標籤是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT))
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽看板卡片加入標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.ATTACH_TAG_TO_CARD_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.ATTACH_TAG_TO_CARD_RESULT, data => {
+    console.log('監聽看板卡片加入標籤是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateCardTags(data.result))
+      store.dispatch(boardSliceActions.updateListCardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽看板卡片刪除標籤是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.REMOVE_TAG_FROM_CARD_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.REMOVE_TAG_FROM_CARD_RESULT, data => {
+    console.log('監聽看板卡片刪除標籤是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateCardTags(data.result))
+      store.dispatch(boardSliceActions.updateListCardTags(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽看板更新封面成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, () => undefined)
@@ -86,6 +158,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽卡片新增評論是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.ADD_NEW_CARD_COMMENT_RESULT, data => {
     console.log('監聽卡片新增評論是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.ADD_NEW_CARD_COMMENT_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateCardComments(data.result))
     } else {
@@ -102,6 +175,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽卡片修改評論是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.MODIFT_CARD_COMMENT_RESULT, data => {
     console.log('監聽卡片修改評論是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.MODIFT_CARD_COMMENT_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateCardComments(data.result))
     } else {
@@ -118,6 +192,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽卡片刪除評論是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_COMMENT_RESULT, data => {
     console.log('監聽卡片刪除評論是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.DELETE_CARD_COMMENT_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateCardComments(data.result))
     } else {
@@ -140,6 +215,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 新增卡片 todo 標題是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE_RESULT, data => {
     console.log('監聽 新增卡片 todo 標題是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.addNewTodoList(data.result))
     } else {
@@ -156,6 +232,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 修改卡片 todo 標題是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE_RESULT, data => {
     console.log('監聽 修改卡片 todo 標題是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_TITLE_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateTodoLists(data.result))
     } else {
@@ -172,6 +249,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 刪除卡片 todo 標題是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_RESULT, data => {
     console.log('監聽 刪除卡片 todo 標題是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateTodoLists(data.result))
     } else {
@@ -188,6 +266,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 新增卡片細項是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT_RESULT, data => {
     console.log('監聽 新增卡片細項是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_CONTENT_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateTodoLists(data.result))
     } else {
@@ -204,6 +283,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 修改卡片細項是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT_RESULT, data => {
     console.log('監聽 修改卡片細項是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.MODIFY_CARD_TODO_CONTENT_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateTodoLists(data.result))
     } else {
@@ -220,6 +300,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽 刪除卡片細項是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT_RESULT, data => {
     console.log('監聽 刪除卡片細項是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.DELETE_CARD_TODO_CONTENT_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateTodoLists(data.result))
     } else {

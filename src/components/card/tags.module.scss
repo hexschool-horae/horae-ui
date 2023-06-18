@@ -23,3 +23,7 @@
     @apply border-[#f7a6a6] text-secondary-3;
   }
 }
+
+.list_card_tag {
+  @apply text-sm min-w-[54px] h-[33px] border-[1px] border-[#f7a6a6];
+}

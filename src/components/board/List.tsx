@@ -67,7 +67,7 @@ const List = ({ data }: { data: IBoardListItem; onCreateCard?: (listId: string, 
                     className={classNames({ 'disabled-link': isDisabledLink })}
                     href={`/board/${router.query.boardId}/?cardId=${item._id}`}
                   >
-                    <Card key={index} title={item.title} tags={item.tags} />
+                    <Card key={index} title={item.title} tags={item.tags} priority={item.proiority} />
                   </Link>
                 </Draggable>
               </Droppable>

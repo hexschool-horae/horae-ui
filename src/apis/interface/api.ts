@@ -309,6 +309,7 @@ export interface IAttachment {
 
 export interface ICardDetail {
   _id: string
+  listId: string
   title: string
   describe: string
   startDate: null | Timestamp

@@ -1,13 +1,14 @@
 import router from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { InputText } from 'primereact/inputtext'
-import { ProgressSpinner } from 'primereact/progressspinner'
 import { Button } from 'primereact/button'
 import style from './cardDetail.module.scss'
 
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 import { IComment } from '@/apis/interface/api'
 import IconDelete from '@/assets/icons/icon_delete.svg'
 
@@ -19,13 +20,11 @@ export default function CardDetailComments() {
   const socketComments = useAppSelector(state => state.board.cardDetail?.comments)
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const [comments, setComments] = useState<IComment[]>([])
   const [comment, setComment] = useState('')
   const editInputRef = useRef<HTMLInputElement>(null)
   const [isEditId, setIsEditId] = useState<null | string>(null)
   const [editComment, setEditComment] = useState('')
-  const [editIsLoading, setEditIsLoading] = useState(false)
 
   const createComment = () => {
     if (comment == '') return
@@ -37,7 +36,7 @@ export default function CardDetailComments() {
         comment,
       })
     )
-    setIsLoading(true)
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.ADD_NEW_CARD_COMMENT_RESULT))
   }
 
   const updateComment = (commentId: string) => {
@@ -50,8 +49,8 @@ export default function CardDetailComments() {
         boardId,
       })
     )
-    setEditIsLoading(true)
     setIsEditId(null)
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.MODIFT_CARD_COMMENT_RESULT))
   }
 
   const deleteComment = (commentId: string) => {
@@ -62,7 +61,7 @@ export default function CardDetailComments() {
         boardId,
       })
     )
-    setEditIsLoading(true)
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.DELETE_CARD_COMMENT_RESULT))
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, type = 'create', commentId?: string) => {
@@ -103,8 +102,6 @@ export default function CardDetailComments() {
 
   const clearStatus = () => {
     setComment('')
-    setIsLoading(false)
-    setEditIsLoading(false)
   }
 
   // useEffect(() => {
@@ -133,25 +130,12 @@ export default function CardDetailComments() {
             ref={inputRef}
             value={comment}
             className="w-full h-[58px] pl-[60px]"
-            disabled={isLoading}
             onChange={e => setComment(e.target.value)}
             onKeyPress={handleKeyPress}
           />
-          {isLoading && (
-            <ProgressSpinner
-              style={{ width: '40px', height: '40px' }}
-              strokeWidth="4"
-              className="absolute left-[66px] top-1/2 translate-y-[-50%]"
-            />
-          )}
         </div>
       </div>
       <ul className="relative">
-        {editIsLoading && (
-          <li className={style.loading_overlay}>
-            <ProgressSpinner strokeWidth="4" style={{ width: '60px', height: '60px' }} />
-          </li>
-        )}
         {comments.length > 0 &&
           comments.map((item, i) => (
             <li
