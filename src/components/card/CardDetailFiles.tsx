@@ -8,6 +8,9 @@ import { IAttachment } from '@/apis/interface/api'
 import { ConfirmDialog } from 'primereact/confirmdialog'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
+
 interface ICardDetailFileProps {
   cardId: string
 }
@@ -64,6 +67,7 @@ export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
         fileId: fileId,
       })
     )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_ATTACHMENT_RESULT))
     // try {
     //   const req: IDeleteCardFileRequest = {
     //     fileId: fileId,

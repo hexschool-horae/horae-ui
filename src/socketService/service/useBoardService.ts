@@ -387,6 +387,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽卡片刪除附件是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_ATTACHMENT_RESULT, data => {
     console.log('監聽卡片刪除附件是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_ATTACHMENT_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateCardAttachment(data.result))
     } else {
