@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 
 interface ICardPopupPriorityProps {
   label: string
@@ -54,35 +56,10 @@ export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProp
         boardId,
         cardId,
         file: fileList[0],
+        fileName: fileList[0].name,
       })
     )
-    // try {
-    //   const dto: Dto = {
-    //     type: UploadFileType.FILE,
-    //   }
-    //   const req: IUploadFileRequest = {
-    //     fileData: fileList[0],
-    //     dto,
-    //   }
-    //   console.log('req', req)
-    //   const response = await UPLOAD_CARD_FILE(cardId, req)
-    //   if (!response) return
-    //   handleGetCardDetail()
-    // } catch (e) {
-    //   let errorMessage = ''
-    //   if (e instanceof AxiosError) {
-    //     errorMessage = e.response?.data.message
-    //   } else {
-    //     errorMessage = '發生錯誤'
-    //   }
-
-    //   appDispatch(
-    //     errorSliceActions.pushNewErrorMessage({
-    //       code: -1,
-    //       message: errorMessage,
-    //     })
-    //   )
-    // }
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_UPLOAD_ATTACHMENT_RESULT))
   }
 
   const onSubmit = (event: React.FormEvent) => {
