@@ -14,6 +14,7 @@ interface IAdminLayoutProps {
 const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
   const router = useRouter()
   const [boardId, setBoardId] = useState('')
+
   const errorMessages = useAppSelector(state => state.error.errors)
   const dispatch = useAppDispatch()
   const toastRef = useRef<Toast>(null)
@@ -44,7 +45,8 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
         <div className="flex flex-1 overflow-y-auto">
           <Sidebar boardId={boardId} />
           <div
-            className={`w-full h-full overflow-y-auto py-[50px] px-[64px] ${boardId ? 'bg-white' : 'bg-secondary-4'}`}
+            className={`w-full h-full overflow-x-auto overflow-y-auto
+            ${boardId ? 'bg-white' : 'bg-secondary-4'} ${boardId ? '' : 'py-[50px] px-[64px]'}`}
           >
             {children}
           </div>

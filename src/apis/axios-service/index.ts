@@ -83,8 +83,8 @@ export const GET_INVITATION_DATA = (workId: string) => {
 }
 
 /** B03-5 取得單一看板 */
-export const GET_BOARD_BY_ID = (boardId: string) => {
-  return axiosFetcher.get<interfaces.ISingleBoardResponse>(`${apiPath.GET_BOARD_BY_ID}/${boardId}`)
+export const GET_BOARD_BY_ID = (boardId: string, isAuth: boolean) => {
+  return axiosFetcher.get<interfaces.ISingleBoardResponse>(`${apiPath.GET_BOARD_BY_ID}/${boardId}`, isAuth)
 }
 
 /** B03-6 取得單一看板的所有成員 */
@@ -95,9 +95,12 @@ export const GET_BOARD_ALL_MEMBERS_BY_ID = (boardId: string) => {
 }
 
 /** B03-7 單一看板新增成員 */
-export const POST_BOARD_MEMBERS_BY_ID = (boardId: string, hashData: string) => {
+export const POST_BOARD_MEMBERS_BY_ID = (boardId: string, hashData: string, hasAuth: boolean) => {
+  console.log(boardId)
   return axiosFetcher.post<interfaces.IBasicResponse>(
-    `${apiPath.POST_BOARD_MEMBERS_BY_ID}/${boardId}/members/${hashData}`
+    `${apiPath.POST_BOARD_MEMBERS_BY_ID}/${boardId}/members/${hashData}`,
+    null,
+    hasAuth
   )
 }
 

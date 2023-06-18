@@ -24,6 +24,7 @@ const schema = yup
 /** 新增看板按鈕 */
 const AddListButton: FC<IAddListButtonProps> = () => {
   const [inputVisible, setInputVisible] = useState(false)
+  const token = useAppSelector(state => state.user.token)
   const boardId = useAppSelector(state => state.board?.boardId)
   const dispatch = useAppDispatch()
 
@@ -55,10 +56,10 @@ const AddListButton: FC<IAddListButtonProps> = () => {
         </ValidateController>
 
         <div className="flex">
-          <Button size="small" onClick={handleSubmit(onSubmit)}>
+          <Button disabled={!token} size="small" onClick={handleSubmit(onSubmit)}>
             新增列表
           </Button>
-          <Button className="!w-1/5" size="small" text onClick={onClose}>
+          <Button disabled={!token} className="!w-1/5" size="small" text onClick={onClose}>
             x
           </Button>
         </div>
@@ -66,8 +67,9 @@ const AddListButton: FC<IAddListButtonProps> = () => {
 
       {/* 新增列表按鈕 */}
       <Button
+        disabled={!token}
         name="add-list"
-        className="w-[286px] border-secondary-2 row-span-full text-secondary-3 flex h-16"
+        className="w-[286px] border-secondary-2 bg-white row-span-full text-secondary-3 flex h-16"
         outlined
         onClick={() => setInputVisible(true)}
       >

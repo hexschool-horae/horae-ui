@@ -24,7 +24,7 @@ import { GET_CARD_BY_ID } from '@/apis/axios-service'
 import CardPopupCalendar from './CardPopupCalendar'
 import CardDetailCalendar from './CardDetailCalendar'
 import CardPopupFiles from './CardPopupFiles'
-import CardDetailFiles from './CardDetailFiles'
+// import CardDetailFiles from './CardDetailFiles'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -87,16 +87,16 @@ const CardInternal = () => {
           <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
             {/* main col */}
             <div className="md:col-span-5">
-              <div className="text-[14px] mb-3">
+              {/* <div className="text-[14px] mb-3">
                 在列表<span className="pl-1 text-secondary-3 cursor-pointer">測試列表</span>
-              </div>
+              </div> */}
 
               <CardDetailTitle />
               <CardDetailMember label={popupLabels.member} cardId={cardId} />
               <CardDetailTags label={popupLabels.tags} />
               <CardDetailCalendar label={popupLabels.calender} />
               <CardDetailDescribe />
-              <CardDetailFiles />
+              {/* <CardDetailFiles /> */}
               <CardDetailTodoList />
               <CardDetailComments />
             </div>
@@ -112,7 +112,7 @@ const CardInternal = () => {
                 <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
                 <CardSidebarButton name="標籤" label={popupLabels.tags} />
                 <CardSidebarButton name="日期" label={popupLabels.calender} />
-                <CardSidebarButton name="附件" label={popupLabels.files} />
+                {/* <CardSidebarButton name="附件" label={popupLabels.files} /> */}
                 <CardSidebarButton name="優先權" label={popupLabels.priority} />
               </div>
 

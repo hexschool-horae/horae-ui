@@ -7,12 +7,16 @@ import { dialogSliceActions } from '@/slices/dialogSlice'
 import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 
 export default function BoardTitle() {
-  const boardTitle = useAppSelector(state => state.board?.singleBaord?.title) || ''
+  const token = useAppSelector(state => state.user.token)
   const boardId = useAppSelector(state => state.board?.boardId)
+  const boardTitle = useAppSelector(state => state.board?.singleBaord?.title) || ''
+  const boardThemeColor = useAppSelector(state => state.user?.themeColor)
   const dispatch = useAppDispatch()
+
   const [isEdit, setIsEdit] = useState(false)
   const [localBoardTitle, setLocalBoardTitle] = useState<string>('')
   const inputRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     setLocalBoardTitle(boardTitle)
   }, [])
@@ -46,10 +50,12 @@ export default function BoardTitle() {
         }}
         onBlur={() => setIsEdit(false)}
       >
-        {isEdit ? (
+        {isEdit && token ? (
           <InputText ref={inputRef} value={localBoardTitle} onChange={e => setLocalBoardTitle(e.target.value)} />
         ) : (
-          <h4 className="text-2xl">{boardTitle}</h4>
+          <h4 className="text-2xl" style={{ color: boardThemeColor?.textColor }}>
+            {boardTitle}
+          </h4>
         )}
       </div>
     </>

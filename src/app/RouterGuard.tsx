@@ -4,6 +4,12 @@ import { useAppSelector } from '@/hooks/useAppStore'
 
 // 不需要權限驗證的路由
 const nonAuthPaths = ['/login', '/sign-up', '/']
+const boardRouters = [
+  '/board/[boardId]',
+  '/board/[boardId]/members/[id]',
+  '/board/boardClosed',
+  '/board/boardWithoutPermission',
+]
 
 const RouterGuard = ({ children }: { children?: ReactNode }) => {
   const router = useRouter()
@@ -12,9 +18,8 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
 
   // 路由權限驗證
   useEffect(() => {
-    console.log(pathname)
     // 看板不受登入的影響
-    if (pathname === '/board/[boardId]' || pathname === '/board/[boardId]/members/[id]') return
+    if (boardRouters.includes(pathname)) return
 
     if (isLogin) {
       if (nonAuthPaths.indexOf(pathname) !== -1) {

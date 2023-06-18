@@ -9,6 +9,7 @@ import store from '@/app/store'
 import { boardSliceActions } from '@/slices/boardSlice'
 import { errorSliceActions } from '@/slices/errorSlice'
 import { dialogSliceActions } from '@/slices/dialogSlice'
+import { updateUserTheme } from '@/slices/userSlice'
 
 let boardSocket: Socket
 
@@ -149,11 +150,8 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     }
   })
 
-  // 監聽看板更新封面成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, () => undefined)
-
-  // 監聽看板刪除封面成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER, () => undefined)
+  // // 監聽看板更新封面成功
+  // boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, () => undefined)
 
   // 監聽卡片新增評論是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.ADD_NEW_CARD_COMMENT_RESULT, data => {
@@ -205,9 +203,6 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
       )
     }
   })
-
-  // 監聽列表修改標題是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_LIST_TITLE_RESULT, () => undefined)
 
   // 監聽封存列表是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ARCHIVE_LIST_RESULT, () => undefined)
@@ -330,6 +325,22 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     }
   })
 
+  // 監聽 移動看板卡片是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MOVE_CARD_POSITION_RESULT, data => {
+    console.log('監聽 移動看板卡片是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardList(data.result.lists))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
   // 監聽 修改看板成員權限是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION_RESULT, data => {
     console.log('監聽 修改看板成員權限是否成功:', data)
@@ -400,12 +411,50 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     }
   })
 
-  // 監聽修改看板標題是否成功
+  // 監聽 修改看板標題是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TITLE_RESULT, data => {
     console.log('監看修改看板標題是否成功:', data)
     store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TITLE_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateBoardTitle(data.title))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
+  // 監聽 修改看板封面是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER_RESULT, data => {
+    console.log('監看修改看板封面是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER_RESULT))
+
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardCover(data.result.coverPath))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
+  // 監聽看板刪除封面成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER_RESULT, data => {
+    console.log('監看刪除看板封面是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER_RESULT))
+
+    if (data.code !== -1) {
+      //  清空封面、清空主題背景
+      store.dispatch(boardSliceActions.updateBoardCover(''))
+      store.dispatch(updateUserTheme({ themeColor: '', textColor: '' }))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -487,8 +536,6 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     deleteBoardMember,
     addBoardMember,
     addCardMember,
-    addCardAttachment,
-    deleteCardAttachment,
     deleteCardMember,
     addCardAttachment,
     deleteCardAttachment,
@@ -627,6 +674,11 @@ const moveBoardList = (payload: interfaces.IModifyBoardListPosition) => {
   boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION, payload)
 }
 
+// 移動卡片位置
+const moveCard = (payload: interfaces.IModifyBoardCardPosition) => {
+  boardSocket.emit(SOCKET_EVENTS_ENUM.BOARD_MOVE_CARD_POSITION, payload)
+}
+
 // 修改看板成員權限
 const modifyBoardMemberPermission = (payload: interfaces.IModifyBoardMemberPermission) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_MEMBER_PERMISSION, payload)
@@ -672,7 +724,6 @@ const deleteBoardCover = (payload: interfaces.IBoardDeleteCover) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER, payload)
 }
 
-const moveCard = () => undefined
 const deleteCard = () => undefined
 const deleteList = () => undefined
 export default useBoardService

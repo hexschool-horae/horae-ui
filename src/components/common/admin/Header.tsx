@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import IconLogo from '@/assets/icons/icon_logo.svg'
+// import LogoSVG from '@/components/layout/LogoSVG'
 import Link from 'next/link'
 import { POST_USER_LOGOUT } from '@/apis/axios-service'
 import { useRouter } from 'next/router'
@@ -12,18 +13,50 @@ interface IHeaderProps {
   boardId?: string
 }
 
+const boardRouters = [
+  '/board/[boardId]',
+  '/board/[boardId]/members/[id]',
+  '/board/boardClosed',
+  '/board/boardWithoutPermission',
+]
+
 const Header: FC<IHeaderProps> = ({ boardId }) => {
   const router = useRouter()
+  const { pathname } = router
   const dispatch = useDispatch<AppDispatch>()
   const profile = useAppSelector(state => state.user.profile)
+  const boardThemeColor = useAppSelector(state => state.user.themeColor)
   const [avatorDisplayName, setAvatorDisplayName] = useState('')
-  const headerStyle = (() => {
-    if (boardId) {
-      return 'bg-gray-3'
+  const [headerClass, setHeaderClass] = useState('')
+  const [headerColor, setHeaderColor] = useState('')
+
+  // const headerStyle = (() => {
+  //   if (boardThemeColor?.themeColor) {
+  //     return ''
+  //   }
+
+  //   if (boardId) {
+  //     return 'bg-gray-3'
+  //   } else {
+  //     return 'bg-white'
+  //   }
+  // })()
+
+  useEffect(() => {
+    // console.log(pathname, boardThemeColor, boardRouters.includes(pathname))
+    if (boardRouters.includes(pathname)) {
+      if (boardThemeColor?.themeColor) {
+        setHeaderClass('')
+        setHeaderColor(boardThemeColor?.themeColor)
+      } else {
+        setHeaderClass('bg-gray-3')
+        setHeaderColor('')
+      }
     } else {
-      return 'bg-white'
+      setHeaderClass('bg-white')
+      setHeaderColor('')
     }
-  })()
+  }, [boardThemeColor, pathname, boardId])
 
   useEffect(() => {
     if (profile?.email) {
@@ -49,12 +82,23 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
   }
 
   return (
-    <div className={`flex items-center py-4 px-[50px] text-black border-b border-white ${headerStyle}`}>
+    <div
+      className={`flex items-center py-4 px-[50px] text-black border-b border-white ${headerClass}`}
+      style={{ backgroundColor: headerColor, opacity: headerColor ? 0.95 : 1 }}
+    >
       <Link href="/board">
-        <IconLogo className="cursor-pointer" />
+        {/* <LogoSVG fillColor={boardThemeColor?.textColor ? boardThemeColor?.textColor : '#1A1A1A'}></LogoSVG> */}
+        <IconLogo
+          className="cursor-pointer"
+          style={{ color: boardThemeColor.textColor ? boardThemeColor.textColor : '#1A1A1A' }}
+        />
       </Link>
       <div className="ml-auto flex items-center">
-        <span className="text-black mr-4 cursor-pointer" onClick={onLogout}>
+        <span
+          className="text-black mr-4 cursor-pointer"
+          style={{ color: boardThemeColor?.textColor }}
+          onClick={onLogout}
+        >
           登出
         </span>
         <div className="w-[48px] h-[48px] rounded-full bg-primary ml-auto flex justify-center items-center select-none cursor-pointer">

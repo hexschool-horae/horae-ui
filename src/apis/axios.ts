@@ -35,8 +35,6 @@ instance.interceptors.response.use(
       const { message } = data
 
       if (store !== null) httpErrorHandler(status, message, store)
-
-      // return Promise.resolve(response)
     }
 
     return Promise.reject(error)
@@ -47,7 +45,7 @@ instance.interceptors.response.use(
 async function post<T>(url: string, data?: unknown | null, isAuth = true) {
   try {
     if (store === null) throw new Error('data from redux-toolkit store is null!')
-
+    console.log(store)
     // 取得store中的state
     const rootState: RootState = store.getState()
 
@@ -77,6 +75,9 @@ async function post<T>(url: string, data?: unknown | null, isAuth = true) {
     return responseData
   } catch (error) {
     console.warn(error)
+    // 把 axiosError 的資訊傳出去
+    const axiosError = error as AxiosError
+    return Promise.reject(axiosError?.response)
   } finally {
     if (store) {
       store.dispatch(dialogSliceActions.popSpinnerQueue(url))
@@ -109,6 +110,9 @@ async function patch<T>(url: string, data?: unknown, isAuth = true) {
     return responseData
   } catch (error) {
     console.warn(error)
+    // 把 axiosError 的資訊傳出去
+    const axiosError = error as AxiosError
+    return Promise.reject(axiosError?.response)
   } finally {
     if (store) {
       store.dispatch(dialogSliceActions.popSpinnerQueue(url))

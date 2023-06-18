@@ -237,6 +237,13 @@ export interface IModifyBoardListPosition {
   finalPosition: number
 }
 
+export interface IModifyBoardCardPosition {
+  boardId: string
+  cardId: string
+  finalListId: string
+  finalPosition: number
+}
+
 // 卡片成員新增
 export interface IAddCardMember {
   cardId: string
@@ -300,7 +307,7 @@ export type IBoardService = {
   modifyTodoContent: (payload: IModifyTodoContent) => void
   deleteTodoContent: (payload: IDeleteTodoContent) => void
   moveBoardList: (payload: IModifyBoardListPosition) => void
-  moveCard: () => undefined
+  moveCard: (payload: IModifyBoardCardPosition) => void
   deleteCard: () => undefined
   deleteList: () => undefined
   modifyBoardMemberPermission: (payload: IModifyBoardMemberPermission) => void

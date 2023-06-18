@@ -3,96 +3,25 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ISingleBoardInterface, IListCard, IListCardTags } from '@/socketService/types/board'
 import { ICardDetail, IBoardMember, ITag } from '@/apis/interface/api'
 
-// ---重構中，之後補回來---
-
 type TViewSet = '' | 'private' | 'workspace' | 'public'
-// type TYourRole = '' | 'visitor' | 'admin'
-// interface IMember {
-//   userId: {
-//     _id: string
-//     name: string
-//   }
-//   role: string
-//   _id: string
-// }
+interface IthemeColor {
+  themeColor: string
+  textColor: string
+}
 
-// interface IUserInitialState {
-//   boardId: string
-//   title: string
-//   discribe: string
-//   lists: IBoardListItem[]
-//   isErrorMessageVisible: boolean
-//   errorMessageText: string
-//   members: IMember[]
-//   viewSet: TViewSet
-//   yourRole: TYourRole
-//   isClosed: boolean
-// }
+const hexToRgb = (hex: string) => {
+  if (hex === '') return
+  // 移除可能的前缀，並保留六位十六進制数
+  hex = hex.replace(/^#/, '')
 
-// const initialState: IUserInitialState = {
-//   boardId: '',
-//   title: '',
-//   discribe: '',
-//   lists: [],
-//   isErrorMessageVisible: false,
-//   errorMessageText: '',
-//   members: [],
-//   viewSet: '',
-//   yourRole: '',
-//   isClosed: false,
-// }
+  // 將 Hex 拆分為 R、G和B
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
 
-// export const boardSlice = createSlice({
-//   name: 'boardSocket',
-//   initialState,
-//   reducers: {
-//     setBoardId: (state, action: PayloadAction<string>) => {
-//       state.boardId = action.payload
-//     },
-//     setTitle: (state, action: PayloadAction<string>) => {
-//       state.title = action.payload
-//     },
-//     setLists: (state, action: PayloadAction<IBoardListItem[]>) => {
-//       state.lists = action.payload
-//     },
-//     setIsErrorMessageVisible: (state, action: PayloadAction<boolean>) => {
-//       state.isErrorMessageVisible = action.payload
-//     },
-//     setErrorMessageText: (state, action: PayloadAction<string>) => {
-//       state.errorMessageText = action.payload
-//     },
-//     setViewSet: (state, action: PayloadAction<TViewSet>) => {
-//       state.viewSet = action.payload
-//     },
-//     setIsClosed: (state, action: PayloadAction<boolean>) => {
-//       state.isClosed = action.payload
-//     },
-//     setYourRole: (state, action: PayloadAction<TYourRole>) => {
-//       state.yourRole = action.payload
-//     },
-//     setMembers: (state, action: PayloadAction<IMember[]>) => {
-//       state.members = action.payload
-//     },
-//     setDiscribe: (state, action: PayloadAction<string>) => {
-//       state.discribe = action.payload
-//     },
-//   },
-// })
-
-// export const {
-//   setBoardId,
-//   setTitle,
-//   setLists,
-//   setIsErrorMessageVisible,
-//   setErrorMessageText,
-//   setViewSet,
-//   setIsClosed,
-//   setYourRole,
-//   setMembers,
-//   setDiscribe,
-// } = boardSlice.actions //給React組件個別使用
-
-// ---重構中，之後補回來---
+  // 返回包含RGB分量的物件或字符串
+  return { r: r, g: g, b: b }
+}
 
 interface IInitialState {
   singleBaord: ISingleBoardInterface | null
@@ -102,6 +31,7 @@ interface IInitialState {
   listCard: IListCard
   listCardTags: IListCardTags
   boardTags: ITag[]
+  themeColor: IthemeColor
 }
 
 const initialState: IInitialState = {
@@ -121,6 +51,7 @@ const initialState: IInitialState = {
     tags: [],
   },
   boardTags: [],
+  themeColor: { themeColor: '', textColor: '' },
 }
 
 export const boardSlice = createSlice({
@@ -136,6 +67,25 @@ export const boardSlice = createSlice({
     updateBoardTitle(state, action: PayloadAction<string>) {
       if (state.singleBaord) {
         state.singleBaord.title = action.payload
+      }
+    },
+    updateBoardCover(state, action: PayloadAction<string>) {
+      if (state.singleBaord) {
+        state.singleBaord.coverPath = action.payload
+      }
+    },
+    updateBoardTheme(state, action: PayloadAction<IthemeColor>) {
+      if (action.payload.themeColor !== '') {
+        const hexColor = hexToRgb(action.payload.themeColor)
+
+        if (hexColor && hexColor.b) {
+          state.themeColor = {
+            themeColor: action.payload.themeColor,
+            textColor: hexColor.b < 125 ? '#ffffff' : '#000000',
+          }
+        }
+      } else {
+        state.themeColor = { themeColor: '', textColor: '' }
       }
     },
     updateBoardList(

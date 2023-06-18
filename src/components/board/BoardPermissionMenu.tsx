@@ -17,14 +17,17 @@ const permissionData = {
 const permissionDataItems = [
   {
     label: '公開',
+    value: 'public',
     des: '擁有看板連結的人都能看到看板，但不能編輯',
   },
-  {
-    label: '工作區',
-    des: '只有工作區成員可以看到該看板，也可編輯',
-  },
+  // {
+  //   label: '工作區',
+  //   value: 'wo',
+  //   des: '只有工作區成員可以看到該看板，也可編輯',
+  // },
   {
     label: '私密',
+    value: 'private',
     des: '只有該看板的成員可以看到該看板，也可編輯',
   },
 ]
@@ -36,7 +39,7 @@ const permissionItems = (onClick: (event: MouseEvent, viewSet: 'public' | 'priva
       <div
         className={Style.permission_item}
         key={i}
-        onClick={(event: MouseEvent) => onClick(event, item.label as 'public' | 'private' | 'workspace')}
+        onClick={(event: MouseEvent) => onClick(event, item.value as 'public' | 'private' | 'workspace')}
       >
         <div className={Style.permission_item_label}>{item.label}</div>
         <div className={Style.permission_item_des}>{item.des}</div>
@@ -47,10 +50,12 @@ const permissionItems = (onClick: (event: MouseEvent, viewSet: 'public' | 'priva
 export default function BoardPermissionMenu() {
   const boardViewSet = useAppSelector(state => state.board?.singleBaord?.viewSet) || ''
   const boardId = useAppSelector(state => state.board?.boardId)
+  const token = useAppSelector(state => state.user?.token)
   const dispatch = useAppDispatch()
 
   const onClick = (event: MouseEvent, viewSet: 'public' | 'private' | 'workspace') => {
     console.log(boardId, viewSet)
+    // return
     dispatch(socketServiceActions.modifyBoardViewPermission({ boardId, viewSet }))
     menu?.current?.hide(event)
   }
@@ -71,6 +76,7 @@ export default function BoardPermissionMenu() {
     <>
       <Menu style={{ minWidth: '240px', padding: '0' }} model={items} popup ref={menu} />
       <Button
+        disabled={!token}
         className="mr-4"
         label={boardViewSet && permissionData[boardViewSet]}
         severity="secondary"

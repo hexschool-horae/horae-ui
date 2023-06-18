@@ -11,6 +11,7 @@ import { PATCH_BOARD_MEMBERS_BY_ID, DELETE_BOARD_MEMBERS_BY_ID } from '@/apis/ax
 interface IPermissonOption {
   name: string
   code: string | number
+  disabled: boolean
 }
 
 const permissionOptions = new Map([
@@ -19,20 +20,29 @@ const permissionOptions = new Map([
   ['exit', '離開看板'],
 ])
 
-const MemberInfoGroup = ({ className, model }: { model: IBoardMember; className?: string }) => {
+const MemberInfoGroup = ({
+  className,
+  model,
+  disabled = false,
+}: {
+  model: IBoardMember
+  className?: string
+  disabled?: boolean
+}) => {
   const boardId = useAppSelector(state => state.board.boardId)
   const [permission, setPermission] = useState<IPermissonOption>({
     name: permissionOptions.get(model.role) || '',
     code: model.role,
+    disabled: false,
   })
 
   const handleChangePermission = async (value: IPermissonOption) => {
     setPermission(value)
     if (model.role === 'admin' && value.code === 'admin') return
 
-    if (value.code !== 'leave') {
+    if (value.code !== 'exit') {
       PATCH_BOARD_MEMBERS_BY_ID(boardId, {
-        role: value,
+        role: value.code,
         userId: model.userId?._id,
       })
     } else {
@@ -57,6 +67,7 @@ const MemberInfoGroup = ({ className, model }: { model: IBoardMember; className?
           className="w-full md:w-14rem"
           value={permission}
           placeholder={permission.name}
+          disabled={disabled}
           options={Array.from(permissionOptions).map(item => ({
             name: item[1],
             code: item[0],

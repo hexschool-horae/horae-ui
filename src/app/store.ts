@@ -13,12 +13,18 @@ import dialogReducer from '@/slices/dialogSlice'
 const userPersistConfig = {
   key: 'user',
   storage,
-  whitelist: ['token'],
+  whitelist: ['token', 'themeColor'],
+}
+
+const boardPersistConfig = {
+  key: 'board',
+  storage,
+  whitelist: ['themeColor'],
 }
 
 const reducers = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
-  board: boardReducer,
+  board: persistReducer(boardPersistConfig, boardReducer),
   error: errorReducer,
   workspace: workspaceReducer,
   socketService: socketServiceReducer,

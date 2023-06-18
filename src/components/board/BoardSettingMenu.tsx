@@ -3,26 +3,30 @@ import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 import { Button } from 'primereact/button'
-import { Dropdown } from 'primereact/dropdown'
+// import { Dropdown } from 'primereact/dropdown'
 import { Menu } from 'primereact/menu'
 import { MenuItem } from 'primereact/menuitem'
 import { InputText } from 'primereact/inputtext'
-import { InputTextarea } from 'primereact/inputtextarea'
+import { InputSwitch } from 'primereact/inputswitch'
+// import { InputTextarea } from 'primereact/inputtextarea'
 import { TieredMenu } from 'primereact/tieredmenu'
+import { Message } from 'primereact/message'
 
 import Style from './BoardSettingMenu.module.scss'
 import CardPopupTags from '../card/CardPopupTags'
 import CoverSelector from './CoverSelector'
 import { POST_BOARD_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
-import { classNames } from 'primereact/utils'
 
 const BoardAboutTemplate = () => {
   const members = useAppSelector(state => state.board?.singleBaord?.members)
+  // const token = useAppSelector(state => state.user?.token)
   const admins = members?.filter(item => item.role === 'admin')
   const admin = admins?.[0]
 
   return (
     <div className="p-4" style={{ fontSize: '14px' }}>
+      <div className="text-xl text-center mb-3">關於這個看板</div>
+      <hr className="my-5" />
       <div className="mb-3">看板管理員</div>
       {/* <img src={item.img} alt="" style={{ width: "16px", height: "16px", marginRight: "0.75rem" }} /> */}
       <div className="flex">
@@ -37,31 +41,46 @@ const BoardAboutTemplate = () => {
         </div>
       </div>
 
-      <hr className="my-5" />
-      <div className="mb-1">描述</div>
+      {/* <hr className="my-5" />
+      <div className="mb-1">描述</div> */}
 
-      <InputTextarea rows={30} className="w-full h-[100px]" placeholder="新增描述說明..." />
+      {/* <InputTextarea rows={30} className="w-full h-[100px]" placeholder="新增描述說明..." /> */}
     </div>
   )
 }
 
 const BoardSettingTemplate = () => {
+  const dispatch = useAppDispatch()
+  const boardId = useAppSelector(state => state.board?.boardId)
+  const boardCover = useAppSelector(state => state.board?.singleBaord?.coverPath)
+  const [checked, setIsChecked] = useState(false)
+
+  const handleDeleteCover = () => {
+    dispatch(socketServiceActions.deleteBoardCover({ boardId }))
+    setIsChecked(!checked)
+  }
+
+  useEffect(() => {
+    if (boardCover !== '') {
+      setIsChecked(true)
+    } else {
+      setIsChecked(false)
+    }
+  }, [boardCover])
+
   return (
     <div className="px-6 py-5" style={{ fontSize: '14px', letterSpacing: '1px' }}>
-      <div className="mb-3">變更工作區</div>
-      <Dropdown className="w-full" placeholder="工作區名稱" />
-
+      {/* <div className="mb-3">變更工作區</div>
+      <Dropdown className="w-full" placeholder="工作區名稱" /> */}
+      <div className="text-xl text-center mb-3">設定</div>
       <hr className="my-5" />
-      <div>卡片封面已啟用</div>
+      <div className="flex">
+        卡片封面已啟用
+        <span className="ml-auto">
+          <InputSwitch disabled={!checked} checked={checked} onChange={handleDeleteCover} />
+        </span>
+      </div>
       <div className="text-gray-2 text-xs font-light mb-1">在卡片正面顯示圖片附件和顏色。</div>
-
-      {/* <hr className="my-5" />
-      <div className="mb-1">留言權限...</div>
-      <div className="text-gray-2 text-xs font-light mb-1">留言權限...</div>
-
-      <hr className="my-5" />
-      <div className="mb-1">新增/移除權限...</div>
-      <div className="text-gray-2 text-xs font-light mb-1">成員</div> */}
 
       <hr className="my-5" />
       <div className="mb-1">允許工作區成員編輯和加入</div>
@@ -72,6 +91,8 @@ const BoardSettingTemplate = () => {
 
 const LabelListTemplate = () => (
   <div className="px-6 py-5" style={{ fontSize: '14px', letterSpacing: '1px' }}>
+    <div className="text-xl text-center mb-3">標籤</div>
+    <hr className="my-5" />
     <CardPopupTags page="board" />
   </div>
 )
@@ -141,6 +162,7 @@ const CloseBoardItem = () => {
 // }))
 
 export default function BoardSettingMenu() {
+  const token = useAppSelector(state => state.user.token) || ''
   const boardId = useAppSelector(state => state.board.boardId)
   const [invitationLink, setInvitationLink] = useState('')
   const [isCopied, setIsCopied] = useState(false)
@@ -169,30 +191,28 @@ export default function BoardSettingMenu() {
       label: 'share',
       template: () => (
         <div className={Style.setting_item_shared}>
-          <InputText
-            ref={linkInputRef}
-            placeholder="分享連結"
-            value={invitationLink}
-            style={{ width: '100%', marginBottom: '0.25rem' }}
-            onClick={handleCopyIvitationLink}
-            onBlur={() => setIsCopied(false)}
-          />
-
-          {isCopied && (
-            <p style={{ color: '#487BFF' }} className={classNames('mb-2', Style.setting_item_label)}>
-              已複製連結
-            </p>
+          {token && (
+            <InputText
+              ref={linkInputRef}
+              placeholder="分享連結"
+              value={invitationLink}
+              style={{ width: '100%', marginBottom: '0.25rem' }}
+              onClick={handleCopyIvitationLink}
+              onBlur={() => setIsCopied(false)}
+            />
           )}
+
+          {isCopied && <Message className="my-4" severity="success" text={'連結已複製到剪貼簿'} />}
 
           <p style={{ color: '#606060' }} className={Style.setting_item_label}>
             所有人都能查看這個看板，但只有看板成員可以編輯
           </p>
 
-          <Button style={{ padding: 0, fontWeight: '200' }} text>
+          {/* <Button style={{ padding: 0, fontWeight: '200' }} text>
             <span className="font-light" style={{ fontSize: '14px' }}>
               顯示QR Code
             </span>
-          </Button>
+          </Button> */}
         </div>
       ),
     },
@@ -238,14 +258,13 @@ export default function BoardSettingMenu() {
         await navigator.clipboard.writeText(linkInputRef.current.value)
         setIsCopied(true)
       } catch (error) {
-        console.log(error)
         setIsCopied(false)
       }
     }
   }
 
   useEffect(() => {
-    if (boardId) {
+    if (boardId && token) {
       handleGetInvitationLink()
     }
   }, [boardId])
