@@ -15,9 +15,9 @@ interface ICardDetailFileProps {
 export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
   const { state, dispatch } = useCardDetail()
   const appDispatch = useAppDispatch()
-  // const socketFileList = useAppSelector(state => state.board.cardDetail?.attachments)
+  const socketFileList = useAppSelector(state => state.board.cardDetail?.attachments)
   console.log('state.cardDetail', state.cardDetail.attachments)
-  const selectedFileList: IAttachment[] = state.cardDetail.attachments
+  const selectedFileList: IAttachment[] = socketFileList as IAttachment[]
   const [fileList] = useState<IAttachment[]>(selectedFileList ?? [])
   const [showFileConfirmation, setShowFileConfirmation] = useState(false)
   const [confirmConfig, setConfirmConfig] = useState({ message: '' })
