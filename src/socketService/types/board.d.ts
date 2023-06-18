@@ -78,6 +78,7 @@ export interface ISingleBoardInterface {
   title: string
   discribe: string
   coverPath: string
+  covercolor: string
   viewSet: '' | 'workspace' | 'public' | 'private'
   members: [
     {
