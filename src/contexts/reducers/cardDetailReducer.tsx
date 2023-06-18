@@ -29,6 +29,7 @@ export const initialState = {
   // from API
   cardDetail: {
     _id: '',
+    listId: '',
     title: '',
     describe: '',
     startDate: null,

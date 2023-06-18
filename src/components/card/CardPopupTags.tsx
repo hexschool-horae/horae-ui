@@ -9,7 +9,9 @@ import { Chip } from 'primereact/chip'
 
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 import { IInitialState } from '@/contexts/reducers/cardDetailReducer'
 import { ITag } from '@/apis/interface/api'
 import { GET_BOARD_TAGS_BY_ID } from '@/apis/axios-service'
@@ -83,30 +85,9 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
         color: tagColor,
       })
     )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT))
     goList()
   }
-
-  // const creatTag2 = async () => {
-  //   try {
-  //     const data = {
-  //       title: tagTitle,
-  //       color: tagColor,
-  //     }
-  //     // console.log(data)
-  //     const response = await POST_BOARD_TAGS_BY_ID(boardId, data)
-  //     if (response == undefined) return
-  //     const tag = {
-  //       _id: response.data,
-  //       title: tagTitle,
-  //       color: tagColor,
-  //     }
-  //     addTagToCard(tag)
-  //     setTagList([...tagList, tag])
-  //     goList()
-  //   } catch (error) {
-  //     console.error('Error create tag:', error)
-  //   }
-  // }
 
   const goCreateTag = () => {
     setTagColor(tagColorList[0])
@@ -137,46 +118,9 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
         },
       })
     }
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT))
     goList()
   }
-
-  // const EditTag = async () => {
-  //   try {
-  //     const data = {
-  //       tagId: editTagId,
-  //       title: tagTitle,
-  //       color: tagColor,
-  //     }
-
-  //     const response = await PUT_BOARD_TAGS_BY_ID(boardId, data)
-  //     if (response == undefined) return
-
-  //     if (page === 'card' && dispatch !== undefined) {
-  //       dispatch({
-  //         type: 'EDIT_TAG',
-  //         payload: {
-  //           tag: {
-  //             _id: editTagId,
-  //             title: tagTitle,
-  //             color: tagColor,
-  //           },
-  //         },
-  //       })
-  //     }
-
-  //     const tags = [...tagList]
-  //     const i = tags.findIndex(tag => tag._id === editTagId)
-  //     tags[i] = {
-  //       _id: editTagId,
-  //       title: tagTitle,
-  //       color: tagColor,
-  //     }
-  //     setTagList(tags)
-  //     goList()
-  //   } catch (error) {
-  //     console.error('Error editing tag:', error)
-  //   }
-  // }
 
   const goEditTag = (tag: ITag) => {
     setTagColor(tag.color)
@@ -196,24 +140,9 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
       })
     )
     deleteTagFromCard(editTagId)
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT))
     goList()
   }
-
-  // const deleteTag = async () => {
-  //   try {
-  //     const data = {
-  //       tagId: editTagId,
-  //     }
-  //     const response = await DELETE_BOARD_TAGS_BY_ID(boardId, data)
-  //     if (response == undefined) return
-
-  //     deleteTagFromCard(editTagId)
-  //     setTagList(tags => tags.filter(tag => tag._id !== editTagId))
-  //     goList()
-  //   } catch (error) {
-  //     console.log('Error delete tag:', error)
-  //   }
-  // }
 
   const toggleTag = (tag: ITag) => {
     if (page !== 'card' || dispatch == undefined) return
@@ -240,24 +169,6 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
     })
   }
 
-  // const addTagToCard = async (tag: ITag) => {
-  //   if (page !== 'card' || dispatch == undefined) return
-  //   try {
-  //     const data = {
-  //       tagId: tag._id,
-  //     }
-  //     const response = await POST_CARD_TAG_BY_ID(cardId, data)
-  //     if (response == undefined) return
-
-  //     dispatch({
-  //       type: 'ADD_TAG',
-  //       payload: { tag },
-  //     })
-  //   } catch (error) {
-  //     console.log('Error add tag to card:', error)
-  //   }
-  // }
-
   const deleteTagFromCard = (tagId: string) => {
     if (page !== 'card' || dispatch == undefined) return
     appDispatch(
@@ -274,27 +185,6 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
       },
     })
   }
-
-  // const deleteTagFromCard = async (tagId: string) => {
-  //   if (page !== 'card' || dispatch == undefined) return
-
-  //   try {
-  //     const data = {
-  //       tagId: tagId,
-  //     }
-  //     const response = await DELETE_CARD_TAG_BY_ID(cardId, data)
-  //     if (response == undefined) return
-
-  //     dispatch({
-  //       type: 'REMOVE_TAG',
-  //       payload: {
-  //         tagId: tagId,
-  //       },
-  //     })
-  //   } catch (error) {
-  //     console.log('Error delete tag from card:', error)
-  //   }
-  // }
 
   return (
     <>

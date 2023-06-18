@@ -39,25 +39,6 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
     })
   }
 
-  // const handleRemove = async (tagId: string) => {
-  //   try {
-  //     const data = {
-  //       tagId: tagId,
-  //     }
-  //     const response = await DELETE_CARD_TAG_BY_ID(cardId, data)
-  //     if (response == undefined) return
-
-  //     dispatch({
-  //       type: 'REMOVE_TAG',
-  //       payload: {
-  //         tagId: tagId,
-  //       },
-  //     })
-  //   } catch (error) {
-  //     console.log('Error delete tag:', error)
-  //   }
-  // }
-
   useEffect(() => {
     setTags(state.cardDetail.tags)
   }, [state.cardDetail.tags])

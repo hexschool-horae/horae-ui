@@ -67,6 +67,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽新增看板標籤是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT, data => {
     console.log('監聽新增看板標籤是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CREATE_NEW_TAG_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateBoardTags(data.result))
     } else {
@@ -83,6 +84,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽修改看板標籤是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT, data => {
     console.log('監聽修改看板標籤是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_TAG_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateBoardTags(data.result))
     } else {
@@ -99,6 +101,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   // 監聽刪除看板標籤是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT, data => {
     console.log('監聽刪除看板標籤是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_DELETE_TAG_RESULT))
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateBoardTags(data.result))
     } else {
