@@ -30,9 +30,9 @@ type IWorkspaceFormReq = {
   viewSet: string
 }
 
-type IInvitationWorkspaceFormReq = {
-  userEmail: string
-}
+// type IInvitationWorkspaceFormReq = {
+//   userEmail: string
+// }
 
 type IWorkspaceId = {
   data: string
@@ -41,9 +41,9 @@ type IWorkspaceId = {
 const schema = Yup.object().shape({
   title: Yup.string().required(),
 })
-const schemaInvitation = Yup.object().shape({
-  userEmail: Yup.string().required().email(),
-})
+// const schemaInvitation = Yup.object().shape({
+//   userEmail: Yup.string().required().email(),
+// })
 
 export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetWorkSpaceTitleData }: Props) {
   const { handleGetUserBoardsData } = useContext(AdminLayoutContext)
@@ -54,7 +54,7 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
     onHide()
     setVisible(false) // 調用父元件傳遞過來的更新函數，將 visible 設為 false
     reset()
-    resetInvitationSendMail()
+    // resetInvitationSendMail()
     setInvitationStep('1')
   }
 
@@ -64,9 +64,9 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
     viewSet: 'public', //工作區觀看權限,預設public (private, public)
   }
 
-  const WorkspaceInvitationSendMailValues: IInvitationWorkspaceFormReq = {
-    userEmail: '',
-  }
+  // const WorkspaceInvitationSendMailValues: IInvitationWorkspaceFormReq = {
+  //   userEmail: '',
+  // }
 
   const handleCreateWorkspace = async (reqData: IWorkspaceFormReq) => {
     console.log('reqData', reqData)
@@ -81,16 +81,15 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
     handleGetUserBoardsData()
     setInvitationStep('2')
     setWorkspaceId(result.data)
-    console.log('handleCreateWorkspace')
   }
 
-  const handleInvitationWorkspaceSendMail = async (reqData: IInvitationWorkspaceFormReq) => {
-    console.log('reqData', reqData)
-    const result = await post(`/work-space/${workspaceId}/invitation-sendMail`, reqData)
-    if (!result) return
+  // const handleInvitationWorkspaceSendMail = async (reqData: IInvitationWorkspaceFormReq) => {
+  //   console.log('reqData', reqData)
+  //   const result = await post(`/work-space/${workspaceId}/invitation-sendMail`, reqData)
+  //   if (!result) return
 
-    handleHide()
-  }
+  //   handleHide()
+  // }
 
   const {
     handleSubmit,
@@ -102,26 +101,26 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
     resolver: yupResolver(schema),
   })
 
-  const {
-    control: controlInvitationSendMail,
-    handleSubmit: handleSubmitInvitationSendMail,
-    formState: { errors: errorsInvitationSendMail },
-    reset: resetInvitationSendMail,
-  } = useForm<IInvitationWorkspaceFormReq>({
-    defaultValues: WorkspaceInvitationSendMailValues,
-    resolver: yupResolver(schemaInvitation),
-  })
+  // const {
+  //   control: controlInvitationSendMail,
+  //   handleSubmit: handleSubmitInvitationSendMail,
+  //   formState: { errors: errorsInvitationSendMail },
+  //   reset: resetInvitationSendMail,
+  // } = useForm<IInvitationWorkspaceFormReq>({
+  //   defaultValues: WorkspaceInvitationSendMailValues,
+  //   resolver: yupResolver(schemaInvitation),
+  // })
 
   const onSubmit = (data: IWorkspaceFormReq) => {
     handleCreateWorkspace(data)
     reset()
   }
 
-  const onSubmitInvitationSendMail = (data: IInvitationWorkspaceFormReq) => {
-    console.log(data)
-    handleInvitationWorkspaceSendMail(data)
-    resetInvitationSendMail()
-  }
+  // const onSubmitInvitationSendMail = (data: IInvitationWorkspaceFormReq) => {
+  //   console.log(data)
+  //   handleInvitationWorkspaceSendMail(data)
+  //   resetInvitationSendMail()
+  // }
 
   return (
     <>
@@ -190,8 +189,14 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
               <>
                 <p>Horae使團隊合作成為你最耀眼權限的表現。</p>
                 <p className="mb-12">邀請你的新團隊成員一同使用！</p>
+                {/* 以連結邀請 */}
+                <InvitationLink workspaceId={workspaceId} iconBgColor={'bg-secondary-4'}></InvitationLink>
+                <div className="btn-box text-right">
+                  <Button type="button" label="稍後再說" severity="secondary" rounded onClick={() => handleHide()} />
+                  {/* <Button type="submit" label="邀請加入工作區" severity="secondary" rounded /> */}
+                </div>
                 {/* 邀請成員 表單 */}
-                <form className="flex flex-col" onSubmit={handleSubmitInvitationSendMail(onSubmitInvitationSendMail)}>
+                {/* <form className="flex flex-col" onSubmit={handleSubmitInvitationSendMail(onSubmitInvitationSendMail)}>
                   <div className="flex flex-col pb-6">
                     <Controller
                       name="userEmail"
@@ -200,8 +205,7 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
                         <>
                           <div className="form-label flex justify-between">
                             <label htmlFor={field.name}>工作區成員</label>
-                            {/* 以連結邀請 */}
-                            <InvitationLink workspaceId={workspaceId}></InvitationLink>
+
                           </div>
 
                           <InputText
@@ -229,7 +233,7 @@ export default function WorkSpaceModel({ visible, onHide, setVisible, handleGetW
                     />
                     <Button type="submit" label="邀請加入工作區" severity="secondary" rounded />
                   </div>
-                </form>
+                </form> */}
               </>
             )}
           </div>

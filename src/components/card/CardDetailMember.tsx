@@ -60,7 +60,10 @@ export default function CardDetailMember({ label, cardId }: ICardDetailMemberPro
           ? selectedMembers.map(member => (
               <Fragment key={member._id}>
                 <li className="flex items-center">
-                  <div className="member-icon bg-secondary-3 text-white rounded-full w-[40px] h-[40px] p-2 text-center mr-3">
+                  <div
+                    className="member-icon text-white rounded-full w-[40px] h-[40px] p-2 text-center mr-3"
+                    style={{ backgroundColor: member.avatar }}
+                  >
                     {getShortName(member.name)}
                   </div>
                   <div className="mr-3">{member.name}</div>

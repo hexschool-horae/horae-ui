@@ -134,7 +134,10 @@ export default function CardPopupMember({ label, cardId }: ICardPopupMemberProps
             <li className="member-item">
               <div className={cardPopupsStyle.member_item_link} onClick={() => handleClickMember(member.userId)}>
                 <div className={cardPopupsStyle.member_item_left}>
-                  <span className="member-icon bg-secondary-3 text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3">
+                  <span
+                    className="member-icon text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3"
+                    style={{ backgroundColor: member.userId.avatar }}
+                  >
                     {getShortName(member.userId.name)}
                   </span>
                   <div className={cardPopupsStyle.member_profile}>

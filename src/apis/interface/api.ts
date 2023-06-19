@@ -211,6 +211,7 @@ export interface IUserId {
   _id: string
   name: string
   email: string
+  avatar: string
   isSelected: boolean
 }
 
