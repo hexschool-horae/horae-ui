@@ -38,7 +38,6 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
     if (router.isReady) {
       setBoardId(boardId)
     }
-    console.log('boardId = ', boardId, theme)
   }, [router.isReady, router.pathname])
   // const themeMapping: { [key: string]: string } = useMemo(() => {
   //   return {
