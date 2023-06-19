@@ -3,22 +3,16 @@ import CardPopupWrapper from './CardPopupWrapper'
 import cardPopupsStyle from './cardPopups.module.scss'
 import { Fragment, useRef, useState } from 'react'
 import IconDelete from '@/assets/icons/icon_delete_circle.svg'
-// import { Dto, IUploadFileRequest } from '@/apis/interface/api'
 import { UploadFileType } from '@/apis/enum/api'
-// import { UPLOAD_CARD_FILE } from '@/apis/axios-service'
-// import { AxiosError } from 'axios'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
-// import { errorSliceActions } from '@/slices/errorSlice'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
-// import { socketServiceActions } from '@/slices/socketServiceSlice'
-// import { socketServiceActions } from '@/slices/socketServiceSlice'
 import { dialogSliceActions } from '@/slices/dialogSlice'
 import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
+import { useCardDetail } from '@/contexts/cardDetailContext'
 
 interface ICardPopupPriorityProps {
   label: string
   cardId: string
-  // handleGetCardDetail: () => void
 }
 
 export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProps) {
@@ -26,6 +20,7 @@ export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProp
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [fileList, setFileList] = useState<File[]>([])
   const appDispatch = useAppDispatch()
+  const { dispatch } = useCardDetail()
 
   const handleFileChange = () => {
     const selectedFile = fileInputRef.current?.files
@@ -60,12 +55,15 @@ export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProp
       })
     )
     appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_UPLOAD_ATTACHMENT_RESULT))
+    dispatch({
+      type: 'TOTGGLE_POPUP',
+      payload: label,
+    })
   }
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     const selectedFiles = fileList
-    console.log(selectedFiles)
     handleUploadCardFile(selectedFiles)
   }
 
@@ -84,14 +82,6 @@ export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProp
                     <div className="file-name mb-2 flex items-center justify-between">
                       <span>{file?.name}</span>
                       <IconDelete onClick={() => handleRemoveFile(index)} />
-                      {/* <Button
-                    icon="pi pi-times"
-                    rounded
-                    outlined
-                    aria-label="remove"
-                    className="w-[20px] h-[20px]"
-                   
-                  /> */}
                     </div>
                   </Fragment>
                 ))

@@ -16,10 +16,9 @@ interface ICardDetailFileProps {
 }
 
 export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
-  const { state, dispatch } = useCardDetail()
+  const { dispatch } = useCardDetail()
   const appDispatch = useAppDispatch()
   const socketFileList = useAppSelector(state => state.board.cardDetail?.attachments)
-  console.log('state.cardDetail', state.cardDetail.attachments)
   const selectedFileList: IAttachment[] = socketFileList as IAttachment[]
   const [fileList] = useState<IAttachment[]>(selectedFileList ?? [])
   const [showFileConfirmation, setShowFileConfirmation] = useState(false)
@@ -68,35 +67,11 @@ export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
       })
     )
     appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_ATTACHMENT_RESULT))
-    // try {
-    //   const req: IDeleteCardFileRequest = {
-    //     fileId: fileId,
-    //   }
-    //   console.log('req', req)
-    //   const response = await DELETE_CARD_FILE(cardId, req)
-    //   if (!response) return
-    //   handleGetCardDetail()
-    // } catch (e) {
-    //   let errorMessage = ''
-    //   if (e instanceof AxiosError) {
-    //     errorMessage = e.response?.data.message
-    //   } else {
-    //     errorMessage = '發生錯誤'
-    //   }
-
-    //   dispatch(
-    //     errorSliceActions.pushNewErrorMessage({
-    //       code: -1,
-    //       message: errorMessage,
-    //     })
-    //   )
-    // }
   }
 
   const accept = () => {
     handleDeleteCardFile()
     setShowFileConfirmation(false) // 隱藏確認對話框
-    console.log('Accept')
   }
 
   const reject = () => {
@@ -113,6 +88,8 @@ export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
         icon="pi pi-exclamation-triangle"
         accept={accept}
         reject={reject}
+        acceptLabel="確定"
+        rejectLabel="取消"
       />
       <form onSubmit={onSubmit} className="mb-8 relative">
         <h5>附件</h5>
