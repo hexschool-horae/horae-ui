@@ -11,6 +11,7 @@ import { setIsLogin, setToken } from '@/slices/userSlice'
 
 interface IHeaderProps {
   boardId?: string
+  theme?: string
 }
 
 const boardRouters = [
@@ -58,6 +59,13 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
     }
   }, [boardThemeColor, pathname, boardId])
 
+  // const themeMapping: { [key: string]: string } = useMemo(() => {
+  //   return {
+  //     ['theme1']: 'bg-theme1-header',
+  //     ['theme2']: 'bg-theme2-header',
+  //     ['theme3']: 'bg-theme3-header',
+  //   }
+  // }, [])
   useEffect(() => {
     if (profile?.email) {
       const displayName = getAvatorDisplayName()

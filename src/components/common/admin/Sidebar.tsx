@@ -1,4 +1,4 @@
-import { useEffect, useState, FC } from 'react'
+import { useEffect, useState, FC, useMemo } from 'react'
 import classes from '@/components/common/admin/Sidebar.module.scss'
 import WorkSpaceModel from '@/components/workSpace/WorkSpaceModel'
 import { IUserBoardData } from '@/apis/interface/api'
@@ -14,6 +14,7 @@ interface ISidebarProps {
   className?: string
   boardId?: string
   alwaysHide?: boolean | null
+  theme?: string
 }
 
 interface IUserBoardMenuToggleStatus {
@@ -21,7 +22,14 @@ interface IUserBoardMenuToggleStatus {
   active: boolean
 }
 
-const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
+const Sidebar: FC<ISidebarProps> = ({ className, boardId, theme }) => {
+  const themeMapping: { [key: string]: string } = useMemo(() => {
+    return {
+      ['theme1']: 'bg-theme1-sidebar',
+      ['theme2']: 'bg-theme2-sidebar',
+      ['theme3']: 'bg-theme3-sidebar',
+    }
+  }, [])
   const sidebarStyle = (() => {
     if (boardId) {
       return 'bg-gray-3'
@@ -83,7 +91,11 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId }) => {
   }
 
   return (
-    <div className={`${classes.sidebar} ${className} ${sidebarStyle} ${toggleSidebar ? classes.close : ''}`}>
+    <div
+      className={`${classes.sidebar} ${className} ${sidebarStyle} ${toggleSidebar ? classes.close : ''} ${
+        theme && boardId ? `${themeMapping[theme]} text-white` : ''
+      } `}
+    >
       <div className="px-5 pt-4">
         <Link href="/board" className="cursor-pointer">
           <div className="flex items-center">
