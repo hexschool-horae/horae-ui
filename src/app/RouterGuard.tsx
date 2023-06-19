@@ -29,6 +29,19 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
       if (nonAuthPaths.indexOf(pathname) === -1) {
         router.push('/login')
       }
+
+      // 清空 localstorage
+      if (localStorage.getItem('persist:app')) {
+        localStorage.removeItem('persist:app')
+      }
+
+      if (localStorage.getItem('persist:user')) {
+        localStorage.removeItem('persist:user')
+      }
+
+      if (localStorage.getItem('persist:board')) {
+        localStorage.removeItem('persist:board')
+      }
     }
   }, [router, pathname, isLogin])
 

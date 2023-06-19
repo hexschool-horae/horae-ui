@@ -30,7 +30,6 @@ interface IUserInitialState {
 const initialState: IUserInitialState = {
   isLogin: false,
   token: null,
-
   profile: {
     email: '',
   },
