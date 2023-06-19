@@ -8,6 +8,7 @@ import { AppDispatch } from '@/app/store'
 import { useDispatch } from 'react-redux'
 import { useAppSelector } from '@/hooks/useAppStore'
 import { setIsLogin, setToken } from '@/slices/userSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 
 interface IHeaderProps {
   boardId?: string
@@ -83,6 +84,7 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
       await POST_USER_LOGOUT()
       dispatch(setIsLogin(false))
       dispatch(setToken(''))
+      dispatch(dialogSliceActions.purgeSpinnerQueue())
       router.push('/login')
     } catch (e) {
       console.log(e)
