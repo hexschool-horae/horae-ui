@@ -75,7 +75,14 @@ const Board: FC = () => {
     const listIndex = temp.findIndex(list => list._id === listCard.listId)
     const cardIndex = temp[listIndex]?.cards.findIndex(card => card._id === listCard.cardId)
 
-    if (Boolean(cardIndex) && cardIndex != -1 && Boolean(listIndex) && listIndex !== -1) {
+    if (
+      cardIndex !== undefined &&
+      cardIndex !== null &&
+      cardIndex != -1 &&
+      listIndex !== null &&
+      listIndex !== undefined &&
+      listIndex !== -1
+    ) {
       temp[listIndex].cards[cardIndex].title = listCard.title
       temp[listIndex].cards[cardIndex].proiority = listCard.proiority
       setLists(temp.map(item => ({ id: item._id, ...item })))
@@ -90,7 +97,14 @@ const Board: FC = () => {
     const listIndex = temp.findIndex(list => list._id === listCardTag.listId)
     const cardIndex = temp[listIndex]?.cards.findIndex(card => card._id === listCardTag.cardId)
 
-    if (Boolean(cardIndex) && cardIndex != -1 && Boolean(listIndex) && listIndex !== -1) {
+    if (
+      cardIndex !== undefined &&
+      cardIndex !== null &&
+      cardIndex != -1 &&
+      listIndex !== null &&
+      listIndex !== undefined &&
+      listIndex !== -1
+    ) {
       temp[listIndex].cards[cardIndex].tags = listCardTag.tags
       setLists(temp.map(item => ({ id: item._id, ...item })))
     }
