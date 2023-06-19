@@ -26,6 +26,9 @@ const nextConfig = {
 
     return config
   },
+  images: {
+    domains: ['storage.googleapis.com'],
+  },
 }
 
 module.exports = nextConfig

@@ -4,7 +4,7 @@ import { Dialog } from 'primereact/dialog'
 import style from './card.module.scss'
 
 import { boardSliceActions } from '@/slices/boardSlice'
-import { useAppDispatch } from '@/hooks/useAppStore'
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { CardDetailProvider, useCardDetail } from '@/contexts/cardDetailContext'
 
 import CardSidebarButton from '@/components/card/CardSidebarButton'
@@ -24,7 +24,7 @@ import { GET_CARD_BY_ID } from '@/apis/axios-service'
 import CardPopupCalendar from './CardPopupCalendar'
 import CardDetailCalendar from './CardDetailCalendar'
 import CardPopupFiles from './CardPopupFiles'
-// import CardDetailFiles from './CardDetailFiles'
+import CardDetailFiles from './CardDetailFiles'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -52,6 +52,7 @@ const CardInternal = () => {
   const appDispatch = useAppDispatch()
   const router = useRouter()
   const cardId = router.query.cardId as string
+  const cardDetail = useAppSelector(state => state.board.cardDetail)
 
   const getCardDetail = async () => {
     try {
@@ -67,6 +68,7 @@ const CardInternal = () => {
       })
 
       appDispatch(boardSliceActions.setCardDetail(response.data))
+      console.log('etCardDetail', response.data)
     } catch (error) {
       console.error('Error fetching card data:', error)
     }
@@ -92,11 +94,14 @@ const CardInternal = () => {
               </div> */}
 
               <CardDetailTitle />
-              <CardDetailMember label={popupLabels.member} cardId={cardId} />
-              <CardDetailTags label={popupLabels.tags} />
+              {cardDetail?.members && cardDetail?.members.length > 0 && (
+                <CardDetailMember label={popupLabels.member} cardId={cardId} />
+              )}
+              {/* <CardDetailMember label={popupLabels.member} cardId={cardId} /> */}
+              {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
               <CardDetailCalendar label={popupLabels.calender} />
               <CardDetailDescribe />
-              {/* <CardDetailFiles /> */}
+              {cardDetail?.attachments && cardDetail?.attachments.length > 0 && <CardDetailFiles cardId={cardId} />}
               <CardDetailTodoList />
               <CardDetailComments />
             </div>
@@ -112,7 +117,7 @@ const CardInternal = () => {
                 <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
                 <CardSidebarButton name="標籤" label={popupLabels.tags} />
                 <CardSidebarButton name="日期" label={popupLabels.calender} />
-                {/* <CardSidebarButton name="附件" label={popupLabels.files} /> */}
+                <CardSidebarButton name="附件" label={popupLabels.files} />
                 <CardSidebarButton name="優先權" label={popupLabels.priority} />
               </div>
 
@@ -136,7 +141,8 @@ const CardInternal = () => {
 
       <CardPopupMember label={popupLabels.member} key={popupLabels.member + state.popupKey} cardId={cardId} />
       <CardPopupTodoList label={popupLabels.todoList} key={popupLabels.todoList + state.popupKey} />
-      <CardPopupFiles label={popupLabels.files} key={popupLabels.files + state.popupKey}></CardPopupFiles>
+      <CardPopupFiles label={popupLabels.files} key={popupLabels.files + state.popupKey} cardId={cardId} />
+      {/* handleGetCardDetail={getCardDetail} */}
       {/* 與board共用 Wrapper放外層*/}
       <CardPopupWrapper title="標籤" label={popupLabels.tags}>
         <CardPopupTags page="card" key={popupLabels.tags + state.popupKey + 2} state={state} dispatch={dispatch} />

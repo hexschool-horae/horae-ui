@@ -193,3 +193,13 @@ export const POST_CARD_MEMBER = (cardId: string, data: interfaces.IPostCardMembe
 export const DELETE_CARD_MEMBER = (cardId: string, data: interfaces.IDeleteCardMemberRequest) => {
   return axiosFetcher.DELETE(`${apiPath.GET_CARD_BY_ID}/${cardId}/member`, data)
 }
+
+/** B05-22 卡片中附件上傳 */
+export const UPLOAD_CARD_FILE = (cardId: string, data: interfaces.IUploadFileRequest) => {
+  return axiosFetcher.uploadFile(`${apiPath.GET_CARD_BY_ID}/${cardId}/attachment`, data)
+}
+
+/** B05-23 卡片中附件刪除 */
+export const DELETE_CARD_FILE = (cardId: string, data: interfaces.IDeleteCardFileRequest) => {
+  return axiosFetcher.DELETE(`${apiPath.GET_CARD_BY_ID}/${cardId}/attachment`, data)
+}

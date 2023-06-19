@@ -90,7 +90,7 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
         {/* <LogoSVG fillColor={boardThemeColor?.textColor ? boardThemeColor?.textColor : '#1A1A1A'}></LogoSVG> */}
         <IconLogo
           className="cursor-pointer"
-          style={{ color: boardThemeColor.textColor ? boardThemeColor.textColor : '#1A1A1A' }}
+          style={{ color: boardThemeColor?.textColor ? boardThemeColor.textColor : '#1A1A1A' }}
         />
       </Link>
       <div className="ml-auto flex items-center">
