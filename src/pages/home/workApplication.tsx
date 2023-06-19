@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import homeStyles from './home.module.scss'
 import styles from './workApplication.module.scss'
 import { Dialog } from 'primereact/dialog'
 
 export default function WorkApplication() {
+  const workProcessRef = useRef(null)
   const [list] = useState([
     {
       title: '教育',
@@ -42,7 +43,7 @@ export default function WorkApplication() {
 
   return (
     <>
-      <section className={styles.section}>
+      <section ref={workProcessRef} id="workProcess" className={styles.section}>
         <div className={`${styles.container} front-max-container`}>
           <h3 className={`${homeStyles.h3} text-secondary-3 ${styles.h3}`}>可彈性應用於各種工作流程</h3>
           <div className={styles.card_area}>
