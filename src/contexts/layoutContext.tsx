@@ -15,7 +15,13 @@ const LayoutContextProvider = ({ children }: LayoutContextProviderProps) => {
     console.log('------', sectionId)
     const section = document.getElementById(sectionId)
     if (section) {
-      section.scrollIntoView({ behavior: 'smooth' })
+      const sectionTop = section.offsetTop
+      const scrollOffset = -60 // 往下滾動的偏移量
+
+      window.scrollTo({
+        top: sectionTop + scrollOffset,
+        behavior: 'smooth',
+      })
     }
   }
 

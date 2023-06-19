@@ -36,7 +36,7 @@ export default function ProductDescription() {
   ])
   return (
     <>
-      <section ref={featuresRef} id="features" className={`${styles.section}`}>
+      <section ref={featuresRef} id="features">
         <div className="p-decorative-circle p-left-decorative-circle-1"></div>
         <div className="p-decorative-circle p-right-decorative-circle-1"></div>
         <div className="p-decorative-circle p-right-decorative-circle-2"></div>
