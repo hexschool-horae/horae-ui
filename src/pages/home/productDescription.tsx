@@ -26,13 +26,13 @@ export default function ProductDescription() {
     //   describe:
     //     '通過即時聊天不用再另外使用其它通訊軟體，加速團隊溝通。你也可以標記個人，為行動項目分配評論，並鏈結任務以共同完成更多工作。',
     // },
-    // {
-    //   title: '專注',
-    //   decorativeTitle: '計時',
-    //   img: 'home-timing',
-    //   describe:
-    //     '通過即時聊天不用再另外使用其它通訊軟體，加速團隊溝通。你也可以標記個人，為行動項目分配評論，並鏈結任務以共同完成更多工作。',
-    // },
+    {
+      title: '專注',
+      decorativeTitle: '計時',
+      img: 'home-timing',
+      describe:
+        '通過即時聊天不用再另外使用其它通訊軟體，加速團隊溝通。你也可以標記個人，為行動項目分配評論，並鏈結任務以共同完成更多工作。',
+    },
   ])
   return (
     <>

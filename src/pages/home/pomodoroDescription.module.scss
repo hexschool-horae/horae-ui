@@ -1,12 +1,15 @@
 .section {
   background: linear-gradient(143.71deg, #ff6848 21.23%, #ffbbbb 78.89%);
   position: relative;
-  .icon {
+  .quotation_mark_box {
+    @apply text-primary;
     position: absolute;
     top: 40%;
     right: 10%;
     opacity: 0.4;
     z-index: 1;
+    width: 185.78px;
+    height: 155.17px;
   }
 }
 .container {
@@ -99,7 +102,7 @@
     text-align: justify;
     z-index: 2;
   }
-  .icon {
+  .quotation_mark_box {
     position: absolute;
     top: 10%;
     right: -5%;
@@ -132,9 +135,11 @@
         margin-top: 20px;
       }
     }
-    .icon {
+    .quotation_mark_box {
       width: 25%;
       top: -5%;
+      width: 111.47px;
+      height: 93.1px;
     }
   }
 
