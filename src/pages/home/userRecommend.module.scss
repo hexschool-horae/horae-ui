@@ -26,6 +26,7 @@
     height: 72px;
     object-fit: cover;
     border-radius: 50%;
+    object-position: 50% 30%;
   }
 }
 
@@ -62,8 +63,11 @@
   padding-top: 44px;
   margin-bottom: 24px;
   .quotation_mark_box {
+    @apply text-secondary-2;
     position: absolute;
     top: 0;
+    width: 37.16px;
+    height: 31.03px;
   }
 }
 .stars {
@@ -89,10 +93,8 @@
   .content {
     padding-top: 25px;
     .quotation_mark_box {
-      svg {
-        width: 22.29px;
-        height: 18.62px;
-      }
+      width: 22.29px;
+      height: 18.62px;
     }
   }
   .personal_box {
