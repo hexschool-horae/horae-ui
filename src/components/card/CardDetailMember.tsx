@@ -21,6 +21,7 @@ interface IMember {
 export default function CardDetailMember({ label, cardId }: ICardDetailMemberProps) {
   const { dispatch } = useCardDetail()
   const appDispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const boardId = useAppSelector(state => state.board.boardId)
   const cardDetail = useAppSelector(state => state.board.cardDetail)
   const selectedMembers: IMember[] = cardDetail?.members as unknown as IMember[]
@@ -43,19 +44,21 @@ export default function CardDetailMember({ label, cardId }: ICardDetailMemberPro
 
   return (
     <div className={`${style.detail_list}`}>
-      <div>成員</div>
-      <Button
-        icon="pi pi-plus"
-        rounded
-        aria-label="add"
-        className={`${style.detail_list_add_btn}`}
-        onClick={() => {
-          dispatch({
-            type: 'TOTGGLE_POPUP',
-            payload: label,
-          })
-        }}
-      />
+      <div className={style.detail_list_title}>成員</div>
+      {token && (
+        <Button
+          icon="pi pi-plus"
+          rounded
+          aria-label="add"
+          className={`${style.detail_list_add_btn}`}
+          onClick={() => {
+            dispatch({
+              type: 'TOTGGLE_POPUP',
+              payload: label,
+            })
+          }}
+        />
+      )}
       <ul>
         {selectedMembers
           ? selectedMembers.map(member => (
@@ -68,16 +71,18 @@ export default function CardDetailMember({ label, cardId }: ICardDetailMemberPro
                     {getShortName(member.name)}
                   </div>
                   <div className="mr-3">{member.name}</div>
-                  <Button
-                    size="small"
-                    text
-                    className={`hover:bg-transparent px-0 ${style.icon_btn_delete}`}
-                    onClick={() => {
-                      handleDeleteCardMember(member._id)
-                    }}
-                  >
-                    <IconDelete />
-                  </Button>
+                  {token && (
+                    <Button
+                      size="small"
+                      text
+                      className={`hover:bg-transparent px-0 ${style.icon_btn_delete}`}
+                      onClick={() => {
+                        handleDeleteCardMember(member._id)
+                      }}
+                    >
+                      <IconDelete />
+                    </Button>
+                  )}
                 </li>
               </Fragment>
             ))

@@ -15,8 +15,6 @@ import { Button } from 'primereact/button'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 
-// import { PATCH_CARD_BASIC_INFO_BY_ID } from '@/apis/axios-service'
-
 /*
 建議使用 client-side render 
 但會無法調用editor提供的方法，元件傳入的第一個參數會出現型別錯誤
@@ -46,6 +44,7 @@ export default function CardDetailDescribe() {
   const boardId = router.query.boardId as string
 
   const appDispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const socketDescribe = useAppSelector(state => state.board.cardDetail?.describe)
   const cardDetail = useAppSelector(state => state.board.cardDetail)
 
@@ -110,7 +109,7 @@ export default function CardDetailDescribe() {
   }, [socketDescribe])
 
   return (
-    <div className="my-5" onClick={() => !isEdit && setIsEdit(true)}>
+    <div className="my-5" onClick={() => token && !isEdit && setIsEdit(true)}>
       <div className="relative mb-2">
         <MdEditor
           /* @ts-ignore */

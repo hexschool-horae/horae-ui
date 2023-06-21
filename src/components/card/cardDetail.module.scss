@@ -8,8 +8,12 @@
   @apply flex items-center mb-2;
 }
 
+.detail_list_title {
+  @apply mr-3;
+}
+
 .detail_list_add_btn {
-  @apply mx-3 bg-secondary-4 text-secondary-3 border-0;
+  @apply mr-3 bg-secondary-4 text-secondary-3 border-0;
   width: 30px !important;
   height: 30px !important;
   &:hover {

@@ -131,6 +131,11 @@
       }
     }
   }
+  .card_tag {
+    .p-chip-remove-icon.pi-times {
+      font-size: 10px;
+    }
+  }
 }
 
 @media (max-width: 640px) {
