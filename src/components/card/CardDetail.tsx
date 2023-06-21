@@ -85,7 +85,7 @@ const CardInternal = () => {
   return (
     <>
       {state.initialized ? (
-        <Dialog visible={true} onHide={handleCloseCardDetail} className="w-full md:w-[800px] mx-3">
+        <Dialog visible={true} onHide={handleCloseCardDetail} className="w-full md:w-[800px] mx-3 card_detail_dialog">
           <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
             {/* main col */}
             <div className="md:col-span-5">

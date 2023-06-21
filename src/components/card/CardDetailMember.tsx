@@ -4,6 +4,7 @@ import { useCardDetail } from '@/contexts/cardDetailContext'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import IconDelete from '@/assets/icons/icon_delete.svg'
 
 interface ICardDetailMemberProps {
   label: string
@@ -68,15 +69,15 @@ export default function CardDetailMember({ label, cardId }: ICardDetailMemberPro
                   </div>
                   <div className="mr-3">{member.name}</div>
                   <Button
-                    icon="pi pi-times"
-                    rounded
-                    outlined
-                    aria-label="remove"
-                    className="!w-[30px] !h-[30px]"
+                    size="small"
+                    text
+                    className={`hover:bg-transparent px-0 ${style.icon_btn_delete}`}
                     onClick={() => {
                       handleDeleteCardMember(member._id)
                     }}
-                  />
+                  >
+                    <IconDelete />
+                  </Button>
                 </li>
               </Fragment>
             ))
