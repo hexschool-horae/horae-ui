@@ -7,8 +7,6 @@ import { Button } from 'primereact/button'
 import { Menu } from 'primereact/menu'
 import { MenuItem } from 'primereact/menuitem'
 import { InputText } from 'primereact/inputtext'
-import { InputSwitch } from 'primereact/inputswitch'
-// import { InputTextarea } from 'primereact/inputtextarea'
 import { TieredMenu } from 'primereact/tieredmenu'
 import { Message } from 'primereact/message'
 
@@ -74,13 +72,11 @@ const BoardSettingTemplate = () => {
       <Dropdown className="w-full" placeholder="工作區名稱" /> */}
       <div className="text-xl text-center mb-3">設定</div>
       <hr className="my-5" />
-      <div className="flex">
-        卡片封面已啟用
-        <span className="ml-auto">
-          <InputSwitch disabled={!checked} checked={checked} onChange={handleDeleteCover} />
-        </span>
-      </div>
-      <div className="text-gray-2 text-xs font-light mb-1">在卡片正面顯示圖片附件和顏色。</div>
+
+      <div className="mb-2">看板封面已啟用</div>
+      <Button className="p-0" label="關閉看板封面" text onClick={handleDeleteCover}></Button>
+
+      {/* <div className="text-gray-2 text-xs font-light mb-1">在卡片正面顯示圖片附件和顏色。</div> */}
 
       <hr className="my-5" />
       <div className="mb-1">允許工作區成員編輯和加入</div>

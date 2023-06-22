@@ -1,6 +1,6 @@
 import { ReactNode, memo } from 'react'
 import {
-  // AnimateLayoutChanges,
+  AnimateLayoutChanges,
   // SortableContext,
   // arrayMove,
   useSortable,
@@ -12,6 +12,8 @@ import {
 // import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { classNames } from 'primereact/utils'
+
+const animateLayoutChanges: AnimateLayoutChanges = args => defaultAnimateLayoutChanges({ ...args, wasDragging: true })
 
 const SortableList = ({
   id,
@@ -46,7 +48,7 @@ const SortableList = ({
       type: 'list',
       children: listItems,
     },
-    animateLayoutChanges: defaultAnimateLayoutChanges,
+    animateLayoutChanges: animateLayoutChanges,
   })
 
   const isOverContainer = over
