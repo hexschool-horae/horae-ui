@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { AxiosError } from 'axios'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
@@ -15,7 +15,7 @@ import AddListButton from '@/components/board/AddListButton'
 import {
   // CollisionDetection,
   pointerWithin,
-  // closestCenter,
+  closestCenter,
   // closestCorners,
   rectIntersection,
   getFirstCollision,
@@ -33,7 +33,7 @@ import {
   // AnimateLayoutChanges,
   SortableContext,
   // useSortable,
-  // arrayMove,
+  arrayMove,
   // defaultAnimateLayoutChanges,
   verticalListSortingStrategy,
   horizontalListSortingStrategy,
@@ -57,21 +57,22 @@ import { classNames } from 'primereact/utils'
 import BoardGuard from '@/app/BoardGuard'
 import AddCardButton from '@/components/board/AddCardButton'
 
-// const emptyCard = {
-//   _id: '',
-//   title: '',
-//   startDate: 0,
-//   endDate: 0,
-//   tags: [
-//     {
-//       _id: '',
-//       title: '',
-//       color: '',
-//     },
-//   ],
-// }
+const emptyCard = {
+  _id: '',
+  title: '',
+  startDate: 0,
+  endDate: 0,
+  priority: '',
+  tags: [
+    {
+      _id: '',
+      title: '',
+      color: '',
+    },
+  ],
+}
 
-const findContainer = (list: any[], id: number) => {
+const findContainer = (list: any[], id: string) => {
   if (!list.length) {
     console.warn('清單目前為空')
     return null
@@ -83,11 +84,9 @@ const findContainer = (list: any[], id: number) => {
   }
 
   const [matchedItem] = list.filter((item: any) => {
-    const [matcheCardItem] = item.cards.filter((item2: any) => {
-      console.log(item2._id, id, item2._id == id)
-      return item2._id == id
-    })
-    return matcheCardItem
+    // const matcheCardItem =
+    // console.log(matcheCardItem)
+    return item.cards.find((item2: any) => item2._id == id)
   })
 
   if (matchedItem) {
@@ -181,14 +180,6 @@ const Board: FC = () => {
     setLists(tempList.map(item => ({ id: item._id, ...item })))
   }, [boardLists])
 
-  const [activeListId, setActiveListId] = useState<UniqueIdentifier | null>(null)
-  // const [overListId, setOverListId] = useState<UniqueIdentifier | null>(null)
-  // const [activeListPosition, setActiveListPosition] = useState<number | null>(null)
-  // const [activeCardPosition, setActiveCardPosition] = useState<number | null>(null)
-  const [activeCardId, setActiveCardId] = useState<UniqueIdentifier | null>(null)
-  const [activeCardItem, setActiveCardItem] = useState<ICardItem | null>(null)
-  const [activeType, setActiveType] = useState<string | null>(null)
-  // console.log(activeListPosition, activeCardPosition)
   /** 讓 draggable、droppable 內的 pointer 事件不會被 prevent */
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
@@ -201,57 +192,93 @@ const Board: FC = () => {
     sideEffects: defaultDropAnimationSideEffects({
       styles: {
         active: {
-          opacity: '0.5',
+          // opacity: '0.5',
         },
       },
     }),
   }
 
-  /** 暫時的卡片拖拉邏輯 */
-  /* eslint-disable */
-  async function handleDragEnd(event: DragOverEvent) {
+  const [activeListPosition, setActiveListPosition] = useState<number | null>(null)
+
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+  const [activeCardId, setActiveCardId] = useState<UniqueIdentifier | null>(null)
+  const [clonedLists, setClonedLists] = useState<any | null>(null)
+  const [activeCardItem, setActiveCardItem] = useState<ICardItem | null>(null)
+
+  const lastOverId = useRef<UniqueIdentifier | null>(null)
+  const recentlyMovedToNewContainer = useRef(false)
+
+  const collisionDetectionStrategy: CollisionDetection = useCallback(
+    (args: any) => {
+      // if (!lists.length) return
+      // First, let's see if there are any collisions with the pointer
+      if (activeId && lists?.some(item => item._id === activeId)) {
+        return closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(container =>
+            lists?.some(item => item._id === container.id)
+          ),
+        })
+      }
+
+      const pointerIntersections = pointerWithin(args)
+      const intersections =
+        pointerIntersections.length > 0
+          ? // If there are droppables intersecting with the pointer, return those
+            pointerIntersections
+          : rectIntersection(args)
+      let overId = getFirstCollision(intersections, 'id')
+
+      if (overId !== null) {
+        if (lists?.some(item => item._id === overId)) {
+          const [listItems] = lists.filter(item => item._id === overId)
+
+          if (listItems !== undefined && listItems.cards.length > 0) {
+            // Return the closest droppable within that container
+            overId = closestCenter({
+              ...args,
+              droppableContainers: args.droppableContainers.filter(
+                container => container.id !== overId && listItems.cards.find(item => item._id === container.id)
+              ),
+            })[0]?.id
+          }
+        }
+
+        lastOverId.current = overId
+
+        return [{ id: overId }]
+      }
+
+      if (recentlyMovedToNewContainer.current) {
+        lastOverId.current = activeId
+      }
+
+      // If no droppable is matched, return the last match
+      return lastOverId.current ? [{ id: lastOverId.current }] : []
+    },
+    [activeId, lists]
+  )
+
+  const handleDragOver = (event: DragOverEvent) => {
     const { active, over, activatorEvent, delta } = event
+    const overId = over?.id
+
+    if (overId == null || lists?.some(item => item._id === active.id)) {
+      return
+    }
+
+    const activeContainer = findContainer(clonedLists, active.id)
+    const overContainer = findContainer(clonedLists, over.id)
+
+    // 取得當前 activeItem的座標資訊
     const activatorCoordinates = getEventCoordinates(activatorEvent)
-    const intersectionY = (activatorCoordinates?.y || 0) + delta.y + 80
+    const intersectionY = (activatorCoordinates?.y || 0) + delta.y
 
-    // console.clear()
-    console.log('------End_______--')
-    console.log(active, over, activeType, activeListId, activeCardId)
+    // 判斷是否在 over  之下
     const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
-    console.log(isBelowOverItem, intersectionY, over.rect.top + over.rect.height)
-    if (!over || lists === undefined) return
 
-    const clonedList = cloneDeep(lists)
-
-    if (!clonedList || !clonedList.length) return
-
-    if (active.data.current?.type === 'list') {
-      // if (overListId === activeListId) return
-      // const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-      // const [overListItem] = clonedList?.filter(item => item._id === overListId)
-      // const activeCards = activeListItem.cards
-      // const overCards = overListItem.cards
-      // const newActiveListItem = {
-      //   ...activeListItem,
-      //   position: overListItem.position,
-      //   cards: activeCards,
-      // }
-      // const newOverListItem = {
-      //   ...overListItem,
-      //   position: activeListItem.position,
-      //   cards: overCards,
-      // }
-      // newLists = [...otherListItems, newActiveListItem, newOverListItem].sort((a, b) => a.position - b.position)
-      // if (overListPosition === null || overListPosition === undefined) return
-      // dispatch(
-      //   socketServiceActions.moveBoardList({
-      //     boardId,
-      //     listId: activeListId as string,
-      //     finalPosition: overListPosition,
-      //   })
-      // )
-    } else {
-      if (active.id === over.id) return
+    if (active.data.current?.type === 'card') {
+      if (activeContainer === overContainer) return
 
       let newLists = cloneDeep(lists)
 
@@ -265,37 +292,102 @@ const Board: FC = () => {
         })
       )
 
-      if (activeCardItem === null) return
-      let newChildren = cloneDeep(activeCardItem)
-      newChildren = { ...newChildren, position: over.data.current.cardPosition }
+      const newChildren = { ...emptyCard }
 
-      // 看最後一次觸碰到的 droppable 容器是列表還是卡片
-      if (over.data.current.type === 'list') {
-        newLists[over.data.current.listPosition].cards.splice(
-          isBelowOverItem ? newLists[over.data.current.listPosition].cards.length : 0,
-          0,
-          newChildren
-        )
+      newLists[over.data.current.listPosition].cards.splice(
+        isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index,
+        0,
+        newChildren
+      )
+
+      dispatch(boardSliceActions.updateBoardList(newLists))
+    }
+  }
+
+  /** 暫時的卡片拖拉邏輯 */
+  /* eslint-disable */
+  async function handleDragEnd(event: DragOverEvent) {
+    const { active, over, activatorEvent, delta } = event
+    const overId = over?.id
+    const activatorCoordinates = getEventCoordinates(activatorEvent)
+    const intersectionY = (activatorCoordinates?.y || 0) + delta.y + 80
+    const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
+
+    if (!lists) {
+      return
+    }
+
+    if (lists.some(item => item._id === active.id) && over?.id) {
+      const activeContainer = active.data.current.listPosition
+      const overContainer = over.data.current.listPosition
+      const activeIndex = activeContainer
+      const overIndex = overContainer
+
+      const newLists = arrayMove(clonedLists, activeIndex, overIndex)
+      dispatch(boardSliceActions.updateBoardList(newLists))
+      return
+    }
+
+    if (overId == null) {
+      setActiveId(null)
+      return
+    }
+
+    const activeContainer = activeListPosition
+    const overContainer = over.data.current.listPosition
+
+    // 注意！要拿原本的排序(sort)順位，而非 寫在 data 裡的 cardPosition
+    const activeIndex = active.data.current.sortable.index
+    const overIndex = over.data.current.sortable.index
+
+    let newLists = cloneDeep(lists)
+
+    newLists = cloneDeep(
+      newLists.map(item => {
+        const newCards = item.cards.filter(item2 => {
+          return item2.title !== ''
+        })
+
+        return { ...item, cards: newCards }
+      })
+    )
+
+    if (activeCardItem === null) return
+
+    let newChildren = cloneDeep(activeCardItem)
+
+    // 看最後一次觸碰到的 droppable 容器是列表還是卡片
+    if (over.data.current.type === 'list') {
+      newLists[over.data.current.listPosition].cards.splice(
+        isBelowOverItem ? newLists[over.data.current.listPosition].cards.length : 0,
+        0,
+        newChildren
+      )
+
+      newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(item => {
+        return activeCardId !== item._id
+      })
+    } else {
+      if (activeContainer == overContainer) {
+        const temp = newLists[over.data.current.listPosition].cards[overIndex]
+
+        newLists[over.data.current.listPosition].cards[overIndex] = newLists[activeContainer].cards[activeIndex]
+        newLists[activeContainer].cards[activeIndex] = temp
       } else {
         newLists[over.data.current.listPosition].cards.splice(
           isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index,
           0,
           newChildren
         )
+
+        newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(item => {
+          return activeCardId !== item._id
+        })
       }
-
-      // if()
-      newLists[active.data.current.listPosition].cards = newLists[active.data.current.listPosition].cards.filter(
-        item => {
-          return active.data.current.cardId !== item._id
-        }
-      )
-
-      // newLists[active.data.current.listPosition]
-      // .cards.splice(active.data.current.cardPosition, 1)
-
-      dispatch(boardSliceActions.updateBoardList(newLists))
     }
+    dispatch(boardSliceActions.updateBoardList(newLists))
+
+    setActiveId(null)
   }
 
   /** 取得單一看板資訊 */
@@ -333,7 +425,7 @@ const Board: FC = () => {
   function renderListDragOverlay() {
     if (!lists?.length) return
 
-    const [listItem] = lists.filter(item => item._id === activeListId)
+    const [listItem] = lists.filter(item => item._id === activeId)
 
     return (
       <div className="w-[286px] row-span-full">
@@ -345,7 +437,7 @@ const Board: FC = () => {
                 key={cardItem._id}
                 id={cardItem._id}
                 title={cardItem.title}
-                priority={cardItem.proiority}
+                priority={''}
                 tags={cardItem.tags}
               />
             )
@@ -363,18 +455,12 @@ const Board: FC = () => {
       !Object.keys(activeCardItem).length
     )
       return <></>
-    return (
-      <BoardCard
-        id={activeCardId}
-        title={activeCardItem.title}
-        priority={activeCardItem.proiority}
-        tags={[...activeCardItem.tags]}
-      />
-    )
+    return <BoardCard id={activeCardId} title={activeCardItem.title} priority={''} tags={activeCardItem.tags} />
   }
 
   const handleRenderOverlay = () => {
-    if (activeType === 'list') {
+    if (!lists) return
+    if (lists.some(item => item._id === activeId)) {
       return renderListDragOverlay()
     } else {
       return renderCardDragOverlay()
@@ -420,119 +506,15 @@ const Board: FC = () => {
 
           <DndContext
             sensors={sensors}
-            collisionDetection={args => {
-              // First, let's see if there are any collisions with the pointer
-              // const pointerCollisions = pointerWithin(args)
-              // // Collision detection algorithms return an array of collisions
-              // if (pointerCollisions.length > 0) {
-              //   return pointerCollisions
-              // }
-              const pointerIntersections = pointerWithin(args)
-              const intersections =
-                pointerIntersections.length > 0
-                  ? // If there are droppables intersecting with the pointer, return those
-                    pointerIntersections
-                  : rectIntersection(args)
-              let overId = getFirstCollision(intersections, 'id')
-              // console.log('first collision', overId)
-
-              if (overId != null) {
-                if (lists?.some(item => item._id === overId)) {
-                  // const listItems = lists[overId];
-                  // // If a container is matched and it contains items (columns 'A', 'B', 'C')
-                  // if (listItems.length > 0) {
-                  //   // Return the closest droppable within that container
-                  //   overId = closestCenter({
-                  //     ...args,
-                  //     droppableContainers: args.droppableContainers.filter(
-                  //       (container) =>
-                  //         container.id !== overId &&
-                  //         listItems.includes(container.id)
-                  //     ),
-                  //   })[0]?.id;
-                  // }
-                }
-
-                // lastOverId.current = overId;
-              }
-              return [{ id: overId }]
-              // If there are no collisions with the pointer, return rectangle intersections
-              // return intersections
-            }}
+            collisionDetection={collisionDetectionStrategy}
             onDragStart={({ active }) => {
-              if (!active.data.current) return
-              setActiveType(active.data.current?.type)
-
-              if (active.data.current.type === 'card') {
-                setActiveListPosition(active.data.current.listPosition)
-                setActiveCardPosition(active.data.current.cardPosition)
-                setActiveCardId(active.data.current.cardId)
-                setActiveCardItem(active.data.current.children)
-
-                let newLists = cloneDeep(lists)
-                if (newLists === undefined) return
-
-                // newLists[active.data.current.listPosition].cards = newLists[
-                //   active.data.current.listPosition
-                // ].cards.filter(item => {
-                //   return active.data.current.cardId !== item._id
-                // })
-                // console.log(newLists[active.data.current.listPosition].cards)
-                // newLists[active.data.current.listPosition].cards.splice(active.data.current.cardPosition, 1, emptyCard)
-                // console.log(newCard)
-                // newLists[active.data.current.listPosition].cards = newCard
-
-                // dispatch(boardSliceActions.updateBoardList(newLists))
-              }
-
-              setActiveListId(active.data.current.listId)
+              setActiveId(active.id)
+              setClonedLists(cloneDeep(lists))
+              setActiveCardId(active.data.current.cardId)
+              setActiveCardItem(active.data.current.children)
+              setActiveListPosition(active.data.current.listPosition)
             }}
-            onDragOver={event => {
-              const { active, over, activatorEvent, delta } = event
-
-              const clonedList = cloneDeep(lists)
-              if (!over || !clonedList) return
-
-              //取得當前 activeItem的座標資訊
-              const activatorCoordinates = getEventCoordinates(activatorEvent)
-              const intersectionY = (activatorCoordinates?.y || 0) + delta.y
-
-              // 判斷是否在 over  之下
-              const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
-
-              const activeContainer = findContainer(lists, active.id)
-              const overContainer = findContainer(lists, over.id)
-
-              console.log(activeListId, overContainer)
-
-              if (!activeContainer || !overContainer) return
-
-              // if (active.data.current?.type === 'list') {
-              // } else {
-              //   if (active.id === over.id || over.data.current.cardPosition === undefined) return
-              //   let newLists = cloneDeep(lists)
-
-              //   newLists = cloneDeep(
-              //     newLists.map(item => {
-              //       const newCards = item.cards.filter(item2 => {
-              //         return item2.title !== ''
-              //       })
-
-              //       return { ...item, cards: newCards }
-              //     })
-              //   )
-
-              //   let newChildren = { ...emptyCard, cardPosition: over.data.current.cardPosition }
-
-              //   newLists[over.data.current.listPosition].cards.splice(
-              //     isBelowOverItem ? over.data.current.cardPosition + 1 : over.data.current.cardPosition,
-              //     0,
-              //     newChildren
-              //   )
-
-              //   dispatch(boardSliceActions.updateBoardList(newLists))
-              // }
-            }}
+            onDragOver={handleDragOver}
             onDragEnd={event => handleDragEnd(event)}
             onDragCancel={() => {
               console.log('onDragCancel')

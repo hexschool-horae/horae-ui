@@ -61,7 +61,7 @@ export interface ICardItem {
 const BoardCard = ({
   id = '',
   title = '',
-  priority = '1',
+  priority = '',
   tags = [],
   // listeners,
   isDragging,
