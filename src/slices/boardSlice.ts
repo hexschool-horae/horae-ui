@@ -196,6 +196,11 @@ export const boardSlice = createSlice({
         state.cardDetail.tags = action.payload.tags
       }
     },
+    updateBoardCoverColor(state, action: PayloadAction<ISingleBoardInterface>) {
+      if (state.singleBaord?._id === action.payload._id) {
+        state.singleBaord.covercolor = action.payload.covercolor
+      }
+    },
     reset: () => initialState,
   },
 })

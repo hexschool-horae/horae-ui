@@ -270,6 +270,7 @@ export interface IComment {
   user: {
     _id: string
     name: string
+    avatar: string
   }
 }
 
@@ -289,6 +290,7 @@ export interface IBoardMember {
     _id: string
     name: string
     email: string
+    avatar: string
   }
   inviteHashData: string
   role: string

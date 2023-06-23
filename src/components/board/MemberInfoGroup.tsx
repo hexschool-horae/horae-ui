@@ -56,7 +56,12 @@ const MemberInfoGroup = ({
     <div className={classNames(className, Style.member_info_item)}>
       {/* 照片之後補上 */}
 
-      <div className="w-[3rem] h-[3rem] bg-black rounded-full mr-3"></div>
+      <div
+        className="w-[3rem] h-[3rem] flex justify-center items-center rounded-full mr-3"
+        style={{ backgroundColor: model.userId.avatar }}
+      >
+        {model.userId.email.slice(0, 1)}
+      </div>
       <div>
         <span>{model.userId?.name}</span>
         <div className={classNames(Style.member_info_subtitle, 'text-gray-2')}>{model.userId?.email}</div>

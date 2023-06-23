@@ -32,6 +32,7 @@ export default function InviteBoard() {
     const { data } = await GET_BOARD_ALL_MEMBERS_BY_ID(boardId)
 
     dispatch(boardSliceActions.updateBoardMembersList(data.members))
+    console.log('data.members = ', data.members)
   }
 
   const handleGetInvitationLink = async () => {
@@ -119,7 +120,6 @@ export default function InviteBoard() {
 
               {isCopied && <Message className="my-4 ml-auto" severity="success" text={'連結已複製到剪貼簿'} />}
             </div>
-
             {/* 只有一人時（此人一定為管理員權限），不可操作權限選單 */}
             <div className="mt-4">
               {boardMembersList !== null ? (

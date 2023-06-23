@@ -29,3 +29,27 @@
     margin-right: 4px;
   }
 }
+
+.cover-theme-box {
+  @apply grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: 90px;
+  grid-auto-rows: 90px;
+  gap: 12px 16px;
+
+  .theme {
+    border-radius: 8px;
+    @apply cursor-pointer;
+  }
+  .theme1 {
+    @apply bg-theme1-header;
+  }
+
+  .theme2 {
+    @apply bg-theme2-header;
+  }
+
+  .theme3 {
+    @apply bg-theme3-header;
+  }
+}

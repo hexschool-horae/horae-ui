@@ -17,6 +17,7 @@ export default function CardDetailComments() {
   const boardId = router.query.boardId as string
 
   const appDispatch = useAppDispatch()
+  const profile = useAppSelector(state => state.user.profile)
   const socketComments = useAppSelector(state => state.board.cardDetail?.comments)
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -118,12 +119,18 @@ export default function CardDetailComments() {
     }))
     setComments(list)
     clearStatus()
+    console.log('comment = ', comments)
   }, [socketComments])
 
   return (
     <div>
       <div className="relative mb-2">
-        <div className="w-[42px] h-[42px] rounded-full  bg-black absolute left-2 top-1/2 translate-y-[-50%]"></div>
+        <div
+          className="w-[42px] h-[42px] rounded-full flex justify-center items-center absolute left-2 top-1/2 translate-y-[-50%]"
+          style={{ backgroundColor: profile.avatar }}
+        >
+          {profile.email.slice(0, 1)}
+        </div>
         <div className="grow">
           <InputText
             placeholder="撰寫評論..."
@@ -145,7 +152,12 @@ export default function CardDetailComments() {
                 ${style.comment_item}
               `}
             >
-              <div className="w-[42px] h-[42px] rounded-full  bg-black"></div>
+              <div
+                className="w-[42px] h-[42px] rounded-full flex justify-center items-center"
+                style={{ backgroundColor: item.user.avatar }}
+              >
+                {item?.user?.name.slice(0, 1)}
+              </div>
               <div className="grow" onClick={() => setIsEditId(item._id)}>
                 <div className="flex items-center mb-1">
                   {item.user.name}
