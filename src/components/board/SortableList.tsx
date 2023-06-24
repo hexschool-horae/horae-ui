@@ -12,6 +12,7 @@ import {
 // import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { classNames } from 'primereact/utils'
+import SortableListTitle from './SortableListTitle'
 
 const SortableList = ({
   id,
@@ -60,6 +61,8 @@ const SortableList = ({
     opacity: isDragging ? 0.5 : undefined,
   }
 
+  // console.log('isDragging', isDragging)
+
   return (
     <div
       className={classNames('w-[286px] p-[-20px] row-span-full')}
@@ -70,7 +73,7 @@ const SortableList = ({
       {...listeners}
     >
       <div className={classNames('bg-secondary-4 px-4 py-5 ', { 'bg-secondary-2': isOverContainer })}>
-        <div className="mb-4"> {listTitle || ''}</div>
+        <SortableListTitle title={listTitle} listId={id} isDragging={isDragging}></SortableListTitle>
         {children}
       </div>
     </div>

@@ -242,6 +242,10 @@ export interface IBoardInvitationDataResponse extends IBasicResponse {
     inviter: string
   }
 }
+export interface IBoarList {
+  listId: string
+  title: string
+}
 /** B05-9 在卡片新增標籤 */
 export interface IPostCardTagRequest {
   tagId: string

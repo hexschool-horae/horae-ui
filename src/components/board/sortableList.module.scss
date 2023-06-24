@@ -1,0 +1,14 @@
+.list_title_view {
+  input {
+    border-radius: 0;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+  input:focus {
+    box-shadow: none !important;
+    border-color: transparent !important;
+    cursor: pointer !important;
+  }
+}

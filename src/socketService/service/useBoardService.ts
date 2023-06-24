@@ -309,6 +309,22 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     }
   })
 
+  // 監聽 修改列表標題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_LIST_TITLE_RESULT, data => {
+    console.log('監聽 修改列表標題是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardList(data.result.lists))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
   // 監聽 移動看板列表是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MOVE_LIST_POSITION_RESULT, data => {
     console.log('監聽 移動看板列表是否成功:', data)
