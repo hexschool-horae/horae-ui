@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Tooltip } from 'primereact/tooltip'
 import ValidateController from '../common/ValidateController'
 import { useForm } from 'react-hook-form'
@@ -11,6 +11,7 @@ import { InputText } from 'primereact/inputtext'
 import { InputSwitch } from 'primereact/inputswitch'
 import { IWorkSpaceEditDataRequest } from '@/apis/interface/api'
 import { PATCH_WORK_SPACE } from '@/apis/axios-service'
+import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
 
 const schema = yup
   .object({
@@ -55,6 +56,7 @@ export default function WorkSpaceTitle({ boardData, isEdit = false, handleGetWor
     resolver: yupResolver(schema),
   })
 
+  const { handleGetWorkSpaceTitleData } = useContext(AdminLayoutContext)
   const [workSpaceName, setWorkSpaceName] = useState('')
   const [isEditWorkSpace, setIsEditWorkSpace] = useState(false)
   const viewSets = [
@@ -83,6 +85,7 @@ export default function WorkSpaceTitle({ boardData, isEdit = false, handleGetWor
     // 重取工作區資料
     if (handleGetWorkSpaceData) {
       handleGetWorkSpaceData()
+      handleGetWorkSpaceTitleData()
     }
     reset()
     setIsEditWorkSpace(false)

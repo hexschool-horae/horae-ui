@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import styles from './workSpaceCard.module.scss'
 import { OverlayPanel } from 'primereact/overlaypanel'
 import { Controller, useForm } from 'react-hook-form'
@@ -12,8 +12,7 @@ import { classNames } from 'primereact/utils'
 import axiosFetcher from '@/apis/axios'
 
 import router from 'next/router'
-import { GET_WORK_SPACE } from '@/apis/axios-service'
-import { IBoardResponse, IUserBoardData } from '@/apis/interface/api'
+import { IBoard } from '@/apis/interface/api'
 
 const { post } = axiosFetcher
 
@@ -23,8 +22,8 @@ const schema = Yup.object().shape({
 
 interface Props {
   workSpaceId: string
-  handleAddWorkSpaceSuccess: () => void
-  handleGetBard: (boardData: IBoardResponse) => void
+  boardList: IBoard[]
+  handleAddWorkSpaceSuccess?: () => void
 }
 
 type IWorkspaceFormReq = {
@@ -34,7 +33,7 @@ type IWorkspaceFormReq = {
   workSpaceId: string
 }
 
-export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
+export default function WorkSpaceCard({ workSpaceId, boardList, handleAddWorkSpaceSuccess }: Props) {
   const newWorkSpaceOverlayPanel = useRef<OverlayPanel>(null)
   const [viewSetList] = useState([
     {
@@ -48,17 +47,6 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
   ])
 
   const [selectedViewSet, setSelectedViewSet] = useState('public')
-  const [boardList, setBoardList] = useState<IUserBoardData[]>([])
-  const [dataResList, setDataResList] = useState<IBoardResponse>({
-    boards: [],
-    discribe: '',
-    status: '',
-    title: '',
-    viewSet: '',
-    yourPermission: '',
-    yourRole: '',
-    _id: '',
-  })
 
   const WorkspaceValues: IWorkspaceFormReq = {
     title: '',
@@ -77,30 +65,15 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
     resolver: yupResolver(schema),
   })
 
-  useEffect(() => {
-    handleGetWorkSpaceData()
-  }, [workSpaceId])
-
-  //
-  useEffect(() => {
-    handleGetBard(dataResList)
-  }, [dataResList])
-
-  /** B02-5 取得單一工作區 */
-  const handleGetWorkSpaceData = async () => {
-    const result = await GET_WORK_SPACE(workSpaceId)
-    if (!result) return
-    setDataResList(result.data)
-    setBoardList(result.data.boards)
-  }
-
   const handleCreateBoard = async (reqData: IWorkspaceFormReq) => {
     reqData.viewSet = selectedViewSet
 
     const result = await post('/board', reqData)
     if (!result) return
     handleHide()
-    handleGetWorkSpaceData()
+    if (handleAddWorkSpaceSuccess) {
+      handleAddWorkSpaceSuccess()
+    }
   }
 
   const handleHide = () => {
@@ -120,13 +93,19 @@ export default function WorkSpaceCard({ workSpaceId, handleGetBard }: Props) {
     <div>
       {/* 既有看版 */}
       <div className="flex w-full flex-wrap">
-        {boardList.map(item => (
-          <Fragment key={item._id}>
-            <div className={styles.card} onClick={() => goBoard(item._id)}>
-              <p>{item.title}</p>
-            </div>
-          </Fragment>
-        ))}
+        {boardList
+          ? boardList.map(item => (
+              <Fragment key={item._id}>
+                <div
+                  className={styles.card}
+                  onClick={() => goBoard(item._id)}
+                  style={{ background: item?.coverPath ? `url(${item?.coverPath})` : '#fff', backgroundSize: 'cover' }}
+                >
+                  <p>{item.title}</p>
+                </div>
+              </Fragment>
+            ))
+          : null}
         {/* 建立看版 */}
         <div className={`${styles.card} ${styles.new_card}`} onClick={e => newWorkSpaceOverlayPanel.current?.toggle(e)}>
           <div className={styles.add}>+</div>

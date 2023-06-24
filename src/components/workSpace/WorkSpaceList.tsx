@@ -96,6 +96,7 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
       <WorkSpaceCard
         workSpaceId={userBoardItem._id}
         key={userBoardItem._id}
+        boardList={userBoardItem.boards}
         handleAddWorkSpaceSuccess={handleAddWorkSpaceSuccess}
         handleGetBard={handleGetBard}
       ></WorkSpaceCard>

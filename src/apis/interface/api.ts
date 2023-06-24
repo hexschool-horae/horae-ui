@@ -18,10 +18,10 @@ export interface IRegisterResponse {
 export interface IUserBoardResponse {
   title: string
   _id: string
-  boards: Boards[]
+  boards: IBoard[]
 }
 /** 看板 */
-export interface Boards {
+export interface IBoard {
   coverPath: string
   title: string
   _id: string
@@ -57,6 +57,7 @@ export interface IUserBoardDataRes extends IBasicResponse {
 export interface IUserBoardData {
   title: string
   _id: string
+  boards: IBoard[]
 }
 /**
  * B02-3 修改單一工作區(含權限)
@@ -72,7 +73,7 @@ export interface IWorkSpaceByIdDataResponse {
   data: IBoardResponse
 }
 export interface IBoardResponse {
-  boards: IUserBoardResponse[]
+  boards: IBoard[]
   discribe: string
   status: string
   title: string

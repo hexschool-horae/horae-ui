@@ -2,13 +2,14 @@ import { DELETE_WORKSPACE, GET_WORK_SPACE } from '@/apis/axios-service'
 import { IBoardResponse } from '@/apis/interface/api'
 import WorkSpaceTitle from '@/components/workSpace/WorkSpaceTitle'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ConfirmDialog } from 'primereact/confirmdialog'
+import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
 
 export default function Setting() {
+  const { handleGetWorkSpaceTitleData } = useContext(AdminLayoutContext)
   const router = useRouter()
   const workId = router.query.workId as string
-  // const [workspaceId, setworkspaceId] = useState('')
   const [boardData, setBoardData] = useState<IBoardResponse>({
     boards: [],
     discribe: '',
@@ -46,6 +47,7 @@ export default function Setting() {
     if (!response) return
     // handlerCallGetWorkPace(workId)
     router.push('/board')
+    handleGetWorkSpaceTitleData()
   }
 
   const accept = () => {
