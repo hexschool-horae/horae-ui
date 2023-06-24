@@ -8,6 +8,7 @@ export interface IInitialState {
   initialized: boolean
   popupKey: number
   popups: IPopups
+  maximize: boolean
   cardDetail: ICardDetail
 }
 
@@ -26,6 +27,7 @@ export const initialState = {
     pripriorityPopup: false,
     pompomodoroPopup: false,
   },
+  maximize: false,
   // from API
   cardDetail: {
     _id: '',
@@ -96,6 +98,7 @@ export const initialState = {
 type TReducerAction =
   | { type: 'INITIALIZE_CARD'; payload: any }
   | { type: 'TOTGGLE_POPUP'; payload: string }
+  | { type: 'MAXIMIZE_POPUP'; payload: boolean }
   | { type: 'ADD_TAG'; payload: { tag: ITag } }
   | { type: 'EDIT_TAG'; payload: { tag: ITag } }
   | { type: 'REMOVE_TAG'; payload: { tagId: string } }
@@ -135,6 +138,12 @@ export function cardDetailReducer(state: IInitialState, { type, payload }: TRedu
         ...state,
         popups: updatedPopups,
         popupKey: state.popupKey + 1,
+      }
+    }
+    case 'MAXIMIZE_POPUP': {
+      return {
+        ...state,
+        maximize: payload,
       }
     }
     case 'ADD_TAG': {

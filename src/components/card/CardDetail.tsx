@@ -25,6 +25,7 @@ import CardPopupCalendar from './CardPopupCalendar'
 import CardDetailCalendar from './CardDetailCalendar'
 import CardPopupFiles from './CardPopupFiles'
 import CardDetailFiles from './CardDetailFiles'
+import CardPopupPomodoro from './CardPopupPomodoro'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -123,17 +124,17 @@ const CardInternal = () => {
                   <CardSidebarButton name="優先權" label={popupLabels.priority} />
                 </div>
 
-                {/* <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
+                <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
                 <div
                   className="grid grid-cols-2 gap-4 
                   md:grid-cols-1 md:gap-2"
                 >
-                  <CardSidebarButton name="移動" label={popupLabels.move} />
+                  {/* <CardSidebarButton name="移動" label={popupLabels.move} />
                   <CardSidebarButton name="複製" label={popupLabels.copy} />
-                  <CardSidebarButton name="分享" label={popupLabels.share} />
-                  
+                  <CardSidebarButton name="分享" label={popupLabels.share} /> */}
+
                   <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
-                </div> */}
+                </div>
               </div>
             )}
           </div>
@@ -152,6 +153,7 @@ const CardInternal = () => {
       </CardPopupWrapper>
       <CardPopupCalendar label={popupLabels.calender} key={popupLabels.calender + state.popupKey} />
       <CardPopupPriority label={popupLabels.priority} key={popupLabels.priority + state.popupKey} />
+      <CardPopupPomodoro label={popupLabels.pomodoro} key={popupLabels.pomodoro + state.popupKey} />
     </>
   )
 }

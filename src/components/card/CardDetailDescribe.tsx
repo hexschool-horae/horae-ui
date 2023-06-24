@@ -80,8 +80,6 @@ export default function CardDetailDescribe() {
     setDescription(socketDescribe)
   }, [socketDescribe])
 
-  console.log(editorRef?.current && editorRef.current.getView())
-
   return (
     <div className="my-5" onClick={() => token && !isEdit && setIsEdit(true)}>
       <h5 className="mb-[16px]">描述</h5>
