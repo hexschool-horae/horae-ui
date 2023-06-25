@@ -24,7 +24,7 @@ const boardRouters = [
   '/board/boardWithoutPermission',
 ]
 
-const Header: FC<IHeaderProps> = ({ boardId }) => {
+const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
   const router = useRouter()
   const { pathname } = router
   const dispatch = useDispatch<AppDispatch>()
@@ -34,22 +34,12 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
   const [headerClass, setHeaderClass] = useState('')
   const [headerColor, setHeaderColor] = useState('')
 
-  // const headerStyle = (() => {
-  //   if (boardThemeColor?.themeColor) {
-  //     return ''
-  //   }
-
-  //   if (boardId) {
-  //     return 'bg-gray-3'
-  //   } else {
-  //     return 'bg-white'
-  //   }
-  // })()
-
   useEffect(() => {
-    // console.log(pathname, boardThemeColor, boardRouters.includes(pathname))
     if (boardRouters.includes(pathname)) {
-      if (boardThemeColor?.themeColor) {
+      if (theme.startsWith('th')) {
+        setHeaderClass(`bg-${theme}-header text-white`)
+        setHeaderColor('')
+      } else if (boardThemeColor?.themeColor) {
         setHeaderClass('')
         setHeaderColor(boardThemeColor?.themeColor)
       } else {
@@ -60,15 +50,7 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
       setHeaderClass('bg-white')
       setHeaderColor('')
     }
-  }, [boardThemeColor, pathname, boardId])
-
-  // const themeMapping: { [key: string]: string } = useMemo(() => {
-  //   return {
-  //     ['theme1']: 'bg-theme1-header',
-  //     ['theme2']: 'bg-theme2-header',
-  //     ['theme3']: 'bg-theme3-header',
-  //   }
-  // }, [])
+  }, [boardThemeColor, pathname, boardId, theme])
   useEffect(() => {
     if (profile?.email) {
       const displayName = getAvatorDisplayName()
