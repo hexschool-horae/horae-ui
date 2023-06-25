@@ -39,13 +39,6 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
       setBoardId(boardId)
     }
   }, [router.isReady, router.pathname])
-  // const themeMapping: { [key: string]: string } = useMemo(() => {
-  //   return {
-  //     ['theme1']: 'bg-theme1-content',
-  //     ['theme2']: 'bg-theme2-content',
-  //     ['theme3']: 'bg-theme3-content',
-  //   }
-  // }, [])
   return (
     <AdminLayoutContextProvider>
       <div className="flex flex-col h-full">

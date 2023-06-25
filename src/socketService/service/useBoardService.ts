@@ -732,7 +732,6 @@ const deleteBoardCover = (payload: interfaces.IBoardDeleteCover) => {
 
 // 修改看板主題
 const modifyBoardTheme = (payload: interfaces.IModifyBoardTheme) => {
-  console.log('modifyBoardTheme = ', payload)
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME, payload)
 }
 
