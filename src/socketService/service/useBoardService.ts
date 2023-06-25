@@ -459,6 +459,25 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     }
   })
 
+  // 監聽 修改看板主題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT, data => {
+    console.log('監看修改看板主題是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT))
+
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
+      store.dispatch(updateUserTheme({ themeColor: data.result.covercolor, textColor: '' }))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
   // 監聽看板刪除封面成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER_RESULT, data => {
     console.log('監看刪除看板封面是否成功:', data)
@@ -582,6 +601,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     deleteCardAttachment,
     updateBoardCover,
     deleteBoardCover,
+    modifyBoardTheme,
     terminateService,
   }
 }
@@ -758,6 +778,11 @@ const deleteCardAttachment = (payload: interfaces.IDeleteCardAttachment) => {
 // 更新看板封面
 const updateBoardCover = (payload: interfaces.IBoardUpdateCover) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, payload)
+}
+
+// 更新看板主題
+const modifyBoardTheme = (payload: interfaces.IBoardModifyTheme) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME, payload)
 }
 
 // 刪除看板封面

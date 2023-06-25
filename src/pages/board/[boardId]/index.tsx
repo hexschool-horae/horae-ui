@@ -5,12 +5,8 @@ import { createPortal } from 'react-dom'
 import { AxiosError } from 'axios'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
-
 import MenuBar from '@/components/board/MenuBar'
 import AddListButton from '@/components/board/AddListButton'
-// import Draggable from '@/components/board/Draggable'
-// import Droppable from '@/components/board/Droppable'
-// import List from '@/components/board/List'
 
 import {
   // CollisionDetection,
@@ -27,7 +23,6 @@ import {
   DropAnimation,
 } from '@dnd-kit/core'
 import { getEventCoordinates } from '@dnd-kit/utilities'
-// import ListContainer from '@/components/board/ListContainer'
 
 import {
   // AnimateLayoutChanges,
@@ -84,8 +79,6 @@ const findContainer = (list: any[], id: string) => {
   }
 
   const [matchedItem] = list.filter((item: any) => {
-    // const matcheCardItem =
-    // console.log(matcheCardItem)
     return item.cards.find((item2: any) => item2._id == id)
   })
 
@@ -191,26 +184,31 @@ const Board: FC = () => {
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: {
-        active: {
-          // opacity: '0.5',
-        },
+        // active: {
+        //   opacity: '0.5',
+        // },
+        // dragOverlay: {
+        //   opacity: '1',
+        // },
       },
     }),
   }
-
+  // 初始所在列表資訊
   const [activeListPosition, setActiveListPosition] = useState<number | null>(null)
-
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+  const [activeListId, setActiveListId] = useState<string | null>(null)
+  // 當前拖曳中的卡片內容
   const [activeCardId, setActiveCardId] = useState<UniqueIdentifier | null>(null)
-  const [clonedLists, setClonedLists] = useState<any | null>(null)
   const [activeCardItem, setActiveCardItem] = useState<ICardItem | null>(null)
+  // 初始 id（active.id）
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+  // 複製清單
+  const [clonedLists, setClonedLists] = useState<any | null>(null)
 
   const lastOverId = useRef<UniqueIdentifier | null>(null)
   const recentlyMovedToNewContainer = useRef(false)
 
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args: any) => {
-      // if (!lists.length) return
       // First, let's see if there are any collisions with the pointer
       if (activeId && lists?.some(item => item._id === activeId)) {
         return closestCenter({
@@ -263,12 +261,14 @@ const Board: FC = () => {
     const { active, over, activatorEvent, delta } = event
     const overId = over?.id
 
-    if (overId == null || lists?.some(item => item._id === active.id)) {
+    if (over === null || active === null || !lists || lists?.some(item => item._id === active.id)) {
       return
     }
 
+    if (overId == null || over.data.current === undefined) return
+
     const activeContainer = findContainer(clonedLists, active.id)
-    const overContainer = findContainer(clonedLists, over.id)
+    const overContainer = findContainer(clonedLists, overId)
 
     // 取得當前 activeItem的座標資訊
     const activatorCoordinates = getEventCoordinates(activatorEvent)
@@ -278,16 +278,15 @@ const Board: FC = () => {
     const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
 
     if (active.data.current?.type === 'card') {
+      // 如果是同張卡片，忽略動作
       if (activeContainer === overContainer) return
 
       let newLists = cloneDeep(lists)
 
+      // 重新產生新的佔位卡片前，清除前一個佔位卡片
       newLists = cloneDeep(
         newLists.map(item => {
-          const newCards = item.cards.filter(item2 => {
-            return item2.title !== ''
-          })
-
+          const newCards = item.cards.filter(item2 => item2.title !== '')
           return { ...item, cards: newCards }
         })
       )
@@ -308,23 +307,33 @@ const Board: FC = () => {
   /* eslint-disable */
   async function handleDragEnd(event: DragOverEvent) {
     const { active, over, activatorEvent, delta } = event
+    if (over === null || active === null || !lists) return
+
     const overId = over?.id
+
+    // 取得當前 activeItem的座標資訊
     const activatorCoordinates = getEventCoordinates(activatorEvent)
-    const intersectionY = (activatorCoordinates?.y || 0) + delta.y + 80
+    const intersectionY = (activatorCoordinates?.y || 0) + delta.y
+
+    // 判斷是否在 over  之下
     const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
 
-    if (!lists) {
-      return
-    }
+    if (active.data.current === undefined || over.data.current === undefined) return
 
+    // 列表移動
     if (lists.some(item => item._id === active.id) && over?.id) {
-      const activeContainer = active.data.current.listPosition
-      const overContainer = over.data.current.listPosition
-      const activeIndex = activeContainer
-      const overIndex = overContainer
+      const activeIndex = active.data.current.listPosition
+      const overIndex = over.data.current.listPosition
 
       const newLists = arrayMove(clonedLists, activeIndex, overIndex)
       dispatch(boardSliceActions.updateBoardList(newLists))
+      dispatch(
+        socketServiceActions.moveBoardList({
+          boardId,
+          listId: activeListId as string,
+          finalPosition: overIndex,
+        })
+      )
       return
     }
 
@@ -333,15 +342,16 @@ const Board: FC = () => {
       return
     }
 
-    const activeContainer = activeListPosition
-    const overContainer = over.data.current.listPosition
-
     // 注意！要拿原本的排序(sort)順位，而非 寫在 data 裡的 cardPosition
     const activeIndex = active.data.current.sortable.index
     const overIndex = over.data.current.sortable.index
 
-    let newLists = cloneDeep(lists)
+    const activeContainer = activeListPosition
+    const overContainer = over.data.current.listPosition
 
+    if (activeCardItem === null || activeListPosition === null || over.data.current === undefined) return
+    let newLists = cloneDeep(lists)
+    //   放定卡片後，清除所有佔位卡片
     newLists = cloneDeep(
       newLists.map(item => {
         const newCards = item.cards.filter(item2 => {
@@ -352,40 +362,46 @@ const Board: FC = () => {
       })
     )
 
-    if (activeCardItem === null) return
-
     let newChildren = cloneDeep(activeCardItem)
-
+    let finalPosition = null
     // 看最後一次觸碰到的 droppable 容器是列表還是卡片
     if (over.data.current.type === 'list') {
-      newLists[over.data.current.listPosition].cards.splice(
-        isBelowOverItem ? newLists[over.data.current.listPosition].cards.length : 0,
-        0,
-        newChildren
-      )
+      finalPosition = isBelowOverItem ? newLists[over.data.current.listPosition].cards.length : 0
+      newLists[over.data.current.listPosition].cards.splice(finalPosition, 0, newChildren)
 
       newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(item => {
         return activeCardId !== item._id
       })
     } else {
+      // 同張列表
       if (activeContainer == overContainer) {
         const temp = newLists[over.data.current.listPosition].cards[overIndex]
 
         newLists[over.data.current.listPosition].cards[overIndex] = newLists[activeContainer].cards[activeIndex]
         newLists[activeContainer].cards[activeIndex] = temp
-      } else {
-        newLists[over.data.current.listPosition].cards.splice(
-          isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index,
-          0,
-          newChildren
-        )
 
-        newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(item => {
-          return activeCardId !== item._id
-        })
+        finalPosition = overIndex
+      } else {
+        finalPosition = isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index
+        newLists[over.data.current.listPosition].cards.splice(finalPosition, 0, newChildren)
+
+        newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(
+          item => activeCardId !== item._id
+        )
       }
     }
+
     dispatch(boardSliceActions.updateBoardList(newLists))
+    dispatch(
+      socketServiceActions.moveCard({
+        boardId,
+        cardId: activeCardId as string,
+        finalListId: over.data.current.listId,
+        finalPosition,
+      })
+    )
+
+    if (finalPosition === null) return
 
     setActiveId(null)
   }
@@ -510,9 +526,17 @@ const Board: FC = () => {
             onDragStart={({ active }) => {
               setActiveId(active.id)
               setClonedLists(cloneDeep(lists))
-              setActiveCardId(active.data.current.cardId)
-              setActiveCardItem(active.data.current.children)
+
+              if (active.data.current === undefined) return
+
+              // 如果初始拖曳項目為卡片，紀錄卡片相關資訊
+              if (active.data.current.type === 'card') {
+                setActiveCardId(active.data.current.cardId)
+                setActiveCardItem(active.data.current.children)
+              }
+
               setActiveListPosition(active.data.current.listPosition)
+              setActiveListId(active.data.current.listId)
             }}
             onDragOver={handleDragOver}
             onDragEnd={event => handleDragEnd(event)}
