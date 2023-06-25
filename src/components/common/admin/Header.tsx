@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useRef, MouseEvent } from 'react'
 import IconLogo from '@/assets/icons/icon_logo.svg'
 // import LogoSVG from '@/components/layout/LogoSVG'
 import Link from 'next/link'
@@ -9,6 +9,8 @@ import { useDispatch } from 'react-redux'
 import { useAppSelector } from '@/hooks/useAppStore'
 import { setIsLogin, setToken } from '@/slices/userSlice'
 import { dialogSliceActions } from '@/slices/dialogSlice'
+import { TieredMenu } from 'primereact/tieredmenu'
+import { Menu } from 'primereact/menu'
 
 interface IHeaderProps {
   boardId?: string
@@ -91,6 +93,26 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
     }
   }
 
+  const profileItems = [
+    {
+      label: '個人中心',
+      command: () => {
+        router.push('/profile')
+      },
+    },
+    {
+      label: '登出',
+      command: () => {
+        onLogout()
+      },
+    },
+  ]
+
+  const menu = useRef<Menu>(null)
+  const onOpenProfileMenu = (e: MouseEvent<HTMLDivElement>) => {
+    menu?.current?.toggle(e)
+  }
+
   return (
     <div
       className={`flex items-center py-4 px-[50px] text-black border-b border-white ${headerClass}`}
@@ -104,20 +126,15 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
         />
       </Link>
       <div className="ml-auto flex items-center">
-        <span
-          className="text-black mr-4 cursor-pointer"
-          style={{ color: boardThemeColor?.textColor }}
-          onClick={onLogout}
-        >
-          登出
-        </span>
         <div
           className="w-[48px] h-[48px] rounded-full bg-primary ml-auto flex justify-center items-center select-none cursor-pointer"
           style={{ backgroundColor: profile.avatar }}
+          onClick={e => onOpenProfileMenu(e)}
         >
           <span className="text-black">{avatorDisplayName}</span>
         </div>
       </div>
+      <TieredMenu model={profileItems} popup ref={menu} />
     </div>
   )
 }
