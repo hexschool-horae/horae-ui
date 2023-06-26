@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef, MouseEvent } from 'react'
+import { FC, useEffect, useState, useRef, MouseEvent, useMemo } from 'react'
 import IconLogo from '@/assets/icons/icon_logo.svg'
 // import LogoSVG from '@/components/layout/LogoSVG'
 import Link from 'next/link'
@@ -33,11 +33,21 @@ const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
   const [avatorDisplayName, setAvatorDisplayName] = useState('')
   const [headerClass, setHeaderClass] = useState('')
   const [headerColor, setHeaderColor] = useState('')
+  type HeaderThemeMapping = {
+    [key: string]: string
+  }
+  const headerThemeMapping: HeaderThemeMapping = useMemo(() => {
+    return {
+      theme1: 'bg-theme1-header',
+      theme2: 'bg-theme2-header',
+      theme3: 'bg-theme3-header',
+    }
+  }, [])
 
   useEffect(() => {
     if (boardRouters.includes(pathname)) {
-      if (theme.startsWith('th')) {
-        setHeaderClass(`bg-${theme}-header text-white`)
+      if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
+        setHeaderClass(`${headerThemeMapping[theme]} text-white`)
         setHeaderColor('')
       } else if (boardThemeColor?.themeColor) {
         setHeaderClass('')
