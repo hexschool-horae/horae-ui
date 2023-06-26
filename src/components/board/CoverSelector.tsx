@@ -48,6 +48,11 @@ const CoverSelector = () => {
         boardId,
       })
     )
+    dispatch(
+      socketServiceActions.deleteBoardCover({
+        boardId,
+      })
+    )
   }
 
   const handleUpdateCover = (type: TCoverType, payload: IImgItem) => {
