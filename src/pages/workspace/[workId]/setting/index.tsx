@@ -2,13 +2,18 @@ import { DELETE_WORKSPACE, GET_WORK_SPACE } from '@/apis/axios-service'
 import { IBoardResponse } from '@/apis/interface/api'
 import WorkSpaceTitle from '@/components/workSpace/WorkSpaceTitle'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ConfirmDialog } from 'primereact/confirmdialog'
+import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
+import { setViewSet } from '@/slices/workspaceSlice'
 
 export default function Setting() {
+  const dispatch = useAppDispatch()
+  const isLogin = useAppSelector(state => state.user.isLogin)
+  const { handleGetWorkSpaceTitleData } = useContext(AdminLayoutContext)
   const router = useRouter()
   const workId = router.query.workId as string
-  // const [workspaceId, setworkspaceId] = useState('')
   const [boardData, setBoardData] = useState<IBoardResponse>({
     boards: [],
     discribe: '',
@@ -24,11 +29,20 @@ export default function Setting() {
   const [confirmConfig, setConfirmConfig] = useState({ message: '' })
 
   const handlerCallGetWorkPace = async (workId: string) => {
-    const response = await GET_WORK_SPACE(workId)
-    if (!response) return
-    const data = response.data
-    setBoardData(data)
-    console.log('handlerCallGetWorkPace data', data)
+    if (!isLogin) return router.push(`/workspace/${workId}/home`)
+    try {
+      const response = await GET_WORK_SPACE(workId)
+      if (!response) return
+      const data = response.data
+      setBoardData(data)
+      dispatch(setViewSet(response.data.viewSet))
+    } catch (e: any) {
+      // 403 msg	此為私人工作區，您不是工作區成員，不可查看
+      const { status } = e.response
+      if (status === 403) {
+        router.push('/workspace/workspaceWithoutPermission')
+      }
+    }
   }
 
   const getWorkPace = async () => {
@@ -46,6 +60,7 @@ export default function Setting() {
     if (!response) return
     // handlerCallGetWorkPace(workId)
     router.push('/board')
+    handleGetWorkSpaceTitleData()
   }
 
   const accept = () => {

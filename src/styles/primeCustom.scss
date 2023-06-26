@@ -111,9 +111,36 @@
   animation: p-progress-spinner-dash 1.5s ease-in-out infinite;
 }
 
+.card_detail_dialog {
+  &.p-dialog {
+    .p-dialog-header {
+      .p-dialog-header-icon {
+        @apply bg-secondary-2 text-secondary-3;
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-radius: 0 4px 0 4px;
+        width: 46px;
+        height: 46px;
+        cursor: pointer;
+        transition: 0.22s ease-in;
+        &:hover {
+          @apply text-secondary-3 bg-secondary-4;
+          border-color: 0;
+        }
+      }
+    }
+  }
+  .card_tag {
+    .p-chip-remove-icon.pi-times {
+      font-size: 10px;
+    }
+  }
+}
+
 @media (max-width: 640px) {
   .p-button {
     font-size: 14px;
-    padding: 10px 20px;
+    padding: 10px;
   }
 }

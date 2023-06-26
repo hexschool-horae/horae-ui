@@ -162,6 +162,7 @@ export interface IDeleteCardComment {
   boardId: string
 }
 
+// 修改看板列表標題
 export interface IBoardModifyListTitle {
   title: string
   listId: string

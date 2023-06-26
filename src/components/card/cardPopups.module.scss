@@ -1,3 +1,14 @@
+.popup_wrapper_header {
+  text-align: center;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid #f1f1f1 !important;
+}
+
+.popup_wrapper_content {
+  padding-top: 20px !important;
+}
+
 .fake_input {
   margin-top: 6px;
   font-size: 1rem;
@@ -44,5 +55,37 @@
     position: absolute;
     left: 0;
     visibility: hidden;
+  }
+}
+
+.pomodoro_input {
+  @apply bg-secondary-4 border-[#f1d7d8] text-secondary-3;
+  text-align: center;
+  width: 160px;
+}
+.pomodoro_tab {
+  @apply rounded-full grow p-2 text-center;
+}
+.pomodoro_func_btns {
+  @apply flex justify-center items-center gap-5 mt-16;
+  .pomodoro_func_btn {
+    border-color: #f1d7d8;
+    transition: border-color 0.3s ease-in-out;
+    width: 36px;
+    height: 36px !important;
+    &.lg {
+      width: 52px;
+      height: 52px !important;
+    }
+    &:hover {
+      border-color: #cc3a3a !important;
+    }
+  }
+}
+.hide_pomodoro_animate {
+  font-size: 34px;
+  order: 2;
+  svg {
+    display: none;
   }
 }
