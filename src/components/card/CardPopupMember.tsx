@@ -9,6 +9,8 @@ import cardPopupsStyle from './cardPopups.module.scss'
 import { useCardDetail } from '@/contexts/cardDetailContext'
 import { IBoardMembers, IUserId } from '@/apis/interface/api'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
+import { dialogSliceActions } from '@/slices/dialogSlice'
 interface ICardPopupMemberProps {
   label: string
   cardId: string
@@ -77,6 +79,7 @@ export default function CardPopupMember({ label, cardId }: ICardPopupMemberProps
         memberId,
       })
     )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT))
   }
 
   /**
@@ -90,6 +93,7 @@ export default function CardPopupMember({ label, cardId }: ICardPopupMemberProps
         memberId,
       })
     )
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER_RESULT))
   }
 
   const getShortName = (name: string) => {

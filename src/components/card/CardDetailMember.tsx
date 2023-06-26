@@ -4,6 +4,8 @@ import { useCardDetail } from '@/contexts/cardDetailContext'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 
 interface ICardDetailMemberProps {
   label: string
@@ -38,6 +40,8 @@ export default function CardDetailMember({ label, cardId }: ICardDetailMemberPro
         memberId,
       })
     )
+
+    appDispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_DELETE_MEMBER_RESULT))
   }
 
   return (
