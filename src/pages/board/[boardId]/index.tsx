@@ -198,9 +198,9 @@ const Board: FC = () => {
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: {
-        // active: {
-        //   opacity: '0.5',
-        // },
+        active: {
+          // opacity: '0.5',
+        },
         // dragOverlay: {
         //   opacity: '1',
         // },
@@ -486,7 +486,12 @@ const Board: FC = () => {
       !Object.keys(activeCardItem).length
     )
       return <></>
-    return <BoardCard id={activeCardId} title={activeCardItem.title} priority={''} tags={activeCardItem.tags} />
+
+    return (
+      <div className="rotate-12">
+        <BoardCard id={activeCardId} title={activeCardItem.title} priority={''} tags={activeCardItem.tags} />
+      </div>
+    )
   }
 
   const handleRenderOverlay = () => {
