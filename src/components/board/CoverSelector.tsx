@@ -3,7 +3,7 @@ import axios from 'axios'
 import Style from './CoverSelector.module.scss'
 import { Button } from 'primereact/button'
 import { classNames } from 'primereact/utils'
-import { updateUserTheme } from '@/slices/userSlice'
+
 // import { boardSliceActions } from '@/slices/boardSlice'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { errorSliceActions } from '@/slices/errorSlice'
@@ -19,7 +19,7 @@ const CoverSelector = () => {
   const [imgList, setImgList] = useState<IImgItem[]>([])
   const [coverType, setCoverType] = useState<TCoverType>(null)
   const boardId = useAppSelector(state => state.board.boardId)
-  const boardThemeColor = useAppSelector(state => state.user.themeColor)
+  // const boardThemeColor = useAppSelector(state => state.user.themeColor)
   const dispatch = useAppDispatch()
 
   const hanldeGetUnsplash = async () => {
@@ -40,11 +40,22 @@ const CoverSelector = () => {
     }, 1000)
   }
 
+  const onSetCoverTheme = (theme: string) => {
+    console.log('onSetCoverTheme = ', theme)
+    dispatch(
+      socketServiceActions.modifyBoardTheme({
+        covercolor: theme,
+        boardId,
+      })
+    )
+  }
+
   const handleUpdateCover = (type: TCoverType, payload: IImgItem) => {
     if (type === 'unsplash') {
+      // 更新看板封面
       dispatch(socketServiceActions.updateBoardCover({ boardId, fileURL: payload.fullUrl }))
       // dispatch(boardSliceActions.updateBoardTheme({ ...boardThemeColor, themeColor: payload.color }))
-      dispatch(updateUserTheme({ ...boardThemeColor, themeColor: payload.color }))
+      // dispatch(updateUserTheme({ ...boardThemeColor, themeColor: payload.color }))
     }
   }
 
@@ -115,8 +126,11 @@ const CoverSelector = () => {
 
       {/* 從主題選擇 */}
       {coverType === 'theme' && (
-        <div className="w-full flex mb-5">
-          <div className="flex-1 mr-2">
+        <div className={Style['cover-theme-box']}>
+          <div className={`${Style.theme} ${Style.theme1}`} onClick={() => onSetCoverTheme('theme1')}></div>
+          <div className={`${Style.theme} ${Style.theme2}`} onClick={() => onSetCoverTheme('theme2')}></div>
+          <div className={`${Style.theme} ${Style.theme3}`} onClick={() => onSetCoverTheme('theme3')}></div>
+          {/* <div className="flex-1 mr-2">
             <div
               className={classNames('bg-gray-2', Style.theme_item)}
               onClick={() => handleSetCoverType('theme')}
@@ -127,7 +141,7 @@ const CoverSelector = () => {
               className={classNames('bg-gray-3', Style.theme_item)}
               onClick={() => handleSetCoverType('theme')}
             ></div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>

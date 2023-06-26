@@ -5,10 +5,6 @@ import { useAppSelector } from '@/hooks/useAppStore'
 /** 看板上方主選單的團隊成員群組 */
 export default function MemberAvatarGroup() {
   const boardMembersList = useAppSelector(state => state.board.boardMembersList)
-
-  const getRandomColor = () => {
-    return `#${(((1 << 24) * Math.random()) | 0).toString(16).padStart(6, '0')}`
-  }
   return (
     <>
       {boardMembersList !== null ? (
@@ -22,19 +18,19 @@ export default function MemberAvatarGroup() {
                   label={userId.name.slice(0, 1).toLocaleUpperCase()}
                   shape="circle"
                   size="large"
-                  style={{ backgroundColor: getRandomColor(), color: '#ffffff' }}
+                  style={{ backgroundColor: userId.avatar, color: '#000' }}
                 />
               )
             })}
           {/* 大於五位，後續縮寫 */}
-          {boardMembersList.length > 5 && (
+          {/* {boardMembersList.length > 5 && (
             <Avatar
               label={`+ ${boardMembersList.length - 5}`}
               shape="circle"
               size="large"
-              style={{ backgroundColor: getRandomColor(), color: '#ffffff' }}
+              className="bg-primary"
             />
-          )}
+          )} */}
         </AvatarGroup>
       ) : (
         <></>

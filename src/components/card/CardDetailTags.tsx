@@ -19,6 +19,7 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
 
   const { state, dispatch } = useCardDetail()
   const appDispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const socketTags = useAppSelector(state => state.board.cardDetail?.tags)
 
   const [tags, setTags] = useState<ITag[]>([])
@@ -52,28 +53,30 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
     <>
       {tags.length > 0 && (
         <div className={`${style.detail_list}`}>
-          <div className="min-w-[32px]">標籤</div>
-          <Button
-            icon="pi pi-plus"
-            rounded
-            aria-label="add"
-            className={`${style.detail_list_add_btn}`}
-            onClick={() => {
-              dispatch({
-                type: 'TOTGGLE_POPUP',
-                payload: label,
-              })
-            }}
-          />
+          <div className={`${style.detail_list_title} min-w-[32px]`}>標籤</div>
+          {token && (
+            <Button
+              icon="pi pi-plus"
+              rounded
+              aria-label="add"
+              className={`${style.detail_list_add_btn}`}
+              onClick={() => {
+                dispatch({
+                  type: 'TOTGGLE_POPUP',
+                  payload: label,
+                })
+              }}
+            />
+          )}
           <ul className="flex items-center flex-wrap gap-2">
             {tags.map(tag => (
               <li key={tag._id}>
                 <Chip
                   label={tag.title}
-                  className={`cursor-pointer ${tagStyle.tag} ${tagStyle.tag_active}`}
+                  className={`cursor-pointer card_tag ${tagStyle.tag} ${tagStyle.tag_active}`}
                   style={{ backgroundColor: tag.color }}
                   removeIcon="pi pi-times"
-                  removable
+                  removable={token != ''}
                   onRemove={() => handleRemove(tag._id)}
                 />
               </li>

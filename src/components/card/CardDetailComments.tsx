@@ -17,6 +17,8 @@ export default function CardDetailComments() {
   const boardId = router.query.boardId as string
 
   const appDispatch = useAppDispatch()
+  const profile = useAppSelector(state => state.user.profile)
+  const token = useAppSelector(state => state.user.token) || ''
   const socketComments = useAppSelector(state => state.board.cardDetail?.comments)
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -118,23 +120,31 @@ export default function CardDetailComments() {
     }))
     setComments(list)
     clearStatus()
+    console.log('comment = ', comments)
   }, [socketComments])
 
   return (
     <div>
-      <div className="relative mb-2">
-        <div className="w-[42px] h-[42px] rounded-full  bg-black absolute left-2 top-1/2 translate-y-[-50%]"></div>
-        <div className="grow">
-          <InputText
-            placeholder="撰寫評論..."
-            ref={inputRef}
-            value={comment}
-            className="w-full h-[58px] pl-[60px]"
-            onChange={e => setComment(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
+      {token && (
+        <div className="relative mb-2">
+          <div
+            className="w-[42px] h-[42px] rounded-full absolute left-2 top-1/2 translate-y-[-50%] flex justify-center items-center"
+            style={{ backgroundColor: profile.avatar }}
+          >
+            {profile.email.slice(0, 1)}
+          </div>
+          <div className="grow">
+            <InputText
+              placeholder="撰寫評論..."
+              ref={inputRef}
+              value={comment}
+              className="w-full h-[58px] pl-[60px]"
+              onChange={e => setComment(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <ul className="relative">
         {comments.length > 0 &&
           comments.map((item, i) => (
@@ -145,7 +155,12 @@ export default function CardDetailComments() {
                 ${style.comment_item}
               `}
             >
-              <div className="w-[42px] h-[42px] rounded-full  bg-black"></div>
+              <div
+                className="w-[42px] h-[42px] rounded-full flex justify-center items-center"
+                style={{ backgroundColor: item.user.avatar }}
+              >
+                {item?.user?.name.slice(0, 1)}
+              </div>
               <div className="grow" onClick={() => setIsEditId(item._id)}>
                 <div className="flex items-center mb-1">
                   {item.user.name}
@@ -167,7 +182,9 @@ export default function CardDetailComments() {
               <Button
                 size="small"
                 text
-                className={`hover:bg-transparent ${style.icon_btn_delete} ${style.comment_delete_btn}`}
+                className={`hover:bg-transparent ${style.icon_btn_delete} ${
+                  token ? style.comment_delete_btn : 'hidden'
+                }`}
                 onClick={() => deleteComment(item._id)}
               >
                 <IconDelete />

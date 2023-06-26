@@ -37,11 +37,17 @@ export default function Register() {
   const onSubmit = async (submitData: IRegisterForm) => {
     const result = await POST_USER_LOGIN(submitData)
     if (result === undefined) return
-    const { token } = result?.user ?? null
+    const { token, email, name, avatar } = result?.user ?? null
 
     dispatch(setToken(token))
     dispatch(setIsLogin(true))
-    dispatch(setProfile(submitData.email))
+    dispatch(
+      setProfile({
+        email,
+        name,
+        avatar,
+      })
+    )
     // 重置表單
     reset()
   }

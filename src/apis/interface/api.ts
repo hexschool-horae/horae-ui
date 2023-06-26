@@ -11,6 +11,9 @@ export interface IRegisterForm {
 export interface IRegisterResponse {
   user: {
     token: string
+    avatar: string
+    email: string
+    name: string
   }
 }
 
@@ -18,10 +21,10 @@ export interface IRegisterResponse {
 export interface IUserBoardResponse {
   title: string
   _id: string
-  boards: Boards[]
+  boards: IBoard[]
 }
 /** 看板 */
-export interface Boards {
+export interface IBoard {
   coverPath: string
   title: string
   _id: string
@@ -57,6 +60,7 @@ export interface IUserBoardDataRes extends IBasicResponse {
 export interface IUserBoardData {
   title: string
   _id: string
+  boards: IBoard[]
 }
 /**
  * B02-3 修改單一工作區(含權限)
@@ -72,7 +76,7 @@ export interface IWorkSpaceByIdDataResponse {
   data: IBoardResponse
 }
 export interface IBoardResponse {
-  boards: IUserBoardResponse[]
+  boards: IBoard[]
   discribe: string
   status: string
   title: string
@@ -242,6 +246,10 @@ export interface IBoardInvitationDataResponse extends IBasicResponse {
     inviter: string
   }
 }
+export interface IBoarList {
+  listId: string
+  title: string
+}
 /** B05-9 在卡片新增標籤 */
 export interface IPostCardTagRequest {
   tagId: string
@@ -268,6 +276,7 @@ export interface IComment {
   user: {
     _id: string
     name: string
+    avatar: string
   }
 }
 
@@ -287,6 +296,7 @@ export interface IBoardMember {
     _id: string
     name: string
     email: string
+    avatar: string
   }
   inviteHashData: string
   role: string

@@ -17,6 +17,21 @@ module.exports = {
         black: '#1A1A1A',
         'gray-2': '#606060',
         'gray-3': '#F8F8F8',
+        theme1: {
+          header: '#00003d',
+          sidebar: '#0079BF',
+          content: '#E5E7EB',
+        },
+        theme2: {
+          header: '#2B511E',
+          sidebar: '#519839',
+          content: '#E5E7EB',
+        },
+        theme3: {
+          header: '#5E261B',
+          sidebar: '#7B3123',
+          content: '#D1D5DB',
+        },
       },
       fontSize: {
         xxs: '10px',

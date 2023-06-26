@@ -1,16 +1,18 @@
 import { memo, useState } from 'react'
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown'
 import { classNames } from 'primereact/utils'
+import { ConfirmDialog } from 'primereact/confirmdialog'
 import Style from './MemberInfoGroup.module.scss'
 
 import { IBoardMember } from '@/apis/interface/api'
 
-import { useAppSelector } from '@/hooks/useAppStore'
-import { PATCH_BOARD_MEMBERS_BY_ID, DELETE_BOARD_MEMBERS_BY_ID } from '@/apis/axios-service'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
+// import { PATCH_BOARD_MEMBERS_BY_ID, DELETE_BOARD_MEMBERS_BY_ID } from '@/apis/axios-service'
 
 interface IPermissonOption {
   name: string
-  code: string | number
+  code: string
   disabled: boolean
 }
 
@@ -29,6 +31,7 @@ const MemberInfoGroup = ({
   className?: string
   disabled?: boolean
 }) => {
+  const dispatch = useAppDispatch()
   const boardId = useAppSelector(state => state.board.boardId)
   const [permission, setPermission] = useState<IPermissonOption>({
     name: permissionOptions.get(model.role) || '',
@@ -36,27 +39,34 @@ const MemberInfoGroup = ({
     disabled: false,
   })
 
+  const [visible, setVisible] = useState(false)
+
   const handleChangePermission = async (value: IPermissonOption) => {
     setPermission(value)
     if (model.role === 'admin' && value.code === 'admin') return
 
     if (value.code !== 'exit') {
-      PATCH_BOARD_MEMBERS_BY_ID(boardId, {
-        role: value.code,
-        userId: model.userId?._id,
-      })
+      dispatch(
+        socketServiceActions.modifyBoardMemberPermission({ boardId, role: value.code, userId: model.userId?._id })
+      )
     } else {
-      DELETE_BOARD_MEMBERS_BY_ID(boardId, {
-        userId: model.userId?._id,
-      })
+      setVisible(true)
     }
+  }
+  const handleDeleteMember = () => {
+    dispatch(socketServiceActions.deleteBoardMember({ boardId, userId: model.userId?._id }))
   }
 
   return model !== undefined ? (
     <div className={classNames(className, Style.member_info_item)}>
       {/* 照片之後補上 */}
 
-      <div className="w-[3rem] h-[3rem] bg-black rounded-full mr-3"></div>
+      <div
+        className="w-[3rem] h-[3rem] flex justify-center items-center rounded-full mr-3"
+        style={{ backgroundColor: model.userId.avatar }}
+      >
+        {model.userId.email.slice(0, 1)}
+      </div>
       <div>
         <span>{model.userId?.name}</span>
         <div className={classNames(Style.member_info_subtitle, 'text-gray-2')}>{model.userId?.email}</div>
@@ -79,6 +89,15 @@ const MemberInfoGroup = ({
           }}
         />
       </span>
+      <ConfirmDialog
+        header="確認離開看板？"
+        visible={visible}
+        onHide={() => setVisible(false)}
+        rejectLabel="取消"
+        acceptLabel="確定離開"
+        accept={handleDeleteMember}
+        message={`確認離開看板後，${model.userId?.name} 將從看板成員中移除`}
+      />
     </div>
   ) : (
     <></>

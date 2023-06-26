@@ -15,6 +15,7 @@ export default function CardDetailTitle() {
   const boardId = router.query.boardId as string
 
   const appDispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const socketCardTitle = useAppSelector(state => state.board.cardDetail?.title)
   const socketPriority = useAppSelector(state => state.board.cardDetail?.proiority)
   const cardDetail = useAppSelector(state => state.board.cardDetail)
@@ -69,10 +70,10 @@ export default function CardDetailTitle() {
   }
 
   const handleBlur = () => {
+    setIsFoucs(false)
     const submitData = getValues()
     if (submitData.title == cardTitle) return
     updateTitle(submitData.title)
-    setIsFoucs(false)
   }
 
   useEffect(() => {
@@ -100,7 +101,7 @@ export default function CardDetailTitle() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mb-8 relative">
+    <form onSubmit={handleSubmit(onSubmit)} className="mt-2 mb-8 relative">
       <Controller
         name="title"
         control={control}
@@ -110,11 +111,13 @@ export default function CardDetailTitle() {
               id={field.name}
               placeholder="卡片標題"
               ref={inputRef}
+              disabled={!token}
               value={field.value}
               onChange={e => field.onChange(e.target.value)}
               onFocus={() => setIsFoucs(true)}
               onBlur={() => handleBlur()}
-              className={`w-full text-3xl ${isFocus || fieldState.error ? '' : style.card_title_view} 
+              className={`w-full text-3xl disabled:opacity-100
+                ${isFocus || fieldState.error ? '' : style.card_title_view} 
                 ${fieldState.error ? 'p-invalid' : ''}
                 ${socketPriority != '' && 'pl-[54px]'}
               `}

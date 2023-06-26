@@ -25,6 +25,7 @@ import CardPopupCalendar from './CardPopupCalendar'
 import CardDetailCalendar from './CardDetailCalendar'
 import CardPopupFiles from './CardPopupFiles'
 import CardDetailFiles from './CardDetailFiles'
+import CardPopupPomodoro from './CardPopupPomodoro'
 
 const popupLabels = {
   member: 'memberPopup',
@@ -53,6 +54,7 @@ const CardInternal = () => {
   const router = useRouter()
   const cardId = router.query.cardId as string
   const cardDetail = useAppSelector(state => state.board.cardDetail)
+  const token = useAppSelector(state => state.user.token) || ''
 
   const getCardDetail = async () => {
     try {
@@ -85,10 +87,10 @@ const CardInternal = () => {
   return (
     <>
       {state.initialized ? (
-        <Dialog visible={true} onHide={handleCloseCardDetail} className="w-full md:w-[800px] mx-3">
+        <Dialog visible={true} onHide={handleCloseCardDetail} className="w-full md:w-[800px] mx-3 card_detail_dialog">
           <div className="grid grid-cols-1 md:grid-cols-7 gap-6">
             {/* main col */}
-            <div className="md:col-span-5">
+            <div className={`${token ? 'md:col-span-5' : 'md:col-span-7'}`}>
               {/* <div className="text-[14px] mb-3">
                 在列表<span className="pl-1 text-secondary-3 cursor-pointer">測試列表</span>
               </div> */}
@@ -98,7 +100,7 @@ const CardInternal = () => {
                 <CardDetailMember label={popupLabels.member} cardId={cardId} />
               )}
               {/* <CardDetailMember label={popupLabels.member} cardId={cardId} /> */}
-              {state.cardDetail.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
+              {cardDetail?.tags && cardDetail?.tags.length > 0 && <CardDetailTags label={popupLabels.tags} />}
               <CardDetailCalendar label={popupLabels.calender} />
               <CardDetailDescribe />
               {cardDetail?.attachments && cardDetail?.attachments.length > 0 && <CardDetailFiles cardId={cardId} />}
@@ -107,32 +109,34 @@ const CardInternal = () => {
             </div>
 
             {/* sidebar */}
-            <div className="md:col-span-2">
-              <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
-              <div
-                className="grid grid-cols-2 gap-4 
-                md:grid-cols-1 md:gap-2"
-              >
-                <CardSidebarButton name="成員" label={popupLabels.member} />
-                <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
-                <CardSidebarButton name="標籤" label={popupLabels.tags} />
-                <CardSidebarButton name="日期" label={popupLabels.calender} />
-                <CardSidebarButton name="附件" label={popupLabels.files} />
-                <CardSidebarButton name="優先權" label={popupLabels.priority} />
-              </div>
+            {token && (
+              <div className="md:col-span-2">
+                <h6 className={`${style.sidebar_title}`}>新增至卡片</h6>
+                <div
+                  className="grid grid-cols-2 gap-4 
+                  md:grid-cols-1 md:gap-2"
+                >
+                  <CardSidebarButton name="成員" label={popupLabels.member} />
+                  <CardSidebarButton name="待辦清單" label={popupLabels.todoList} />
+                  <CardSidebarButton name="標籤" label={popupLabels.tags} />
+                  <CardSidebarButton name="日期" label={popupLabels.calender} />
+                  <CardSidebarButton name="附件" label={popupLabels.files} />
+                  <CardSidebarButton name="優先權" label={popupLabels.priority} />
+                </div>
 
-              {/* <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
-              <div
-                className="grid grid-cols-2 gap-4 
-                md:grid-cols-1 md:gap-2"
-              >
-                <CardSidebarButton name="移動" label={popupLabels.move} />
-                <CardSidebarButton name="複製" label={popupLabels.copy} />
-                <CardSidebarButton name="分享" label={popupLabels.share} />
-                
-                <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
-              </div> */}
-            </div>
+                <h6 className={`${style.sidebar_title} pt-8`}>動作</h6>
+                <div
+                  className="grid grid-cols-2 gap-4 
+                  md:grid-cols-1 md:gap-2"
+                >
+                  {/* <CardSidebarButton name="移動" label={popupLabels.move} />
+                  <CardSidebarButton name="複製" label={popupLabels.copy} />
+                  <CardSidebarButton name="分享" label={popupLabels.share} /> */}
+
+                  <CardSidebarButton name="番茄鐘" label={popupLabels.pomodoro} />
+                </div>
+              </div>
+            )}
           </div>
         </Dialog>
       ) : (
@@ -149,6 +153,7 @@ const CardInternal = () => {
       </CardPopupWrapper>
       <CardPopupCalendar label={popupLabels.calender} key={popupLabels.calender + state.popupKey} />
       <CardPopupPriority label={popupLabels.priority} key={popupLabels.priority + state.popupKey} />
+      <CardPopupPomodoro label={popupLabels.pomodoro} key={popupLabels.pomodoro + state.popupKey} />
     </>
   )
 }

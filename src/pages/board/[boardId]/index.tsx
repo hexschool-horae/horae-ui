@@ -1,23 +1,20 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { AxiosError } from 'axios'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
 import { cloneDeep } from 'lodash-es'
-
 import MenuBar from '@/components/board/MenuBar'
 import AddListButton from '@/components/board/AddListButton'
-// import Draggable from '@/components/board/Draggable'
-// import Droppable from '@/components/board/Droppable'
-// import List from '@/components/board/List'
 
 import {
   // CollisionDetection,
-  // pointerWithin,
-  // closestCenter,
-  // rectIntersection,
-  // getFirstCollision,
+  pointerWithin,
+  closestCenter,
+  // closestCorners,
+  rectIntersection,
+  getFirstCollision,
   DragOverEvent,
   UniqueIdentifier,
   MeasuringStrategy,
@@ -26,13 +23,12 @@ import {
   DropAnimation,
 } from '@dnd-kit/core'
 import { getEventCoordinates } from '@dnd-kit/utilities'
-// import ListContainer from '@/components/board/ListContainer'
 
 import {
   // AnimateLayoutChanges,
   SortableContext,
   // useSortable,
-  // arrayMove,
+  arrayMove,
   // defaultAnimateLayoutChanges,
   verticalListSortingStrategy,
   horizontalListSortingStrategy,
@@ -50,11 +46,48 @@ import { ICardList } from '@/types/pages'
 
 import SortableCard from '@/components/board/SortableCard'
 import SortableList from '@/components/board/SortableList'
-import BoardCard from '@/components/board/BoardCard'
+import BoardCard, { ICardItem } from '@/components/board/BoardCard'
 import { classNames } from 'primereact/utils'
 
 import BoardGuard from '@/app/BoardGuard'
 import AddCardButton from '@/components/board/AddCardButton'
+
+const emptyCard = {
+  _id: '',
+  title: '',
+  startDate: 0,
+  endDate: 0,
+  priority: '',
+  tags: [
+    {
+      _id: '',
+      title: '',
+      color: '',
+    },
+  ],
+}
+
+const findContainer = (list: any[], id: string) => {
+  if (!list.length) {
+    console.warn('清單目前為空')
+    return null
+  }
+
+  if (list.some((item: any) => item._id === id)) {
+    const [matcheditem] = list.filter((item: any) => item._id === id)
+    return matcheditem._id
+  }
+
+  const [matchedItem] = list.filter((item: any) => {
+    return item.cards.find((item2: any) => item2._id == id)
+  })
+
+  if (matchedItem) {
+    return matchedItem._id
+  } else {
+    return null
+  }
+}
 
 const Board: FC = () => {
   const router = useRouter()
@@ -139,20 +172,11 @@ const Board: FC = () => {
     const tempList = cloneDeep(boardLists)
     setLists(tempList.map(item => ({ id: item._id, ...item })))
   }, [boardLists])
-  // const lists = singleBaord?.lists.map(item => ({ ...item, id: item._id }))
-
-  // const dispatch = useAppDispatch()
-
-  const [activeListId, setActiveListId] = useState<UniqueIdentifier | null>(null)
-  const [overListId, setOverListId] = useState<UniqueIdentifier | null>(null)
-  const [overListPosition, setOverListPosition] = useState<number | null>(null)
-  const [activeCardId, setActiveCardId] = useState<UniqueIdentifier | null>(null)
-  const [activeType, setActiveType] = useState<string | null>(null)
 
   /** 讓 draggable、droppable 內的 pointer 事件不會被 prevent */
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
-      distance: 8,
+      distance: 5,
     },
   })
 
@@ -160,250 +184,226 @@ const Board: FC = () => {
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: {
-        active: {
-          // opacity: '0.5',
-        },
+        // active: {
+        //   opacity: '0.5',
+        // },
+        // dragOverlay: {
+        //   opacity: '1',
+        // },
       },
     }),
   }
+  // 初始所在列表資訊
+  const [activeListPosition, setActiveListPosition] = useState<number | null>(null)
+  const [activeListId, setActiveListId] = useState<string | null>(null)
+  // 當前拖曳中的卡片內容
+  const [activeCardId, setActiveCardId] = useState<UniqueIdentifier | null>(null)
+  const [activeCardItem, setActiveCardItem] = useState<ICardItem | null>(null)
+  // 初始 id（active.id）
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+  // 複製清單
+  const [clonedLists, setClonedLists] = useState<any | null>(null)
 
-  // const collisionDetectionStrategy: CollisionDetection = useCallback(
-  //   (args: any) => {
-  //     if (!lists) return
-  //     if (activeListId && lists.some(item => item._id === activeListId)) {
-  //       return closestCenter({
-  //         ...args,
-  //         droppableContainers: args.droppableContainers.filter(item => item.id),
-  //       })
-  //     }
-  //     console.log(args.droppableContainers)
+  const lastOverId = useRef<UniqueIdentifier | null>(null)
+  const recentlyMovedToNewContainer = useRef(false)
 
-  //     // return
-  //     // Start by finding any intersecting droppable
-  //     const pointerIntersections = pointerWithin(args)
+  const collisionDetectionStrategy: CollisionDetection = useCallback(
+    (args: any) => {
+      // First, let's see if there are any collisions with the pointer
+      if (activeId && lists?.some(item => item._id === activeId)) {
+        return closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(container =>
+            lists?.some(item => item._id === container.id)
+          ),
+        })
+      }
 
-  //     const intersections =
-  //       pointerIntersections.length > 0
-  //         ? // If there are droppables intersecting with the pointer, return those
-  //           pointerIntersections
-  //         : rectIntersection(args)
-  //     let overId = getFirstCollision(intersections, 'id')
+      const pointerIntersections = pointerWithin(args)
+      const intersections =
+        pointerIntersections.length > 0
+          ? // If there are droppables intersecting with the pointer, return those
+            pointerIntersections
+          : rectIntersection(args)
+      let overId = getFirstCollision(intersections, 'id')
 
-  //     if (overId != null) {
-  //       if (lists.some(item => item._id === overId)) {
-  //         const containerItems = lists.filter(item => item._id === overId)
+      if (overId !== null) {
+        if (lists?.some(item => item._id === overId)) {
+          const [listItems] = lists.filter(item => item._id === overId)
 
-  //         // If a container is matched and it contains items (columns 'A', 'B', 'C')
-  //         if (containerItems && containerItems?.length > 0) {
-  //           // Return the closest droppable within that container
-  //           overId = closestCenter({
-  //             ...args,
-  //             droppableContainers: args.droppableContainers.filter(
-  //               container => container.id !== overId && containerItems.includes(container.id)
-  //             ),
-  //           })[0]?.id
-  //         }
-  //       }
+          if (listItems !== undefined && listItems.cards.length > 0) {
+            // Return the closest droppable within that container
+            overId = closestCenter({
+              ...args,
+              droppableContainers: args.droppableContainers.filter(
+                container => container.id !== overId && listItems.cards.find(item => item._id === container.id)
+              ),
+            })[0]?.id
+          }
+        }
 
-  //       lastOverId.current = overId
+        lastOverId.current = overId
 
-  //       return [{ id: overId }]
-  //     }
+        return [{ id: overId }]
+      }
 
-  //     // When a draggable item moves to a new container, the layout may shift
-  //     // and the `overId` may become `null`. We manually set the cached `lastOverId`
-  //     // to the id of the draggable item that was moved to the new container, otherwise
-  //     // the previous `overId` will be returned which can cause items to incorrectly shift positions
-  //     if (recentlyMovedToNewContainer.current) {
-  //       lastOverId.current = activeListId
-  //     }
+      if (recentlyMovedToNewContainer.current) {
+        lastOverId.current = activeId
+      }
 
-  //     // If no droppable is matched, return the last match
-  //     return lastOverId.current ? [{ id: lastOverId.current }] : []
-  //   },
-  //   [activeListId, lists]
-  // )
+      // If no droppable is matched, return the last match
+      return lastOverId.current ? [{ id: lastOverId.current }] : []
+    },
+    [activeId, lists]
+  )
 
-  // const handleChange = (active, over) => {
-  //   const clonedList = cloneDeep(lists)
-  //   if (!clonedList || !clonedList.length) return
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over, activatorEvent, delta } = event
+    const overId = over?.id
 
-  //   let newLists = []
-  //   let newIndex: number
-  //   const otherListItems = clonedList.filter(item => item._id !== activeListId && item._id !== overListId)
+    if (over === null || active === null || !lists || lists?.some(item => item._id === active.id)) {
+      return
+    }
 
-  //   if (active.data.current?.type === 'list') {
-  //     const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-  //     const [overListItem] = clonedList?.filter(item => item._id === overListId)
-  //     const activeCards = activeListItem.cards
-  //     const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
+    if (overId == null || over.data.current === undefined) return
 
-  //     const newActiveListItem = {
-  //       ...activeListItem,
-  //       cards: activeCards.filter(item => item._id !== activeCardId),
-  //     }
+    const activeContainer = findContainer(clonedLists, active.id)
+    const overContainer = findContainer(clonedLists, overId)
 
-  //     const newOverListItem = {
-  //       ...overListItem,
-  //       cards: [activeCardItem],
-  //     }
+    // 取得當前 activeItem的座標資訊
+    const activatorCoordinates = getEventCoordinates(activatorEvent)
+    const intersectionY = (activatorCoordinates?.y || 0) + delta.y
 
-  //     newLists = [...otherListItems, newActiveListItem, newOverListItem].sort((a, b) => a.position - b.position)
-  //   } else {
-  //     const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-  //     const [overListItem] = clonedList?.filter(item => item._id === overListId)
-  //     const activeCards = activeListItem.cards
-  //     const overCards = overListItem.cards
-  //     const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
-  //     const [overCardItem] = overListItem.cards.filter(item => item._id === overCardId)
-  //     const activeIndex = activeCardItem?.position
-  //     const overIndex = overCardItem?.position
+    // 判斷是否在 over  之下
+    const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
 
-  //     const isBelowOverItem =
-  //       over && active.rect.current.translated && active.rect.current.translated.top > over.rect.top + over.rect.height
+    if (active.data.current?.type === 'card') {
+      // 如果是同張卡片，忽略動作
+      if (activeContainer === overContainer) return
 
-  //     const modifier = isBelowOverItem ? 1 : 0
+      let newLists = cloneDeep(lists)
 
-  //     if (overIndex === undefined || overIndex === 0) {
-  //       newIndex = 0
-  //     } else if (overIndex > 0) {
-  //       newIndex = overIndex + modifier
-  //     } else {
-  //       newIndex = overListItem.cards.length
-  //     }
-  //     console.log(overIndex)
-  //     let newOverListItem =
-  //       overIndex === undefined || overIndex === 0
-  //         ? {
-  //             ...overListItem,
-  //             cards: [{ ...activeCardItem, position: newIndex }, ...overCards],
-  //           }
-  //         : {
-  //             ...overListItem,
-  //             cards: [
-  //               ...overCards.slice(0, newIndex),
-  //               { ...activeCardItem, position: newIndex },
-  //               ...overCards.slice(newIndex, overCards.length),
-  //             ],
-  //           }
+      // 重新產生新的佔位卡片前，清除前一個佔位卡片
+      newLists = cloneDeep(
+        newLists.map(item => {
+          const newCards = item.cards.filter(item2 => item2.title !== '')
+          return { ...item, cards: newCards }
+        })
+      )
 
-  //     const newActiveListItem = {
-  //       ...activeListItem,
-  //       cards: activeCards.filter(item => item._id !== activeCardId),
-  //     }
+      const newChildren = { ...emptyCard }
 
-  //     newLists = [...otherListItems, newActiveListItem, newOverListItem].sort((a, b) => a.position - b.position)
-  //   }
+      newLists[over.data.current.listPosition].cards.splice(
+        isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index,
+        0,
+        newChildren
+      )
 
-  //   return newLists
-  // }
+      dispatch(boardSliceActions.updateBoardList(newLists))
+    }
+  }
 
   /** 暫時的卡片拖拉邏輯 */
   /* eslint-disable */
   async function handleDragEnd(event: DragOverEvent) {
     const { active, over, activatorEvent, delta } = event
+    if (over === null || active === null || !lists) return
+
+    const overId = over?.id
+
+    // 取得當前 activeItem的座標資訊
     const activatorCoordinates = getEventCoordinates(activatorEvent)
-    const intersectionY = (activatorCoordinates?.y || 0) + delta.y + 80
+    const intersectionY = (activatorCoordinates?.y || 0) + delta.y
 
-    if (!over || lists === undefined) return
+    // 判斷是否在 over  之下
+    const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
 
-    const {
-      current: { cardId },
-    } = active.data as any
+    if (active.data.current === undefined || over.data.current === undefined) return
 
-    const overCardId = over?.data?.current?.cardId
-    const clonedList = cloneDeep(lists)
+    // 列表移動
+    if (lists.some(item => item._id === active.id) && over?.id) {
+      const activeIndex = active.data.current.listPosition
+      const overIndex = over.data.current.listPosition
 
-    if (!clonedList || !clonedList.length) return
-
-    let newLists = []
-    let newIndex: number
-    const otherListItems = clonedList.filter(item => item._id !== activeListId && item._id !== overListId)
-
-    if (active.data.current?.type === 'list') {
-      if (overListId === activeListId) return
-      const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-      const [overListItem] = clonedList?.filter(item => item._id === overListId)
-      const activeCards = activeListItem.cards
-      const overCards = overListItem.cards
-
-      const newActiveListItem = {
-        ...activeListItem,
-        position: overListItem.position,
-        cards: activeCards,
-      }
-
-      const newOverListItem = {
-        ...overListItem,
-        position: activeListItem.position,
-        cards: overCards,
-      }
-
-      newLists = [...otherListItems, newActiveListItem, newOverListItem].sort((a, b) => a.position - b.position)
-
-      if (overListPosition === null || overListPosition === undefined) return
-
+      const newLists = arrayMove(clonedLists, activeIndex, overIndex)
+      dispatch(boardSliceActions.updateBoardList(newLists))
       dispatch(
         socketServiceActions.moveBoardList({
           boardId,
           listId: activeListId as string,
-          finalPosition: overListPosition,
+          finalPosition: overIndex,
         })
       )
-    } else {
-      const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-      const [overListItem] = clonedList?.filter(item => item._id === overListId)
-      const activeCards = activeListItem.cards
-      const overCards = overListItem.cards
-      const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
-      const [overCardItem] = overListItem.cards.filter(item => item._id === overCardId)
-      const overIndex = overCardItem?.position
-
-      const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
-      console.log(isBelowOverItem, intersectionY, over.rect.top + over.rect.height)
-      const modifier = isBelowOverItem ? 1 : 0
-      console.log(active, over)
-      newIndex = overIndex >= 0 ? overIndex + modifier : overListItem.cards.length
-      // if (overIndex >= 0 && newIndex >= overCards.length) newIndex = overCards.length - 1
-
-      let newOverListItem =
-        overIndex === undefined
-          ? {
-              ...overListItem,
-              cards: [{ ...activeCardItem, position: newIndex }, ...overCards],
-            }
-          : {
-              ...overListItem,
-              cards: [
-                ...overCards.slice(0, newIndex),
-                { ...activeCardItem, position: newIndex },
-                ...overCards.slice(newIndex, overCards.length),
-              ],
-            }
-
-      const newActiveListItem = {
-        ...activeListItem,
-        cards: activeCards.filter(item => item._id !== activeCardId),
-      }
-      newLists =
-        overListId === activeListId
-          ? [...otherListItems, newOverListItem]
-          : [...otherListItems, newActiveListItem, newOverListItem]
-      newLists = newLists.sort((a, b) => a.position - b.position)
-
-      if (overListPosition === null) return
-
-      dispatch(
-        socketServiceActions.moveCard({
-          boardId,
-          cardId,
-          finalListId: overListId as string,
-          finalPosition: overCards.length && newIndex >= overCards.length ? newIndex - 1 : newIndex,
-        })
-      )
-
-      setOverListId(null)
+      return
     }
+
+    if (overId == null) {
+      setActiveId(null)
+      return
+    }
+
+    // 注意！要拿原本的排序(sort)順位，而非 寫在 data 裡的 cardPosition
+    const activeIndex = active.data.current.sortable.index
+    const overIndex = over.data.current.sortable.index
+
+    const activeContainer = activeListPosition
+    const overContainer = over.data.current.listPosition
+
+    if (activeCardItem === null || activeListPosition === null || over.data.current === undefined) return
+    let newLists = cloneDeep(lists)
+    //   放定卡片後，清除所有佔位卡片
+    newLists = cloneDeep(
+      newLists.map(item => {
+        const newCards = item.cards.filter(item2 => {
+          return item2.title !== ''
+        })
+
+        return { ...item, cards: newCards }
+      })
+    )
+
+    let newChildren = cloneDeep(activeCardItem)
+    let finalPosition = null
+    // 看最後一次觸碰到的 droppable 容器是列表還是卡片
+    if (over.data.current.type === 'list') {
+      finalPosition = isBelowOverItem ? newLists[over.data.current.listPosition].cards.length : 0
+      newLists[over.data.current.listPosition].cards.splice(finalPosition, 0, newChildren)
+
+      newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(item => {
+        return activeCardId !== item._id
+      })
+    } else {
+      // 同張列表
+      if (activeContainer == overContainer) {
+        const temp = newLists[over.data.current.listPosition].cards[overIndex]
+
+        newLists[over.data.current.listPosition].cards[overIndex] = newLists[activeContainer].cards[activeIndex]
+        newLists[activeContainer].cards[activeIndex] = temp
+
+        finalPosition = overIndex
+      } else {
+        finalPosition = isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index
+        newLists[over.data.current.listPosition].cards.splice(finalPosition, 0, newChildren)
+
+        newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(
+          item => activeCardId !== item._id
+        )
+      }
+    }
+
+    dispatch(boardSliceActions.updateBoardList(newLists))
+    dispatch(
+      socketServiceActions.moveCard({
+        boardId,
+        cardId: activeCardId as string,
+        finalListId: over.data.current.listId,
+        finalPosition,
+      })
+    )
+
+    if (finalPosition === null) return
+
+    setActiveId(null)
   }
 
   /** 取得單一看板資訊 */
@@ -418,6 +418,13 @@ const Board: FC = () => {
       let errorMessage = ''
       if (e instanceof AxiosError) {
         errorMessage = e.response?.data.message
+
+        if (
+          errorMessage === '此為私人看板，訪客請先登入' ||
+          errorMessage === '此為私人看板，您不是看板成員，不可查看'
+        ) {
+          router.push('/board/boardWithoutPermission')
+        }
       } else {
         errorMessage = '發生錯誤'
       }
@@ -434,7 +441,7 @@ const Board: FC = () => {
   function renderListDragOverlay() {
     if (!lists?.length) return
 
-    const [listItem] = lists.filter(item => item._id === activeListId)
+    const [listItem] = lists.filter(item => item._id === activeId)
 
     return (
       <div className="w-[286px] row-span-full">
@@ -446,7 +453,7 @@ const Board: FC = () => {
                 key={cardItem._id}
                 id={cardItem._id}
                 title={cardItem.title}
-                priority={cardItem.proiority}
+                priority={''}
                 tags={cardItem.tags}
               />
             )
@@ -457,20 +464,19 @@ const Board: FC = () => {
   }
 
   function renderCardDragOverlay() {
-    if (!lists?.length || !activeCardId) return <></>
-
-    const [listItem] = lists.filter(item => item._id === activeListId)
-    // console.log('listItem', listItem)
-    if (!listItem) return <></>
-
-    const [cardItem] = listItem.cards.filter(item => item._id === activeCardId)
-    // console.log('cardItem', cardItem)
-    if (!cardItem) return <></>
-    return <BoardCard id={activeCardId} title={cardItem.title} priority={cardItem.proiority} tags={cardItem.tags} />
+    if (
+      activeCardId === null ||
+      activeCardItem === null ||
+      activeCardItem === undefined ||
+      !Object.keys(activeCardItem).length
+    )
+      return <></>
+    return <BoardCard id={activeCardId} title={activeCardItem.title} priority={''} tags={activeCardItem.tags} />
   }
 
   const handleRenderOverlay = () => {
-    if (activeType === 'list') {
+    if (!lists) return
+    if (lists.some(item => item._id === activeId)) {
       return renderListDragOverlay()
     } else {
       return renderCardDragOverlay()
@@ -516,120 +522,23 @@ const Board: FC = () => {
 
           <DndContext
             sensors={sensors}
-            // collisionDetection={args => {
-            //   const result = collisionDetectionStrategy(args)
-
-            //   return result
-            // }}
+            collisionDetection={collisionDetectionStrategy}
             onDragStart={({ active }) => {
-              if (!active.data.current) return
-              setActiveType(active.data.current?.type)
+              setActiveId(active.id)
+              setClonedLists(cloneDeep(lists))
 
+              if (active.data.current === undefined) return
+
+              // 如果初始拖曳項目為卡片，紀錄卡片相關資訊
               if (active.data.current.type === 'card') {
                 setActiveCardId(active.data.current.cardId)
+                setActiveCardItem(active.data.current.children)
               }
 
+              setActiveListPosition(active.data.current.listPosition)
               setActiveListId(active.data.current.listId)
             }}
-            onDragOver={event => {
-              const { active, over, activatorEvent, delta } = event
-              const activatorCoordinates = getEventCoordinates(activatorEvent)
-              const intersectionY = (activatorCoordinates?.y || 0) + delta.y + 80
-
-              const overAListId = over?.data?.current?.listId
-              const overCardId = over?.data?.current?.cardId
-
-              const clonedList = cloneDeep(lists)
-
-              // 碰撞列表
-              if (active.data.current?.listId !== over?.data.current?.listId) {
-                if (over) {
-                  setOverListId(over.data.current?.listId)
-                  setOverListPosition(over.data.current?.listPosition)
-                }
-              } else {
-                setOverListId(active.data.current?.listId)
-                setOverListPosition(active.data.current?.listPosition)
-              }
-
-              if (!clonedList || !clonedList.length || !overAListId || !activeListId) return
-              if (overListId === activeListId && overCardId === activeCardId) return
-
-              let newLists = []
-              let newIndex: number
-              const otherListItems = clonedList.filter(item => item._id !== activeListId && item._id !== overListId)
-
-              if (active.data.current?.type === 'list') {
-                if (overListId === activeListId) return
-
-                const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-                const [overListItem] = clonedList?.filter(item => item._id === overAListId)
-                const activeCards = activeListItem.cards
-                const overCards = overListItem.cards
-
-                const newActiveListItem = {
-                  ...activeListItem,
-                  position: overListItem.position,
-                  cards: activeCards,
-                }
-
-                const newOverListItem = {
-                  ...overListItem,
-                  position: activeListItem.position,
-                  cards: overCards,
-                }
-
-                newLists = [...otherListItems, newActiveListItem, newOverListItem].sort(
-                  (a, b) => a.position - b.position
-                )
-              } else {
-                console.log(overCardId === activeCardId, overListId === activeListId)
-                if (overCardId === activeCardId) return
-                const [activeListItem] = clonedList?.filter(item => item._id === activeListId)
-                const [overListItem] = clonedList?.filter(item => item._id === overListId)
-                const activeCards = activeListItem.cards
-                const overCards = overListItem.cards
-                const [activeCardItem] = activeListItem.cards.filter(item => item._id === activeCardId)
-                const [overCardItem] = overListItem.cards.filter(item => item._id === overCardId)
-                let overIndex = overCardItem?.position
-
-                const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
-
-                if (!activeListItem || !activeCardItem) return
-
-                const modifier = isBelowOverItem ? 1 : 0
-
-                newIndex = overIndex >= 0 ? overIndex + modifier : overListItem.cards.length
-                console.log(newIndex, overIndex)
-                const newActiveListItem = {
-                  ...activeListItem,
-                  cards: activeCards.filter(item => item._id !== activeCardId),
-                }
-
-                let newOverListItem =
-                  overIndex === undefined
-                    ? {
-                        ...overListItem,
-                        cards: [{ ...activeCardItem, position: newIndex }, ...overCards],
-                      }
-                    : {
-                        ...overListItem,
-                        cards: [
-                          ...overCards.slice(0, newIndex),
-                          activeCardItem,
-                          ...overCards.slice(newIndex, overCards.length),
-                        ],
-                      }
-                console.log(newActiveListItem, newOverListItem, otherListItems)
-                newLists =
-                  overListId === activeListId
-                    ? [...otherListItems, newOverListItem]
-                    : [...otherListItems, newActiveListItem, newOverListItem]
-                newLists = newLists.sort((a, b) => a.position - b.position)
-                console.log(newLists)
-                // dispatch(boardSliceActions.updateBoardList(newLists))
-              }
-            }}
+            onDragOver={handleDragOver}
             onDragEnd={event => handleDragEnd(event)}
             onDragCancel={() => {
               console.log('onDragCancel')
@@ -640,18 +549,17 @@ const Board: FC = () => {
               },
             }}
           >
-            <div className="w-auto grid gap-4 auto-cols-[286px] px-4">
+            <div className="w-auto grid gap-5 auto-cols-[286px] px-4">
               <SortableContext disabled={!token} items={lists || [{ id: 0 }]} strategy={horizontalListSortingStrategy}>
                 {lists?.map((listsItem, index) => {
                   return (
                     <SortableList
-                      key={listsItem._id}
+                      key={index}
                       id={listsItem._id}
                       listItems={lists}
                       listTitle={listsItem.title}
                       listPosition={listsItem.position}
                     >
-                      {/* <div>{listsItem._id}</div> */}
                       <SortableContext
                         disabled={!token}
                         items={listsItem.cards?.map(item => ({ id: item._id, ...item })) || []}

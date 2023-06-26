@@ -23,6 +23,9 @@ export const dialogSlice = createSlice({
     popSpinnerQueue(state, action: PayloadAction<string>) {
       state.spinner.queue = state.spinner.queue.filter(item => item !== action.payload)
     },
+    purgeSpinnerQueue(state) {
+      state.spinner.queue = []
+    },
   },
 })
 

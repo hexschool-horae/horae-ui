@@ -61,7 +61,7 @@ export interface ICardItem {
 const BoardCard = ({
   id = '',
   title = '',
-  priority = '1',
+  priority = '',
   tags = [],
   // listeners,
   isDragging,
@@ -103,7 +103,7 @@ const BoardCard = ({
     <Link className={classNames({ 'disabled-link': isDragging })} href={`/board/${router.query.boardId}/?cardId=${id}`}>
       <div
         className={classNames(
-          { 'h-[152px]': tags.length > 0 || priority != '' },
+          { 'h-[152px]': tags.length > 0 || priority != '', 'opacity-50': title === '' },
           'w-[254px] flex flex-col justify-between rounded-md  bg-white p-4 mb-3'
         )}
       >
