@@ -136,7 +136,7 @@ export default function CardPopupMember({ label, cardId }: ICardPopupMemberProps
                 <div className={cardPopupsStyle.member_item_left}>
                   <span
                     className="member-icon text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3"
-                    style={{ backgroundColor: member.userId.avatar }}
+                    style={{ backgroundColor: member.userId.avatar ? member.userId.avatar : '#CC3A3A' }}
                   >
                     {getShortName(member.userId.name)}
                   </span>

@@ -52,10 +52,6 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
     handleGetUserBoardsData()
   }
 
-  const handleGetBard = () => {
-    // console.log(`bardData ${bardData} is clicked!`);
-  }
-
   const handleSettings = (value: string) => {
     // console.log("value", value)
     if (value === 'board') {
@@ -98,7 +94,6 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
         key={userBoardItem._id}
         boardList={userBoardItem.boards}
         handleAddWorkSpaceSuccess={handleAddWorkSpaceSuccess}
-        handleGetBard={handleGetBard}
       ></WorkSpaceCard>
     </div>
   )

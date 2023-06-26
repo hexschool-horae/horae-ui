@@ -10,6 +10,12 @@ const boardRouters = [
   '/board/boardClosed',
   '/board/boardWithoutPermission',
 ]
+const workspaceRouters = [
+  '/workspace/[workId]/home',
+  '/workspace/[workId]/members',
+  '/workspace/[workId]/setting',
+  '/workspace/workspaceWithoutPermission',
+]
 
 const RouterGuard = ({ children }: { children?: ReactNode }) => {
   const router = useRouter()
@@ -20,6 +26,8 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
   useEffect(() => {
     // 看板不受登入的影響
     if (boardRouters.includes(pathname)) return
+    // 工作區不受登入的影響
+    if (workspaceRouters.includes(pathname)) return
 
     if (isLogin) {
       if (nonAuthPaths.indexOf(pathname) !== -1) {
