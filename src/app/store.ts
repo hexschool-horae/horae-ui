@@ -16,15 +16,15 @@ const userPersistConfig = {
   whitelist: ['token', 'profile', 'themeColor'],
 }
 
-const boardPersistConfig = {
-  key: 'board',
-  storage,
-  whitelist: ['themeColor'],
-}
+// const boardPersistConfig = {
+//   key: 'board',
+//   storage,
+//   whitelist: ['themeColor'],
+// }
 
 const reducers = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
-  board: persistReducer(boardPersistConfig, boardReducer),
+  board: boardReducer,
   error: errorReducer,
   workspace: workspaceReducer,
   socketService: socketServiceReducer,

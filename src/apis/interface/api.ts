@@ -21,10 +21,10 @@ export interface IRegisterResponse {
 export interface IUserBoardResponse {
   title: string
   _id: string
-  boards: Boards[]
+  boards: IBoard[]
 }
 /** 看板 */
-export interface Boards {
+export interface IBoard {
   coverPath: string
   title: string
   _id: string
@@ -60,6 +60,7 @@ export interface IUserBoardDataRes extends IBasicResponse {
 export interface IUserBoardData {
   title: string
   _id: string
+  boards: IBoard[]
 }
 /**
  * B02-3 修改單一工作區(含權限)
@@ -75,7 +76,7 @@ export interface IWorkSpaceByIdDataResponse {
   data: IBoardResponse
 }
 export interface IBoardResponse {
-  boards: IUserBoardResponse[]
+  boards: IBoard[]
   discribe: string
   status: string
   title: string
@@ -214,6 +215,7 @@ export interface IUserId {
   _id: string
   name: string
   email: string
+  avatar: string
   isSelected: boolean
 }
 
@@ -243,6 +245,10 @@ export interface IBoardInvitationDataResponse extends IBasicResponse {
     title: string
     inviter: string
   }
+}
+export interface IBoarList {
+  listId: string
+  title: string
 }
 /** B05-9 在卡片新增標籤 */
 export interface IPostCardTagRequest {
@@ -306,10 +312,11 @@ export interface IMembers {
 }
 
 export interface IAttachment {
-  id: string
+  _id: string
   createdAt: string
   title: string
-  url: string
+  fileUrl: string
+  fileName: string
 }
 
 export interface ICardDetail {
@@ -370,4 +377,24 @@ export interface IPostCardMemberRequest {
 /** B05-21 卡片成員刪除 */
 export interface IDeleteCardMemberRequest {
   memberId: string
+}
+
+/** B05-22 卡片附件上傳 */
+export interface IUploadFileRequest {
+  fileData: File
+  dto: Dto
+}
+/** B05-22 卡片附件上傳 */
+export interface UploadType {
+  dto?: Dto
+}
+export interface Dto {
+  /**
+   * 上傳檔案type (document/file/multiFile)
+   */
+  type: string
+}
+/** B05-23 卡片中附件刪除 */
+export interface IDeleteCardFileRequest {
+  fileId: string
 }

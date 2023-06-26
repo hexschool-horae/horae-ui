@@ -163,6 +163,7 @@ export interface IDeleteCardComment {
   boardId: string
 }
 
+// 修改看板列表標題
 export interface IBoardModifyListTitle {
   title: string
   listId: string
@@ -264,6 +265,7 @@ export interface IAddCardAttachment {
   cardId: string
   boardId: string
   file: File
+  fileName: string
 }
 
 // 卡片刪除附件

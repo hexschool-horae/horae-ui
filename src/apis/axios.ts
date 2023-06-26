@@ -6,6 +6,8 @@ import type { AxiosInstance, AxiosResponse, AxiosError } from 'axios'
 import type { EnhancedStore } from '@reduxjs/toolkit'
 import type { IBasicResponse } from '@/types/api'
 import { dialogSliceActions } from '@/slices/dialogSlice'
+import { IUploadFileRequest } from './interface/api'
+import { UploadFileType } from './enum/api'
 
 // app.js建立時，會注入store
 let store: EnhancedStore | null = null
@@ -218,6 +220,53 @@ async function DELETE<T>(url: string, data: unknown, isAuth = true) {
   }
 }
 
+async function uploadFile<T>(url: string, data: unknown, isAuth = true) {
+  try {
+    if (store === null) throw new Error('data from redux-toolkit store is null!')
+
+    // 取得store中的state
+    const rootState: RootState = store.getState()
+
+    // 取得 store 裡的 token
+    const { user } = rootState
+    const { token } = user
+
+    // 是否帶入驗證
+    if (isAuth) {
+      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    } else {
+      delete instance.defaults.headers.common['Authorization']
+    }
+
+    // 檢核傳送 data 是否為 null，改變 request content-type
+    if (data === null) {
+      instance.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    } else {
+      instance.defaults.headers['Content-Type'] = 'multipart/form-data'
+    }
+
+    const { dto, fileData } = data as IUploadFileRequest
+    const formData = new FormData()
+
+    if (dto.type === UploadFileType.FILE) {
+      formData.append(UploadFileType.FILE, fileData)
+    }
+
+    const clarifiedPath = url.replace(/[^ -~]/g, '')
+    store.dispatch(dialogSliceActions.pushSpinnerQueue(url))
+    const response = await instance.post<T>(clarifiedPath, formData)
+
+    const { data: responseData } = response
+    return responseData
+  } catch (error) {
+    console.warn(error)
+  } finally {
+    if (store) {
+      store.dispatch(dialogSliceActions.popSpinnerQueue(url))
+    }
+  }
+}
+
 const axiosFetcher = Object.assign(
   {},
   {
@@ -227,6 +276,7 @@ const axiosFetcher = Object.assign(
     get,
     put,
     DELETE,
+    uploadFile,
   }
 )
 export default axiosFetcher

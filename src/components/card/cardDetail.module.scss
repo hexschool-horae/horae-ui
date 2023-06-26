@@ -8,8 +8,12 @@
   @apply flex items-center mb-2;
 }
 
+.detail_list_title {
+  @apply mr-3;
+}
+
 .detail_list_add_btn {
-  @apply mx-3 bg-secondary-4 text-secondary-3 border-0;
+  @apply mr-3 bg-secondary-4 text-secondary-3 border-0;
   width: 30px !important;
   height: 30px !important;
   &:hover {
@@ -47,7 +51,7 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background: rgba(173, 172, 172, 0.12);
+  background: rgba(235, 235, 235, 0.12);
 }
 
 .comment_item {

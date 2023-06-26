@@ -2,17 +2,17 @@ import {
   DELETE_WORKSPACE_MEMBER,
   GET_WORKSPACE_MEMBERS_BY_ID,
   PATCH_WORK_SPACE_MEMBER,
-  POST_WORKSPACE_INVITATION_SEND_MAIL,
+  // POST_WORKSPACE_INVITATION_SEND_MAIL,
 } from '@/apis/axios-service'
 import { IWorkSpaceMembersByIdResponse, PatchMembersDataRequest } from '@/apis/interface/api'
 import WorkSpaceTitle from '@/components/workSpace/WorkSpaceTitle'
 import { useRouter } from 'next/router'
-import { InputText } from 'primereact/inputtext'
+// import { InputText } from 'primereact/inputtext'
 import React, { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { classNames } from 'primereact/utils'
-import { yupResolver } from '@hookform/resolvers/yup'
-import yup from '@/libs/yup'
+// import { Controller, useForm } from 'react-hook-form'
+// import { classNames } from 'primereact/utils'
+// import { yupResolver } from '@hookform/resolvers/yup'
+// import yup from '@/libs/yup'
 import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
 import { ConfirmDialog } from 'primereact/confirmdialog'
@@ -20,10 +20,11 @@ import InvitationLink from '@/components/common/InvitationLink'
 import { setWorkspaceId } from '@/slices/workspaceSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { Fragment } from 'react'
+import { setViewSet } from '@/slices/workspaceSlice'
 
-const schemaInvitation = yup.object().shape({
-  userEmail: yup.string().required().email(),
-})
+// const schemaInvitation = yup.object().shape({
+//   userEmail: yup.string().required().email(),
+// })
 
 interface IWorkspaceData {
   title: string
@@ -38,11 +39,12 @@ interface IRole {
   role: string
 }
 
-type IInvitationWorkspaceFormReq = {
-  userEmail: string
-}
+// type IInvitationWorkspaceFormReq = {
+//   userEmail: string
+// }
 
 export default function Members() {
+  const isLogin = useAppSelector(state => state.user.isLogin)
   const router = useRouter()
   const workId = router.query.workId as string
   const dispatch = useAppDispatch()
@@ -68,9 +70,9 @@ export default function Members() {
     role: '',
   })
 
-  const WorkspaceInvitationSendMailValues: IInvitationWorkspaceFormReq = {
-    userEmail: '',
-  }
+  // const WorkspaceInvitationSendMailValues: IInvitationWorkspaceFormReq = {
+  //   userEmail: '',
+  // }
 
   const [showAddMembersConfirmation, setShowAddMembersConfirmation] = useState(false)
   const [confirmConfig, setConfirmConfig] = useState({
@@ -78,17 +80,18 @@ export default function Members() {
     type: '',
   })
 
-  const {
-    control: controlInvitationSendMail,
-    handleSubmit: handleSubmitInvitationSendMail,
-    formState: { errors: errorsInvitationSendMail },
-    reset: resetInvitationSendMail,
-  } = useForm<IInvitationWorkspaceFormReq>({
-    defaultValues: WorkspaceInvitationSendMailValues,
-    resolver: yupResolver(schemaInvitation),
-  })
+  // const {
+  //   control: controlInvitationSendMail,
+  //   handleSubmit: handleSubmitInvitationSendMail,
+  //   formState: { errors: errorsInvitationSendMail },
+  //   reset: resetInvitationSendMail,
+  // } = useForm<IInvitationWorkspaceFormReq>({
+  //   defaultValues: WorkspaceInvitationSendMailValues,
+  //   resolver: yupResolver(schemaInvitation),
+  // })
 
   const handlerCallGetWorkPaceMembers = async (workId: string) => {
+    if (!isLogin) return router.push(`/workspace/${workId}/home`)
     try {
       const response = await GET_WORKSPACE_MEMBERS_BY_ID(workId)
       if (!response) return
@@ -102,23 +105,29 @@ export default function Members() {
         status: '',
         _id: '',
       })
+      dispatch(setViewSet(response.data.viewSet))
       console.log('members', members)
-    } catch (error) {
-      console.error('Error fetching user boards data:', error)
+    } catch (e: any) {
+      // 401 msg	此為私人看板，訪客請先登入
+      // 403 msg	此為私人看板，您不是看板成員，不可查看
+      const { status } = e.response
+      if (status === 401 || status === 403) {
+        router.push('/workspace/workspaceWithoutPermission')
+      }
     }
   }
 
-  const handleInvitationWorkspaceSendMail = async (reqData: IInvitationWorkspaceFormReq) => {
-    console.log('reqData', reqData)
-    const response = await POST_WORKSPACE_INVITATION_SEND_MAIL(workspaceId)
-    if (!response) return
-  }
+  // const handleInvitationWorkspaceSendMail = async (reqData: IInvitationWorkspaceFormReq) => {
+  //   console.log('reqData', reqData)
+  //   const response = await POST_WORKSPACE_INVITATION_SEND_MAIL(workspaceId)
+  //   if (!response) return
+  // }
 
-  const onSubmitInvitationSendMail = (data: IInvitationWorkspaceFormReq) => {
-    console.log(data)
-    handleInvitationWorkspaceSendMail(data)
-    resetInvitationSendMail()
-  }
+  // const onSubmitInvitationSendMail = (data: IInvitationWorkspaceFormReq) => {
+  //   console.log(data)
+  //   handleInvitationWorkspaceSendMail(data)
+  //   resetInvitationSendMail()
+  // }
 
   // 點擊 退出
   const handleDeleteMember = async (memberId: string, role: string) => {
@@ -216,14 +225,14 @@ export default function Members() {
       {workspaceData.title ? <WorkSpaceTitle boardData={workspaceData}></WorkSpaceTitle> : ''}
 
       <div className="invitation flex justify-between">
-        <h5 className="pb-5">邀請成員加入你</h5>
+        {/* <h5 className="pb-5">邀請成員加入你</h5> */}
         {/* 以連結邀請 */}
         <InvitationLink workspaceId={workspaceId}></InvitationLink>
       </div>
 
-      <p>任何擁有邀請連結的人都可以加入此免費工作區。你也可以隨時停用並為此工作區建立新的邀請連結。</p>
+      {/* <p>任何擁有邀請連結的人都可以加入此免費工作區。你也可以隨時停用並為此工作區建立新的邀請連結。</p> */}
       {/* 邀請成員 表單 */}
-      <form
+      {/* <form
         className="flex my-5 pb-5 border-b  border-secondary-2"
         onSubmit={handleSubmitInvitationSendMail(onSubmitInvitationSendMail)}
       >
@@ -257,7 +266,7 @@ export default function Members() {
             rounded
           />
         </div>
-      </form>
+      </form> */}
 
       <h5 className="pb-5">工作區成員</h5>
       <div>
@@ -265,7 +274,10 @@ export default function Members() {
           <Fragment key={member._id}>
             <div className="flex justify-between mb-4">
               <div className="member flex">
-                <div className="member-icon bg-secondary-3 text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3">
+                <div
+                  className="member-icon text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3"
+                  style={{ backgroundColor: member.userId.avatar ? member.userId.avatar : '#CC3A3A' }}
+                >
                   {getShortName(member.userId.name)}
                 </div>
                 <div className="title flex flex-col">

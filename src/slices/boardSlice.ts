@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 // import { ISingleBoardResponse } from '@/apis/interface/api'
 import { ISingleBoardInterface, IListCard, IListCardTags } from '@/socketService/types/board'
-import { ICardDetail, IBoardMember, ITag } from '@/apis/interface/api'
+import { ICardDetail, IBoardMember, ITag, IBoarList } from '@/apis/interface/api'
 
 type TViewSet = '' | 'private' | 'workspace' | 'public'
 interface IthemeColor {
@@ -32,6 +32,7 @@ interface IInitialState {
   listCardTags: IListCardTags
   boardTags: ITag[]
   themeColor: IthemeColor
+  boarList: IBoarList
 }
 
 const initialState: IInitialState = {
@@ -52,6 +53,10 @@ const initialState: IInitialState = {
   },
   boardTags: [],
   themeColor: { themeColor: '', textColor: '' },
+  boarList: {
+    listId: '',
+    title: '',
+  },
 }
 
 export const boardSlice = createSlice({
@@ -137,6 +142,9 @@ export const boardSlice = createSlice({
     setCardDetail(state, action: PayloadAction<ICardDetail>) {
       state.cardDetail = action.payload
     },
+    setBoardList(state, action: PayloadAction<IBoarList>) {
+      state.boarList = action.payload
+    },
     updateCard(state, action: PayloadAction<ICardDetail>) {
       if (state.cardDetail?._id === action.payload._id) {
         state.cardDetail = {
@@ -199,6 +207,12 @@ export const boardSlice = createSlice({
     updateBoardCoverColor(state, action: PayloadAction<ISingleBoardInterface>) {
       if (state.singleBaord?._id === action.payload._id) {
         state.singleBaord.covercolor = action.payload.covercolor
+      }
+    },
+    updateCardAttachment(state, action: PayloadAction<ICardDetail>) {
+      console.log('updateCardAttachment', state)
+      if (state.cardDetail && state.cardDetail._id === action.payload._id) {
+        state.cardDetail.attachments = action.payload.attachments
       }
     },
     reset: () => initialState,

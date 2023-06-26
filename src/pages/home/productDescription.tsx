@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import homeStyles from './home.module.scss'
 import styles from './productDescription.module.scss'
 
 export default function ProductDescription() {
+  const featuresRef = useRef(null)
   const [list] = useState([
     {
       title: '任務',
@@ -18,13 +19,13 @@ export default function ProductDescription() {
       img: 'home-team',
       describe: '工作事項可以切分為小任務，專案管理者可以將小任務指派給組員，讓團隊一起同步執行各項任務來達成目標。',
     },
-    {
-      title: '即時',
-      decorativeTitle: '聊天',
-      img: 'home-chat',
-      describe:
-        '通過即時聊天不用再另外使用其它通訊軟體，加速團隊溝通。你也可以標記個人，為行動項目分配評論，並鏈結任務以共同完成更多工作。',
-    },
+    // {
+    //   title: '即時',
+    //   decorativeTitle: '聊天',
+    //   img: 'home-chat',
+    //   describe:
+    //     '通過即時聊天不用再另外使用其它通訊軟體，加速團隊溝通。你也可以標記個人，為行動項目分配評論，並鏈結任務以共同完成更多工作。',
+    // },
     {
       title: '專注',
       decorativeTitle: '計時',
@@ -35,7 +36,7 @@ export default function ProductDescription() {
   ])
   return (
     <>
-      <section>
+      <section ref={featuresRef} id="features">
         <div className="p-decorative-circle p-left-decorative-circle-1"></div>
         <div className="p-decorative-circle p-right-decorative-circle-1"></div>
         <div className="p-decorative-circle p-right-decorative-circle-2"></div>

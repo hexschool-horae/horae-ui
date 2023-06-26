@@ -6,8 +6,10 @@ import axiosFetcher from '@/apis/axios'
 import { setIsLogin, setToken } from '@/slices/userSlice'
 import Image from 'next/image'
 import styles from './frontHeader.module.scss'
-import { useEffect, useState } from 'react'
-import IconChevronDown from '@/assets/icons/icon_chevron_down.svg'
+import { useContext, useEffect, useState } from 'react'
+// import IconChevronDown from '@/assets/icons/icon_chevron_down.svg'
+import React from 'react'
+import { LayoutContext } from '@/contexts/layoutContext'
 
 const { post } = axiosFetcher
 
@@ -17,6 +19,7 @@ export default function FrontHeader() {
   const dispatch = useAppDispatch()
   const [isActive, setIsActive] = useState(false)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const { scrollToSection } = useContext(LayoutContext)
 
   // header的透明度
   const opacity = scrollPosition > 0 ? Math.min(scrollPosition / 300, 1) : 0
@@ -50,6 +53,12 @@ export default function FrontHeader() {
     setScrollPosition(window.scrollY)
   }
 
+  /** scroll navbar section */
+  const handleScrollToSection = (sectionId: string) => {
+    scrollToSection(sectionId)
+    handleClick()
+  }
+
   return (
     <header className={`${styles.header} ${isActive ? styles.show : ''}`}>
       <div className={styles.fill} style={{ opacity: `${opacity}` }}></div>
@@ -70,11 +79,30 @@ export default function FrontHeader() {
         <div className={styles.menu}>
           <nav className={styles.nav}>
             <ul className="sm:flex block text-base font-medium">
-              <li className="flex items-center">
+              <li
+                className="cursor-pointer"
+                onClick={() => {
+                  handleScrollToSection('features')
+                }}
+              >
                 功能介紹
-                <IconChevronDown className="ml-1" />
               </li>
-              <li>使用者推薦</li>
+              <li
+                className="cursor-pointer"
+                onClick={() => {
+                  handleScrollToSection('workProcess')
+                }}
+              >
+                工作流程
+              </li>
+              <li
+                className="cursor-pointer"
+                onClick={() => {
+                  handleScrollToSection('userRecommendation')
+                }}
+              >
+                使用者推薦
+              </li>
             </ul>
           </nav>
           <div className={styles.right_panel}>

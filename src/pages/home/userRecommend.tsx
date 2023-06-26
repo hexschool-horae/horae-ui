@@ -1,4 +1,4 @@
-import { Key, useState } from 'react'
+import { Key, useRef, useState } from 'react'
 import Image from 'next/image'
 import homeStyles from './home.module.scss'
 import styles from './userRecommend.module.scss'
@@ -7,36 +7,37 @@ import { Pagination, Navigation } from 'swiper'
 import IconDoubleComma from '@/assets/icons/icon_double_comma.svg'
 
 export default function UserRecommend() {
+  const userRecommendationRef = useRef(null)
   const [list] = useState([
     {
       name: 'Jim K.',
       position: 'Scrum Master',
-      img: 'home-educate',
+      img: 'r-avatar1',
       describe:
-        '來旦買實用象。丁河上能左勿羽細京田，地林肉一北只在太嗎，因貫香神福幸世朵申見現現葉已左士成：有牙大錯回飽固買爪信您。由弟行同下那蝸心兄二戊欠吧棵巴品。法高封片耳流內完？院牙人雨對由細彩可首。因山哭言追才福會人童立。福旁媽帶行要他斥河校只看節王、生隻南姐想小童的。北很四行。',
+        'Horae完全改變了我們團隊的專案管理方式。直觀易用的視覺看板讓我們能夠一目了然地追蹤任務和進度。它極大地提升了我們的生產力和協作效率。',
       stars: [true, true, true, true, true],
     },
     {
-      name: '個人計畫',
-      position: '',
-      img: 'home-educate',
-      describe: '幫助個人組織個人任務和計劃。可以使用它來追踪您的日常活動、個人目標和旅行計劃等。',
+      name: 'Anna',
+      position: 'Executive',
+      img: 's-avatar1',
+      describe:
+        '我喜歡Horae的可自定義性。從創建自定義標籤和標記到設置，它能夠適應我們獨特的專案管理需求。它的靈活性適用於個人、小型團隊和大型組織。',
       stars: [true, true, true, true, false],
     },
     {
-      name: '遠程工作團隊管理',
-      position: '',
-      img: 'home-educate',
+      name: 'Melinda',
+      position: 'Project Manager',
+      img: 's-avatar2',
       describe:
-        '可以清晰地規劃和追踪項目進度,並確保每個人都能清楚地了解自己的職責和期限。番茄鐘專注計時功能有助於團隊成員在家工作時保持高度專注,而即時通訊功能讓大家可以隨時交流問題和分享成果,維持良好的團隊氛圍。',
+        '社群非常樂於助人和支持。無論是尋找新的看板設置靈感還是解決問題，都有豐富的資源和積極的用戶準備提供幫助。社群為整個Horae體驗增添了價值。',
       stars: [true, true, true, false, false],
     },
     {
-      name: '遠程工作團隊管理',
-      position: '',
-      img: 'home-educate',
-      describe:
-        '可以清晰地規劃和追踪項目進度,並確保每個人都能清楚地了解自己的職責和期限。番茄鐘專注計時功能有助於團隊成員在家工作時保持高度專注,而即時通訊功能讓大家可以隨時交流問題和分享成果,維持良好的團隊氛圍。',
+      name: 'Jennifer',
+      position: 'Advisory Engineer',
+      img: 's-avatar4',
+      describe: 'Horae看板功能非常實用，可以根據項目、任務或工作流程來組織和管理我的工作。',
       stars: [true, true, true, true, false],
     },
   ])
@@ -76,7 +77,7 @@ export default function UserRecommend() {
           </div>
           <Image
             className={styles.user_img}
-            src={`/images/${item.img}.png`}
+            src={`/images/avatar/${item.img}.jpg`}
             alt={item.img}
             width={185.78}
             height={155.17}
@@ -88,7 +89,7 @@ export default function UserRecommend() {
 
   return (
     <>
-      <section className={styles.section}>
+      <section ref={userRecommendationRef} id="userRecommendation" className={styles.section}>
         <div className={`${styles.container} front-max-container`}>
           <h4 className={`${homeStyles.h3} text-secondary-3 ${styles.h3}`}>團隊愛上Horae的理由</h4>
           {/* <Carousel value={list} numVisible={1} numScroll={1} itemTemplate={template} /> */}
