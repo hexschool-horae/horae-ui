@@ -522,8 +522,8 @@ const Board: FC = () => {
     <div
       className={classNames('w-full h-full py-[50px] px-[64px] overflow-x-auto', { 'p-9': !token })}
       style={{
-        backgroundImage: `url(${singleBaord?.coverPath})`,
-        backgroundSize: 'cover',
+        backgroundImage: singleBaord?.coverPath ? `url(${singleBaord?.coverPath})` : '',
+        backgroundSize: singleBaord?.coverPath ? 'cover' : '',
       }}
     >
       <Head>
