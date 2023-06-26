@@ -802,11 +802,6 @@ const updateBoardCover = (payload: interfaces.IBoardUpdateCover) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, payload)
 }
 
-// 更新看板主題
-const modifyBoardTheme = (payload: interfaces.IBoardModifyTheme) => {
-  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME, payload)
-}
-
 // 刪除看板封面
 const deleteBoardCover = (payload: interfaces.IBoardDeleteCover) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER, payload)

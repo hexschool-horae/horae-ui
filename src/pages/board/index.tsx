@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 
 import { Button } from 'primereact/button'
@@ -7,7 +6,6 @@ import WorkSpaceList from '@/components/workSpace/WorkSpaceList'
 import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
 
 export default function Board() {
-  const router = useRouter()
   const { userBoardsData, handleGetUserBoardsData } = useContext(AdminLayoutContext)
   const [visible, setVisible] = useState(false)
 
@@ -46,7 +44,6 @@ export default function Board() {
           ))}
         </>
       )}
-      <Button className="p-0" label="前往個人頁面" onClick={() => router.push('/profile')} link />
     </>
   )
 }
