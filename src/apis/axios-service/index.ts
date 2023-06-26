@@ -43,8 +43,8 @@ export const GET_ALL_WORK_SPACE = () => {
 }
 
 /** B02-5 取得單一工作區 */
-export const GET_WORK_SPACE = (workId: string) => {
-  return axiosFetcher.get<interfaces.IWorkSpaceByIdDataResponse>(`${apiPath.GET_WORK_SPACE}/${workId}`)
+export const GET_WORK_SPACE = (workId: string, isAuth = true) => {
+  return axiosFetcher.get<interfaces.IWorkSpaceByIdDataResponse>(`${apiPath.GET_WORK_SPACE}/${workId}`, isAuth)
 }
 
 /** B02-6 取得單一工作區成員 */
