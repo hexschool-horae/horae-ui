@@ -21,17 +21,13 @@ export default function SortableListTitle({ title, listId, isDragging }: IListPr
   const [isFocus, setIsFocus] = useState(false)
 
   const schema = yup.object().shape({
-    title: yup.string().required(),
+    [`title-${listId}`]: yup.string().required(),
   })
 
-  interface ITitle {
-    title: string
-  }
-
-  const { handleSubmit, control, setValue, getValues } = useForm<ITitle>({
+  const { handleSubmit, control, setValue, getValues } = useForm({
     mode: 'onChange',
     defaultValues: {
-      title: '',
+      [`title-${listId}`]: '',
     },
     resolver: yupResolver(schema),
   })
@@ -58,15 +54,15 @@ export default function SortableListTitle({ title, listId, isDragging }: IListPr
 
   const handleOnModifySubmit = () => {
     const submitData = getValues()
-    if (submitData.title == title) return setIsFocus(false)
-    if (!submitData.title) return
-    updateTitle(submitData.title)
+    if (submitData[`title-${listId}`] == title) return setIsFocus(false)
+    if (!submitData[`title-${listId}`]) return
+    updateTitle(submitData[`title-${listId}`])
     setIsFocus(false)
   }
 
   useEffect(() => {
     if (!title) return
-    setValue('title', title ?? '')
+    setValue(`title-${listId}`, title ?? '')
   }, [title])
 
   useEffect(() => {
@@ -78,7 +74,7 @@ export default function SortableListTitle({ title, listId, isDragging }: IListPr
 
   return (
     <form className={`mb-8 relative ${isFocus ? '' : style.list_title_view}`} onSubmit={handleSubmit(onSubmit)}>
-      <ValidateController name="title" label="" control={control}>
+      <ValidateController name={`title-${listId}`} label="" control={control}>
         <InputText ref={inputRef} onClick={() => setIsFocus(true)} onBlur={() => handleOnModifySubmit()} />
       </ValidateController>
     </form>
