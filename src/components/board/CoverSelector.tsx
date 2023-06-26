@@ -40,6 +40,16 @@ const CoverSelector = () => {
     }, 1000)
   }
 
+  const onSetCoverTheme = (theme: string) => {
+    console.log('onSetCoverTheme = ', theme)
+    dispatch(
+      socketServiceActions.modifyBoardTheme({
+        covercolor: theme,
+        boardId,
+      })
+    )
+  }
+
   const handleUpdateCover = (type: TCoverType, payload: IImgItem) => {
     if (type === 'unsplash') {
       // 更新看板封面
@@ -116,8 +126,11 @@ const CoverSelector = () => {
 
       {/* 從主題選擇 */}
       {coverType === 'theme' && (
-        <div className="w-full flex mb-5">
-          <div className="flex-1 mr-2">
+        <div className={Style['cover-theme-box']}>
+          <div className={`${Style.theme} ${Style.theme1}`} onClick={() => onSetCoverTheme('theme1')}></div>
+          <div className={`${Style.theme} ${Style.theme2}`} onClick={() => onSetCoverTheme('theme2')}></div>
+          <div className={`${Style.theme} ${Style.theme3}`} onClick={() => onSetCoverTheme('theme3')}></div>
+          {/* <div className="flex-1 mr-2">
             <div
               className={classNames('bg-gray-2', Style.theme_item)}
               onClick={() => handleSetCoverType('theme')}
@@ -128,7 +141,7 @@ const CoverSelector = () => {
               className={classNames('bg-gray-3', Style.theme_item)}
               onClick={() => handleSetCoverType('theme')}
             ></div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>
