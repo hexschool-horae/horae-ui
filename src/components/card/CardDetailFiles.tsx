@@ -18,6 +18,7 @@ interface ICardDetailFileProps {
 export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
   const { dispatch } = useCardDetail()
   const appDispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const socketFileList = useAppSelector(state => state.board.cardDetail?.attachments)
   const selectedFileList: IAttachment[] = socketFileList as IAttachment[]
   const [fileList] = useState<IAttachment[]>(selectedFileList ?? [])
@@ -104,27 +105,29 @@ export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
                       <span className="text-secondary-3 text-lg">{file.fileName}</span>
                       <span className="text-sm">{formatDate(file.createdAt)}</span>
                     </div>
-                    <IconDelete onClick={() => handleRemoveFile(index, file._id)} />
+                    {token && <IconDelete onClick={() => handleRemoveFile(index, file._id)} />}
                   </div>
                 </div>
               </Fragment>
             ))
           : null}
-        <div className="text-center">
-          <Button
-            icon="pi pi-plus"
-            iconPos="right"
-            text
-            label="增加附件"
-            className="text-secondary-3 hover:text-secondary-1 hover: bg-white"
-            onClick={() => {
-              dispatch({
-                type: 'TOTGGLE_POPUP',
-                payload: 'filesPopup',
-              })
-            }}
-          />
-        </div>
+        {token && (
+          <div className="text-center">
+            <Button
+              icon="pi pi-plus"
+              iconPos="right"
+              text
+              label="增加附件"
+              className="text-secondary-3 hover:text-secondary-1 hover: bg-white"
+              onClick={() => {
+                dispatch({
+                  type: 'TOTGGLE_POPUP',
+                  payload: 'filesPopup',
+                })
+              }}
+            />
+          </div>
+        )}
       </form>
     </>
   )

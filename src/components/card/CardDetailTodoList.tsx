@@ -111,6 +111,7 @@ const TodoList = ({
   onToggleComplete,
 }: ITodoListProps) => {
   const appDispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const inputRef = useRef<HTMLInputElement>(null)
   const editInputRef = useRef<HTMLInputElement>(null)
   const titleRef = useRef<HTMLInputElement>(null)
@@ -173,6 +174,7 @@ const TodoList = ({
   }
 
   const handleToggleComplete = (checked: boolean, todo: ITodo) => {
+    if (!token) return
     onToggleComplete(checked, listId, todo._id)
     appDispatch(
       socketServiceActions.modifyTodoContent({
@@ -207,7 +209,7 @@ const TodoList = ({
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, type = 'create', todo?: ITodo) => {
-    if (e.key !== 'Enter') return
+    if (e.key !== 'Enter' || !token) return
     switch (type) {
       case 'create':
         handleCreateTodoItem()
@@ -274,6 +276,7 @@ const TodoList = ({
             <h5
               className="text-lg"
               onClick={() => {
+                if (!token) return
                 setTodoTitle(listTitle)
                 setIsEditTitle(true)
               }}
@@ -281,9 +284,11 @@ const TodoList = ({
               {listTitle}
             </h5>
             <ConfirmPopup />
-            <Button size="small" text className={`py-0 ${style.icon_btn_delete}`} onClick={confirmDeleteTodoList}>
-              <IconDelete />
-            </Button>
+            {token && (
+              <Button size="small" text className={`py-0 ${style.icon_btn_delete}`} onClick={confirmDeleteTodoList}>
+                <IconDelete />
+              </Button>
+            )}
           </div>
         )}
 
@@ -326,6 +331,7 @@ const TodoList = ({
               <label
                 className="grow cursor-pointer"
                 onClick={() => {
+                  if (!token) return
                   setEditTodoItem(todo.content)
                   setIsEditId(todo._id)
                 }}
@@ -333,28 +339,32 @@ const TodoList = ({
                 {todo.content}
               </label>
             )}
-            <Button
-              size="small"
-              text
-              className={`hover:bg-transparent ${style.icon_btn_delete}`}
-              onClick={() => handleDeleteTodoItem(todo._id)}
-            >
-              <IconDelete />
-            </Button>
+            {token && (
+              <Button
+                size="small"
+                text
+                className={`hover:bg-transparent ${style.icon_btn_delete}`}
+                onClick={() => handleDeleteTodoItem(todo._id)}
+              >
+                <IconDelete />
+              </Button>
+            )}
           </li>
         ))}
         {/* add new todo item */}
-        <li className="flex items-center gap-4 my-6">
-          <Checkbox checked={false}></Checkbox>
-          <InputText
-            placeholder="增加項目..."
-            className="w-full"
-            onChange={e => setTodoItem(e.target.value)}
-            value={todoItem}
-            ref={inputRef}
-            onKeyPress={e => handleKeyPress(e)}
-          />
-        </li>
+        {token && (
+          <li className="flex items-center gap-4 my-6">
+            <Checkbox checked={false}></Checkbox>
+            <InputText
+              placeholder="增加項目..."
+              className="w-full"
+              onChange={e => setTodoItem(e.target.value)}
+              value={todoItem}
+              ref={inputRef}
+              onKeyPress={e => handleKeyPress(e)}
+            />
+          </li>
+        )}
       </ul>
     </div>
   )

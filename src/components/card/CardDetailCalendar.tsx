@@ -20,6 +20,7 @@ export default function CardDetailCalendar({ label }: ICardDetailCalendarProps) 
   const boardId = router.query.boardId as string
 
   const appDispatch = useAppDispatch()
+  const token = useAppSelector(state => state.user.token) || ''
   const socketStartDate = useAppSelector(state => state.board.cardDetail?.startDate)
   const socketEndDate = useAppSelector(state => state.board.cardDetail?.endDate)
   const cardDetail = useAppSelector(state => state.board.cardDetail)
@@ -35,7 +36,7 @@ export default function CardDetailCalendar({ label }: ICardDetailCalendarProps) 
     const hours = String(date.getHours()).padStart(2, '0')
     const minutes = String(date.getMinutes()).padStart(2, '0')
 
-    return `${year}.${month}.${day} ${hours}:${minutes}`
+    return `${year}/${month}/${day} ${hours}:${minutes}`
   }
 
   const deleteDate = () => {
@@ -69,24 +70,33 @@ export default function CardDetailCalendar({ label }: ICardDetailCalendarProps) 
     <>
       {showDates != '' && (
         <div className={style.detail_list}>
-          <div>日期</div>
-          <Button
-            icon="pi pi-calendar"
-            rounded
-            aria-label="calendar"
-            className={style.detail_list_add_btn}
-            onClick={() => {
-              dispatch({
-                type: 'TOTGGLE_POPUP',
-                payload: label,
-              })
-            }}
-          />
+          <div className={style.detail_list_title}>日期</div>
+          {token && (
+            <Button
+              icon="pi pi-calendar"
+              rounded
+              aria-label="calendar"
+              className={style.detail_list_add_btn}
+              onClick={() => {
+                dispatch({
+                  type: 'TOTGGLE_POPUP',
+                  payload: label,
+                })
+              }}
+            />
+          )}
           <div className="flex items-center">
             <div>{showDates}</div>
-            <Button size="small" text className={`hover:bg-transparent ${style.icon_btn_delete}`} onClick={deleteDate}>
-              <IconDelete />
-            </Button>
+            {token && (
+              <Button
+                size="small"
+                text
+                className={`hover:bg-transparent ${style.icon_btn_delete}`}
+                onClick={deleteDate}
+              >
+                <IconDelete />
+              </Button>
+            )}
           </div>
         </div>
       )}
