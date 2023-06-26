@@ -131,9 +131,6 @@ export const socketServiceSlice = createSlice({
     updateBoardCover(state, action: PayloadAction<interfaces.IBoardUpdateCover>) {
       state.boardService?.updateBoardCover(action.payload)
     },
-    modifyBoardTheme(state, action: PayloadAction<interfaces.IBoardModifyTheme>) {
-      state.boardService?.modifyBoardTheme(action.payload)
-    },
     deleteBoardCover(state, action: PayloadAction<interfaces.IBoardDeleteCover>) {
       state.boardService?.deleteBoardCover(action.payload)
     },

@@ -54,6 +54,7 @@ export const initialState = {
         user: {
           _id: '',
           name: '',
+          avatar: '',
         },
       },
     ],

@@ -151,6 +151,7 @@ export interface ISingleBoardResponse extends IBasicResponse {
     title: string
     discribe: string
     coverPath: string
+    covercolor: string
     viewSet: '' | 'public' | 'private' | 'workspace'
     members: [
       {

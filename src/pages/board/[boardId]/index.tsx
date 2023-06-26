@@ -9,7 +9,7 @@ import MenuBar from '@/components/board/MenuBar'
 import AddListButton from '@/components/board/AddListButton'
 
 import {
-  // CollisionDetection,
+  CollisionDetection,
   pointerWithin,
   closestCenter,
   // closestCorners,
@@ -43,6 +43,7 @@ import { errorSliceActions } from '@/slices/errorSlice'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import { GET_BOARD_BY_ID } from '@/apis/axios-service'
 import { ICardList } from '@/types/pages'
+import { ISingleBoardInterface } from '@/socketService/types/board'
 
 import SortableCard from '@/components/board/SortableCard'
 import SortableList from '@/components/board/SortableList'
@@ -57,7 +58,20 @@ const emptyCard = {
   title: '',
   startDate: 0,
   endDate: 0,
-  priority: '',
+  proiority: '',
+  comments: [
+    {
+      _id: '',
+      comment: '',
+      user: {
+        _id: '',
+        name: '',
+        createdAt: '',
+      },
+      card: '',
+    },
+  ],
+  position: 0,
   tags: [
     {
       _id: '',
@@ -213,7 +227,7 @@ const Board: FC = () => {
       if (activeId && lists?.some(item => item._id === activeId)) {
         return closestCenter({
           ...args,
-          droppableContainers: args.droppableContainers.filter(container =>
+          droppableContainers: args.droppableContainers.filter((container: any) =>
             lists?.some(item => item._id === container.id)
           ),
         })
@@ -236,7 +250,7 @@ const Board: FC = () => {
             overId = closestCenter({
               ...args,
               droppableContainers: args.droppableContainers.filter(
-                container => container.id !== overId && listItems.cards.find(item => item._id === container.id)
+                (container: any) => container.id !== overId && listItems.cards.find(item => item._id === container.id)
               ),
             })[0]?.id
           }
@@ -267,8 +281,8 @@ const Board: FC = () => {
 
     if (overId == null || over.data.current === undefined) return
 
-    const activeContainer = findContainer(clonedLists, active.id)
-    const overContainer = findContainer(clonedLists, overId)
+    const activeContainer = findContainer(clonedLists, active.id as string)
+    const overContainer = findContainer(clonedLists, overId as string)
 
     // 取得當前 activeItem的座標資訊
     const activatorCoordinates = getEventCoordinates(activatorEvent)
@@ -325,7 +339,7 @@ const Board: FC = () => {
       const activeIndex = active.data.current.listPosition
       const overIndex = over.data.current.listPosition
 
-      const newLists = arrayMove(clonedLists, activeIndex, overIndex)
+      const newLists = arrayMove(clonedLists, activeIndex, overIndex) as ISingleBoardInterface['lists']
       dispatch(boardSliceActions.updateBoardList(newLists))
       dispatch(
         socketServiceActions.moveBoardList({
@@ -373,6 +387,7 @@ const Board: FC = () => {
         return activeCardId !== item._id
       })
     } else {
+      if (activeContainer === null || overContainer === null) return
       // 同張列表
       if (activeContainer == overContainer) {
         const temp = newLists[over.data.current.listPosition].cards[overIndex]
