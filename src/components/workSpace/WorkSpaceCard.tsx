@@ -2,7 +2,7 @@ import { Fragment, useRef, useState } from 'react'
 import styles from './workSpaceCard.module.scss'
 import { OverlayPanel } from 'primereact/overlaypanel'
 import { Controller, useForm } from 'react-hook-form'
-import * as Yup from 'yup'
+import yup from '@/libs/yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
@@ -16,8 +16,8 @@ import { IBoard } from '@/apis/interface/api'
 
 const { post } = axiosFetcher
 
-const schema = Yup.object().shape({
-  title: Yup.string().required(),
+const schema = yup.object().shape({
+  title: yup.string().required(),
 })
 
 interface Props {

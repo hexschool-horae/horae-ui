@@ -7,7 +7,7 @@ import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as Yup from 'yup'
+import yup from '@/libs/yup'
 import { Button } from 'primereact/button'
 import axiosFetcher from '@/apis/axios'
 import { useContext, useState } from 'react'
@@ -33,9 +33,9 @@ type IWorkspaceId = {
   data: string
 }
 
-const schema = Yup.object().shape({
-  title: Yup.string().required(),
-  discribe: Yup.string().required(),
+const schema = yup.object().shape({
+  title: yup.string().required(),
+  discribe: yup.string().required(),
 })
 
 export default function WorkSpaceModel({ visible, onHide, setVisible }: Props) {
