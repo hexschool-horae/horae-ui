@@ -107,7 +107,6 @@ const BoardCard = ({
           'w-[254px] flex flex-col justify-between rounded-md  bg-white p-4 mb-3'
         )}
       >
-        <>{id}</>
         <h6 className={classNames({ 'mb-10': tags.length > 0 }, 'text-start')}>{title}</h6>
         <div className="flex items-center flex-wrap gap-1">
           {priority && (

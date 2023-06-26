@@ -560,7 +560,6 @@ const Board: FC = () => {
                       listTitle={listsItem.title}
                       listPosition={listsItem.position}
                     >
-                      <div>{listsItem._id}</div>
                       <SortableContext
                         disabled={!token}
                         items={listsItem.cards?.map(item => ({ id: item._id, ...item })) || []}
