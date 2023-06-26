@@ -3,7 +3,7 @@ import axios from 'axios'
 import Style from './CoverSelector.module.scss'
 import { Button } from 'primereact/button'
 import { classNames } from 'primereact/utils'
-import { updateUserTheme } from '@/slices/userSlice'
+
 // import { boardSliceActions } from '@/slices/boardSlice'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { errorSliceActions } from '@/slices/errorSlice'
@@ -19,7 +19,7 @@ const CoverSelector = () => {
   const [imgList, setImgList] = useState<IImgItem[]>([])
   const [coverType, setCoverType] = useState<TCoverType>(null)
   const boardId = useAppSelector(state => state.board.boardId)
-  const boardThemeColor = useAppSelector(state => state.user.themeColor)
+  // const boardThemeColor = useAppSelector(state => state.user.themeColor)
   const dispatch = useAppDispatch()
 
   const hanldeGetUnsplash = async () => {
@@ -42,9 +42,10 @@ const CoverSelector = () => {
 
   const handleUpdateCover = (type: TCoverType, payload: IImgItem) => {
     if (type === 'unsplash') {
+      // 更新看板封面
       dispatch(socketServiceActions.updateBoardCover({ boardId, fileURL: payload.fullUrl }))
       // dispatch(boardSliceActions.updateBoardTheme({ ...boardThemeColor, themeColor: payload.color }))
-      dispatch(updateUserTheme({ ...boardThemeColor, themeColor: payload.color }))
+      // dispatch(updateUserTheme({ ...boardThemeColor, themeColor: payload.color }))
     }
   }
 

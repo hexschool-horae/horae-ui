@@ -374,7 +374,20 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽 刪除看板成員是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER_RESULT, data => {
+    console.log('監聽 刪除看板成員權限是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardMembersList(data.result))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
 
   // 監聽 看板新增成員是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, () => undefined)
@@ -452,6 +465,25 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
 
     if (data.code !== -1) {
       store.dispatch(boardSliceActions.updateBoardCover(data.result.coverPath))
+    } else {
+      const message: string = data.data.message
+      store.dispatch(
+        errorSliceActions.pushNewErrorMessage({
+          code: -1,
+          message,
+        })
+      )
+    }
+  })
+
+  // 監聽 修改看板主題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT, data => {
+    console.log('監看修改看板主題是否成功:', data)
+    store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT))
+
+    if (data.code !== -1) {
+      store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
+      store.dispatch(updateUserTheme({ themeColor: data.result.covercolor, textColor: '' }))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -586,6 +618,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     deleteCardAttachment,
     updateBoardCover,
     deleteBoardCover,
+    modifyBoardTheme,
     terminateService,
   }
 }
@@ -762,6 +795,11 @@ const deleteCardAttachment = (payload: interfaces.IDeleteCardAttachment) => {
 // 更新看板封面
 const updateBoardCover = (payload: interfaces.IBoardUpdateCover) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_UPDATE_COVER, payload)
+}
+
+// 更新看板主題
+const modifyBoardTheme = (payload: interfaces.IBoardModifyTheme) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME, payload)
 }
 
 // 刪除看板封面

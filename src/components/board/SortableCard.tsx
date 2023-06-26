@@ -2,6 +2,7 @@ import React, { cloneElement, memo } from 'react'
 import { ICardItem } from './BoardCard'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { cloneDeep } from 'lodash-es'
 
 import { UniqueIdentifier } from '@dnd-kit/core'
 import BoardCard from './BoardCard'
@@ -36,7 +37,7 @@ function SortableCard({
       cardId: id,
       listPosition,
       cardPosition: cardItem.position,
-      children: cardItem,
+      children: cloneDeep(cardItem),
     },
   })
 

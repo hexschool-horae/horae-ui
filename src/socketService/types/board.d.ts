@@ -279,6 +279,11 @@ export interface IBoardUpdateCover {
   boardId: string
   fileURL: string
 }
+// 看板新增主題
+export interface IBoardModifyTheme {
+  boardId: string
+  covercolor: string
+}
 
 // 看板刪除封面
 export interface IBoardDeleteCover {
@@ -320,6 +325,7 @@ export type IBoardService = {
   addCardAttachment: (payload: IAddCardAttachment) => void
   deleteCardAttachment: (payload: IDeleteCardAttachment) => void
   updateBoardCover: (payload: IBoardUpdateCover) => void
+  modifyBoardTheme: (payload: IBoardModifyTheme) => void
   deleteBoardCover: (payload: IBoardDeleteCover) => void
   terminateService: (boardId: string) => void
 }
