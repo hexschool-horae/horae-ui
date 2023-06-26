@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as Yup from 'yup'
+import yup from '@/libs/yup'
 import { InputText } from 'primereact/inputtext'
 import style from './sortableList.module.scss'
 
@@ -20,8 +20,8 @@ export default function SortableListTitle({ title, listId, isDragging }: IListPr
   const inputRef = useRef<HTMLInputElement>(null)
   const [isFocus, setIsFocus] = useState(false)
 
-  const schema = Yup.object().shape({
-    title: Yup.string().required(),
+  const schema = yup.object().shape({
+    title: yup.string().required(),
   })
 
   interface ITitle {
@@ -58,9 +58,10 @@ export default function SortableListTitle({ title, listId, isDragging }: IListPr
 
   const handleOnModifySubmit = () => {
     const submitData = getValues()
-    setIsFocus(false)
-    if (submitData.title == title) return
+    if (submitData.title == title) return setIsFocus(false)
+    if (!submitData.title) return
     updateTitle(submitData.title)
+    setIsFocus(false)
   }
 
   useEffect(() => {
