@@ -549,6 +549,11 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     }
   })
 
+  // 監聽看板修改主題是否成功
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT, data => {
+    store.dispatch(boardSliceActions.updateBoardCoverColor(data.result))
+  })
+
   return {
     createList,
     modifyBoardViewPermission,
@@ -586,6 +591,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     deleteCardAttachment,
     updateBoardCover,
     deleteBoardCover,
+    modifyBoardTheme,
     terminateService,
   }
 }
@@ -767,6 +773,11 @@ const updateBoardCover = (payload: interfaces.IBoardUpdateCover) => {
 // 刪除看板封面
 const deleteBoardCover = (payload: interfaces.IBoardDeleteCover) => {
   boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_DELETE_COVER, payload)
+}
+
+// 修改看板主題
+const modifyBoardTheme = (payload: interfaces.IModifyBoardTheme) => {
+  boardSocket?.emit(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME, payload)
 }
 
 const deleteCard = () => undefined

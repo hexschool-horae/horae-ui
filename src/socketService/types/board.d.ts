@@ -91,6 +91,7 @@ export interface ISingleBoardInterface {
   title: string
   discribe: string
   coverPath: string
+  covercolor: string
   viewSet: '' | 'workspace' | 'public' | 'private'
   members: [
     {
@@ -285,6 +286,12 @@ export interface IBoardDeleteCover {
   boardId: string
 }
 
+// 修改看板主題
+export interface IModifyBoardTheme {
+  boardId: string
+  covercolor: string
+}
+
 export type IBoardService = {
   createList: (payload: ICreateListPayload) => void
   createCard: (payload: ICreateCardPayload) => void
@@ -321,5 +328,6 @@ export type IBoardService = {
   deleteCardAttachment: (payload: IDeleteCardAttachment) => void
   updateBoardCover: (payload: IBoardUpdateCover) => void
   deleteBoardCover: (payload: IBoardDeleteCover) => void
+  modifyBoardTheme: (payload: IModifyBoardTheme) => void
   terminateService: (boardId: string) => void
 }

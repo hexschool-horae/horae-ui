@@ -134,6 +134,9 @@ export const socketServiceSlice = createSlice({
     deleteBoardCover(state, action: PayloadAction<interfaces.IBoardDeleteCover>) {
       state.boardService?.deleteBoardCover(action.payload)
     },
+    modifyBoardTheme(state, action: PayloadAction<interfaces.IModifyBoardTheme>) {
+      state.boardService?.modifyBoardTheme(action.payload)
+    },
     setBoardId(state, action: PayloadAction<string>) {
       state.boardId = action.payload
     },

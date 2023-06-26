@@ -18,13 +18,16 @@ const hexToRgb = (hex: string) => {
   // 返回包含RGB分量的对象或字符串
   return { r: r, g: g, b: b }
 }
+interface IUserProfile {
+  email: string
+  avatar: string
+  name: string
+}
 interface IUserInitialState {
   isLogin: boolean
   token: string | null
-  profile: {
-    email: string
-  }
   themeColor: IthemeColor
+  profile: IUserProfile
 }
 
 const initialState: IUserInitialState = {
@@ -32,6 +35,8 @@ const initialState: IUserInitialState = {
   token: null,
   profile: {
     email: '',
+    avatar: '',
+    name: '',
   },
   themeColor: { themeColor: '', textColor: '' },
 }
@@ -46,8 +51,8 @@ export const userSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
     },
-    setProfile(state, action: PayloadAction<string>) {
-      state.profile.email = action.payload
+    setProfile(state, action: PayloadAction<IUserProfile>) {
+      state.profile = action.payload
     },
     updateUserTheme(state, action: PayloadAction<IthemeColor>) {
       if (action.payload.themeColor !== '') {

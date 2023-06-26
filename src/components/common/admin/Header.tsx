@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useRef, MouseEvent, useMemo } from 'react'
 import IconLogo from '@/assets/icons/icon_logo.svg'
 // import LogoSVG from '@/components/layout/LogoSVG'
 import Link from 'next/link'
@@ -8,9 +8,13 @@ import { AppDispatch } from '@/app/store'
 import { useDispatch } from 'react-redux'
 import { useAppSelector } from '@/hooks/useAppStore'
 import { setIsLogin, setToken } from '@/slices/userSlice'
+import { dialogSliceActions } from '@/slices/dialogSlice'
+import { TieredMenu } from 'primereact/tieredmenu'
+import { Menu } from 'primereact/menu'
 
 interface IHeaderProps {
   boardId?: string
+  theme?: string
 }
 
 const boardRouters = [
@@ -20,7 +24,7 @@ const boardRouters = [
   '/board/boardWithoutPermission',
 ]
 
-const Header: FC<IHeaderProps> = ({ boardId }) => {
+const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
   const router = useRouter()
   const { pathname } = router
   const dispatch = useDispatch<AppDispatch>()
@@ -29,23 +33,23 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
   const [avatorDisplayName, setAvatorDisplayName] = useState('')
   const [headerClass, setHeaderClass] = useState('')
   const [headerColor, setHeaderColor] = useState('')
-
-  // const headerStyle = (() => {
-  //   if (boardThemeColor?.themeColor) {
-  //     return ''
-  //   }
-
-  //   if (boardId) {
-  //     return 'bg-gray-3'
-  //   } else {
-  //     return 'bg-white'
-  //   }
-  // })()
+  type HeaderThemeMapping = {
+    [key: string]: string
+  }
+  const headerThemeMapping: HeaderThemeMapping = useMemo(() => {
+    return {
+      theme1: 'bg-theme1-header',
+      theme2: 'bg-theme2-header',
+      theme3: 'bg-theme3-header',
+    }
+  }, [])
 
   useEffect(() => {
-    // console.log(pathname, boardThemeColor, boardRouters.includes(pathname))
     if (boardRouters.includes(pathname)) {
-      if (boardThemeColor?.themeColor) {
+      if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
+        setHeaderClass(`${headerThemeMapping[theme]} text-white`)
+        setHeaderColor('')
+      } else if (boardThemeColor?.themeColor) {
         setHeaderClass('')
         setHeaderColor(boardThemeColor?.themeColor)
       } else {
@@ -56,8 +60,7 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
       setHeaderClass('bg-white')
       setHeaderColor('')
     }
-  }, [boardThemeColor, pathname, boardId])
-
+  }, [boardThemeColor, pathname, boardId, theme])
   useEffect(() => {
     if (profile?.email) {
       const displayName = getAvatorDisplayName()
@@ -75,10 +78,31 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
       await POST_USER_LOGOUT()
       dispatch(setIsLogin(false))
       dispatch(setToken(''))
+      dispatch(dialogSliceActions.purgeSpinnerQueue())
       router.push('/login')
     } catch (e) {
       console.log(e)
     }
+  }
+
+  const profileItems = [
+    {
+      label: '個人中心',
+      command: () => {
+        router.push('/profile')
+      },
+    },
+    {
+      label: '登出',
+      command: () => {
+        onLogout()
+      },
+    },
+  ]
+
+  const menu = useRef<Menu>(null)
+  const onOpenProfileMenu = (e: MouseEvent<HTMLDivElement>) => {
+    menu?.current?.toggle(e)
   }
 
   return (
@@ -94,17 +118,15 @@ const Header: FC<IHeaderProps> = ({ boardId }) => {
         />
       </Link>
       <div className="ml-auto flex items-center">
-        <span
-          className="text-black mr-4 cursor-pointer"
-          style={{ color: boardThemeColor?.textColor }}
-          onClick={onLogout}
+        <div
+          className="w-[48px] h-[48px] rounded-full bg-primary ml-auto flex justify-center items-center select-none cursor-pointer"
+          style={{ backgroundColor: profile.avatar }}
+          onClick={e => onOpenProfileMenu(e)}
         >
-          登出
-        </span>
-        <div className="w-[48px] h-[48px] rounded-full bg-primary ml-auto flex justify-center items-center select-none cursor-pointer">
           <span className="text-black">{avatorDisplayName}</span>
         </div>
       </div>
+      <TieredMenu model={profileItems} popup ref={menu} />
     </div>
   )
 }

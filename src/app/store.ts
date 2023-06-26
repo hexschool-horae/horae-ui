@@ -13,7 +13,7 @@ import dialogReducer from '@/slices/dialogSlice'
 const userPersistConfig = {
   key: 'user',
   storage,
-  whitelist: ['token', 'themeColor'],
+  whitelist: ['token', 'profile', 'themeColor'],
 }
 
 // const boardPersistConfig = {
