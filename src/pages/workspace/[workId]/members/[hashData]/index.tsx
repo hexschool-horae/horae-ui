@@ -5,6 +5,7 @@ import { Button } from 'primereact/button'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { setMembersHashData } from '@/slices/workspaceSlice'
 import { InvitationData } from '@/apis/interface/api'
+import Head from 'next/head'
 interface IWorkspaceMember {
   workId: string
   hashData: string
@@ -42,6 +43,9 @@ export default function NewMember() {
   }, [workId])
   return (
     <>
+      <Head>
+        <title>Horae - 邀請成員</title>
+      </Head>
       {isLogin && (
         <div className="text-center">
           <div className="invitation-link-description mt-20 text-2xl">

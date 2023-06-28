@@ -31,7 +31,7 @@ export default function ProductDescription() {
       decorativeTitle: '計時',
       img: 'home-timing',
       describe:
-        '通過即時聊天不用再另外使用其它通訊軟體，加速團隊溝通。你也可以標記個人，為行動項目分配評論，並鏈結任務以共同完成更多工作。',
+        '每項任務卡片都可以使用計時功能，協助你掌握並評估任務的時間。也可以設定專屬的番茄鐘，利用它來幫你提升任務的專注力。',
     },
   ])
   return (

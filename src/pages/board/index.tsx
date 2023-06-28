@@ -5,6 +5,7 @@ import { Button } from 'primereact/button'
 import WorkSpaceModel from '@/components/workSpace/WorkSpaceModel'
 import WorkSpaceList from '@/components/workSpace/WorkSpaceList'
 import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
+import Head from 'next/head'
 
 export default function Board() {
   const router = useRouter()
@@ -25,6 +26,9 @@ export default function Board() {
 
   return (
     <>
+      <Head>
+        <title>Horae - 個人工作區看板</title>
+      </Head>
       <h2 className="text-2xl font-bold mb-6">歡迎！</h2>
       {userBoardsData.length === 0 ? (
         <p>
