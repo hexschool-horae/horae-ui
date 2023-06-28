@@ -21,6 +21,7 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
   const router = useRouter()
   const { pathname } = router
   const isLogin = useAppSelector(state => state.user.isLogin)
+  const workspaceData = useAppSelector(state => state.workspace.workspaceData)
 
   // 路由權限驗證
   useEffect(() => {
@@ -52,6 +53,13 @@ const RouterGuard = ({ children }: { children?: ReactNode }) => {
       }
     }
   }, [router, pathname, isLogin])
+
+  // 路由權限驗證
+  useEffect(() => {
+    if (workspaceRouters.includes(pathname) && pathname !== '/workspace/workspaceWithoutPermission') {
+      document.title = `Horae - ${workspaceData.workspaceName}`
+    }
+  }, [workspaceData.workspaceName])
 
   return <>{children}</>
 }

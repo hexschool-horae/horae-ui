@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import Banner from './banner'
 import PomodoroDescription from './pomodoroDescription'
 import ProductDescription from './productDescription'
@@ -9,6 +10,9 @@ import WorkApplication from './workApplication'
 export default function home() {
   return (
     <>
+      <Head>
+        <title>Horae - 首頁</title>
+      </Head>
       <Banner></Banner>
       <ProductDescription></ProductDescription>
       <WorkApplication></WorkApplication>

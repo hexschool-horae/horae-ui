@@ -4,13 +4,21 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 interface IWorkspaceInitialState {
   workspaceId: string
   membersHashData: string
+  workspaceData: IWorkspaceData
+}
+
+interface IWorkspaceData {
   viewSet: string
+  workspaceName: string
 }
 
 const initialState: IWorkspaceInitialState = {
   workspaceId: '',
   membersHashData: '',
-  viewSet: '',
+  workspaceData: {
+    viewSet: '',
+    workspaceName: '',
+  },
 }
 
 export const workspaceSlice = createSlice({
@@ -23,12 +31,12 @@ export const workspaceSlice = createSlice({
     setMembersHashData: (state, action: PayloadAction<string>) => {
       state.membersHashData = action.payload
     },
-    setViewSet: (state, action: PayloadAction<string>) => {
-      state.viewSet = action.payload
+    setWorkspaceData: (state, action: PayloadAction<IWorkspaceData>) => {
+      state.workspaceData = action.payload
     },
   },
 })
 
-export const { setWorkspaceId, setMembersHashData, setViewSet } = workspaceSlice.actions //給React組件個別使用
+export const { setWorkspaceId, setMembersHashData, setWorkspaceData } = workspaceSlice.actions //給React組件個別使用
 
 export default workspaceSlice.reducer //給store.js使用
