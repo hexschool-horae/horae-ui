@@ -482,7 +482,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT))
 
     if (data.code !== -1) {
-      store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
+      // store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
       store.dispatch(updateUserTheme({ themeColor: data.result.covercolor, textColor: '' }))
     } else {
       const message: string = data.data.message
@@ -582,9 +582,9 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽看板修改主題是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT, data => {
-    store.dispatch(boardSliceActions.updateBoardCoverColor(data.result))
-  })
+  // boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT, data => {
+  //   store.dispatch(boardSliceActions.updateBoardCoverColor(data.result))
+  // })
 
   return {
     createList,

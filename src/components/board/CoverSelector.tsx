@@ -59,8 +59,7 @@ const CoverSelector = () => {
     if (type === 'unsplash') {
       // 更新看板封面
       dispatch(socketServiceActions.updateBoardCover({ boardId, fileURL: payload.fullUrl }))
-      // dispatch(boardSliceActions.updateBoardTheme({ ...boardThemeColor, themeColor: payload.color }))
-      // dispatch(updateUserTheme({ ...boardThemeColor, themeColor: payload.color }))
+      dispatch(socketServiceActions.modifyBoardTheme({ boardId, covercolor: payload.color }))
     }
   }
 

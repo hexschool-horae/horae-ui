@@ -6,23 +6,25 @@ const BoardGuard = ({ children }: { children?: ReactNode }) => {
   const router = useRouter()
   const { pathname } = router
 
-  const isLogin = useAppSelector(state => state.user.isLogin)
+  // const isLogin = useAppSelector(state => state.user.isLogin)
   const viewSet = useAppSelector(state => state.board?.singleBaord?.viewSet)
   const yourRole = useAppSelector(state => state.board?.singleBaord?.yourRole)
 
   // 路由權限驗證
   useEffect(() => {
-    if (viewSet === '') return
+    if (!viewSet || !yourRole) return
     // if (isClosed) router.push('/board/boardClosed')
 
     if (viewSet === 'private') {
-      if (yourRole !== 'admin') router.push('/board/boardWithoutPermission')
+      if (yourRole === 'visitor') router.push('/board/boardWithoutPermission')
     }
 
     if (viewSet === 'public') {
       if (pathname === '/board/boardWithoutPermission') router.push('/board/[boardId]')
     }
-  }, [isLogin, viewSet])
+
+    console.log('boadGuard', viewSet, yourRole)
+  }, [viewSet])
 
   return <>{children}</>
 }
