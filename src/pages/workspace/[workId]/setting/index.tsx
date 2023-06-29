@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ConfirmDialog } from 'primereact/confirmdialog'
 import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
-import { setViewSet } from '@/slices/workspaceSlice'
+import { setWorkspaceData } from '@/slices/workspaceSlice'
 
 export default function Setting() {
   const dispatch = useAppDispatch()
@@ -35,7 +35,12 @@ export default function Setting() {
       if (!response) return
       const data = response.data
       setBoardData(data)
-      dispatch(setViewSet(response.data.viewSet))
+      dispatch(
+        setWorkspaceData({
+          viewSet: response.data.viewSet,
+          workspaceName: response.data.title,
+        })
+      )
     } catch (e: any) {
       // 403 msg	此為私人工作區，您不是工作區成員，不可查看
       const { status } = e.response

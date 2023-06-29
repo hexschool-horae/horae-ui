@@ -17,10 +17,9 @@ import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
 import { ConfirmDialog } from 'primereact/confirmdialog'
 import InvitationLink from '@/components/common/InvitationLink'
-import { setWorkspaceId } from '@/slices/workspaceSlice'
+import { setWorkspaceId, setWorkspaceData } from '@/slices/workspaceSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { Fragment } from 'react'
-import { setViewSet } from '@/slices/workspaceSlice'
 
 // const schemaInvitation = yup.object().shape({
 //   userEmail: yup.string().required().email(),
@@ -55,7 +54,7 @@ export default function Members() {
     { name: '成員', role: 'editor' },
   ]
 
-  const [workspaceData, setWorkspaceData] = useState<IWorkspaceData>({
+  const [workspaceObj, setWorkspaceObj] = useState<IWorkspaceData>({
     title: '',
     viewSet: '',
     discribe: '',
@@ -97,15 +96,21 @@ export default function Members() {
       if (!response) return
       const data = response.data.members ?? []
       console.log('response', response)
+      dispatch(
+        setWorkspaceData({
+          viewSet: response.data.viewSet,
+          workspaceName: response.data.title,
+        })
+      )
       setMembers(data)
-      setWorkspaceData({
+      setWorkspaceObj({
         title: response.data.title,
         viewSet: response.data.viewSet,
         discribe: '',
         status: '',
         _id: '',
       })
-      dispatch(setViewSet(response.data.viewSet))
+
       console.log('members', members)
     } catch (e: any) {
       // 401 msg	此為私人看板，訪客請先登入
@@ -222,7 +227,7 @@ export default function Members() {
         accept={accept}
         reject={reject}
       />
-      {workspaceData.title ? <WorkSpaceTitle boardData={workspaceData}></WorkSpaceTitle> : ''}
+      {workspaceObj.title ? <WorkSpaceTitle boardData={workspaceObj}></WorkSpaceTitle> : ''}
 
       <div className="invitation flex justify-between">
         {/* <h5 className="pb-5">邀請成員加入你</h5> */}
