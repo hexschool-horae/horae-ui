@@ -1,17 +1,20 @@
 import { memo, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useAppSelector } from '@/hooks/useAppStore'
+import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import { socketServiceActions } from '@/slices/socketServiceSlice'
 
 import { Button } from 'primereact/button'
-import { GET_BOARD_INVITATION_DATA_BY_ID, POST_BOARD_MEMBERS_BY_ID } from '@/apis/axios-service'
+import { GET_BOARD_INVITATION_DATA_BY_ID } from '@/apis/axios-service'
 
 const BoardInvitation = () => {
   const router = useRouter()
   const { boardId, id } = router.query
   const [boardData, setBoardData] = useState({ title: '', inviter: '' })
-  const [isShowLogin, setIsShowLogin] = useState(false)
   const token = useAppSelector(state => state.user.token)
+  const profile = useAppSelector(state => state.user.profile)
+  const boardMembersList = useAppSelector(state => state.board.boardMembersList)
+  const dispatch = useAppDispatch()
 
   const handleGetInvitationData = async () => {
     if (typeof boardId !== 'string' || typeof id !== 'string') return
@@ -25,32 +28,32 @@ const BoardInvitation = () => {
   }
 
   const handleInviteMembers = async () => {
-    if (typeof boardId !== 'string' || typeof id !== 'string') return
+    if (typeof boardId !== 'string' || typeof id !== 'string' || token === null) return
 
-    try {
-      const result = await POST_BOARD_MEMBERS_BY_ID(boardId, id, Boolean(token))
-
-      if (result === undefined) return
-      const { success } = result
-
-      if (success) {
-        router.push(`/board/${boardId}`)
-        setIsShowLogin(false)
-      }
-    } catch (error: any) {
-      if (error?.data?.message == '您尚未登入') {
-        setIsShowLogin(true)
-      }
-
-      if (error?.data?.message == '成員已經存在此看板，不可新增') {
-        router.push(`/board/${boardId}`)
-      }
-    }
+    dispatch(
+      socketServiceActions.addBoardMember({
+        hashData: id,
+        boardId,
+      })
+    )
   }
 
   useEffect(() => {
-    setIsShowLogin(false)
-  }, [token])
+    if (boardMembersList === null || !boardMembersList.length) return
+    const isMember = boardMembersList.some(item => item.userId.email === profile.email)
+
+    if (isMember) router.push(`/board/${boardId}`)
+  }, [boardMembersList, profile])
+
+  useEffect(() => {
+    //進入此頁時，先加入socket服務
+    if (typeof boardId !== 'string' || token === null) return
+    dispatch(socketServiceActions.initialBoardService({ boardId, token }))
+
+    return () => {
+      dispatch(socketServiceActions.terminateBoardService())
+    }
+  }, [boardId, token])
 
   useEffect(() => {
     if (boardId) {
@@ -67,7 +70,7 @@ const BoardInvitation = () => {
         加入看板
       </Button>
 
-      {isShowLogin && (
+      {token === null && (
         <Link href="/login" legacyBehavior passHref>
           <a className="text-secondary-1 mt-4" target="_blank" rel="noopener noreferrer">
             您尚未登入，請先 <u>登入</u>

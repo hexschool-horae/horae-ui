@@ -377,7 +377,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER_RESULT, data => {
     console.log('監聽 刪除看板成員權限是否成功:', data)
     if (data.code !== -1) {
-      store.dispatch(boardSliceActions.updateBoardMembersList(data.result))
+      store.dispatch(boardSliceActions.updateBoardMembersList(data.result.members))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -390,7 +390,25 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽 看板新增成員是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, data => {
+    console.log('監聽 看板新增成員是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT))
+      store.dispatch(boardSliceActions.updateBoardMembersList(data.result.members))
+    } else {
+      const message: string = data.data.message
+      if (message === '成員已經存在此看板，不可新增') {
+        // store.dispatch(boardSliceActions.updateBoardMembersList(data.result.members))
+      } else {
+        store.dispatch(
+          errorSliceActions.pushNewErrorMessage({
+            code: -1,
+            message,
+          })
+        )
+      }
+    }
+  })
 
   // 監聽 新增卡片成員是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT, data => {

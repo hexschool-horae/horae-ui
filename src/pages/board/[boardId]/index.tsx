@@ -52,6 +52,7 @@ import { classNames } from 'primereact/utils'
 
 import BoardGuard from '@/app/BoardGuard'
 import AddCardButton from '@/components/board/AddCardButton'
+import { updateUserTheme } from '@/slices/userSlice'
 
 const emptyCard = {
   _id: '',
@@ -110,6 +111,8 @@ const Board: FC = () => {
   const singleBaord = useAppSelector(state => state.board.singleBaord)
   const boardLists = singleBaord?.lists
   const clonedBoardList = cloneDeep(boardLists)?.map(item => ({ id: item._id, ...item }))
+  const profile = useAppSelector(state => state.user.profile)
+  const boardMembersList = useAppSelector(state => state.board.boardMembersList)
   const dispatch = useAppDispatch()
 
   const [lists, setLists] = useState(clonedBoardList)
@@ -428,6 +431,7 @@ const Board: FC = () => {
       if (result !== undefined) {
         const { data } = result
         dispatch(boardSliceActions.setSingleBoard(data))
+        dispatch(updateUserTheme({ themeColor: data.covercolor, textColor: '' }))
       }
     } catch (e) {
       let errorMessage = ''
@@ -502,6 +506,13 @@ const Board: FC = () => {
       return renderCardDragOverlay()
     }
   }
+  // 成員名單變動
+  useEffect(() => {
+    if (boardMembersList === null || !boardMembersList.length) return
+    const isMember = boardMembersList.some(item => item.userId.email === profile.email)
+
+    if (!isMember && !token) router.push(`/board/boardWithoutPermission`)
+  }, [boardMembersList, profile])
 
   /** 取得 url query boardID */
   useEffect(() => {
