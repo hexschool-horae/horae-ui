@@ -22,6 +22,7 @@ interface IEditorWrapperProps {
 
 MdEditor.unuse(Plugins.Image)
 MdEditor.unuse(Plugins.FontUnderline)
+MdEditor.unuse(Plugins.ModeToggle)
 
 export default function EditorWrapper({ editorRef, isEdit, description, handleEditorChange }: IEditorWrapperProps) {
   useEffect(() => {

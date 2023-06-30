@@ -2,7 +2,7 @@ import router from 'next/router'
 import dynamic from 'next/dynamic'
 
 import { useEffect, useState, useRef } from 'react'
-import style from './cardDetail.module.scss'
+// import style from './cardDetail.module.scss'
 import { Button } from 'primereact/button'
 
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
@@ -12,6 +12,7 @@ import { IEditorChangeProps } from './EditorWrapper'
 /*
 建議使用 client-side render 
 但會無法調用editor提供的方法，元件傳入的第一個參數會出現型別錯誤
+外面需再多包一層子元件，才可使用editor提供的方法
 */
 
 // /* eslint-disable */
@@ -81,16 +82,16 @@ export default function CardDetailDescribe() {
   }, [socketDescribe])
 
   return (
-    <div className="my-5" onClick={() => token && !isEdit && setIsEdit(true)}>
+    <div className="my-5">
       <h5 className="mb-[16px]">描述</h5>
-      <div className="relative mb-2">
+      <div className="relative mb-2" onClick={() => token && !isEdit && setIsEdit(true)}>
         <EditorWrapper
           editorRef={editorRef}
           isEdit={isEdit}
           description={description}
           handleEditorChange={handleEditorChange}
         />
-        {!isEdit && <div className={`${style.editor_overlay}`}></div>}
+        {/* {!isEdit && <div className={`${style.editor_overlay}`}></div>} */}
       </div>
       {isEdit && (
         <div className="flex justify-end gap-2">
