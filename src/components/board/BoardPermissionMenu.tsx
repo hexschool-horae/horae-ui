@@ -9,11 +9,14 @@ import { useAppDispatch } from '@/hooks/useAppStore'
 import { useAppSelector } from '@/hooks/useAppStore'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 
+type TViewSet = '' | 'private' | 'workspace' | 'public'
+
 const permissionData = {
   workspace: '工作區',
   public: '公開',
   private: '私密',
 }
+
 const permissionDataItems = [
   {
     label: '公開',
@@ -32,16 +35,19 @@ const permissionDataItems = [
   },
 ]
 
-const permissionItems = (onClick: (event: MouseEvent, viewSet: 'public' | 'private' | 'workspace') => void) =>
+const permissionItems = (onClick: (event: MouseEvent, viewSet: TViewSet) => void, currentViewSet: TViewSet) =>
   permissionDataItems.map((item, i) => ({
     label: item.label,
     template: (
       <div
         className={Style.permission_item}
         key={i}
-        onClick={(event: MouseEvent) => onClick(event, item.value as 'public' | 'private' | 'workspace')}
+        onClick={(event: MouseEvent) => onClick(event, item.value as TViewSet)}
       >
-        <div className={Style.permission_item_label}>{item.label}</div>
+        <div className={Style.permission_item_label}>
+          {item.label}
+          {currentViewSet === item.value && <i className="pi pi-check ml-2" style={{ fontSize: '0.5rem' }}></i>}
+        </div>
         <div className={Style.permission_item_des}>{item.des}</div>
       </div>
     ),
@@ -53,9 +59,9 @@ export default function BoardPermissionMenu() {
   const token = useAppSelector(state => state.user?.token)
   const dispatch = useAppDispatch()
 
-  const onClick = (event: MouseEvent, viewSet: 'public' | 'private' | 'workspace') => {
-    console.log(boardId, viewSet)
-    // return
+  const onClick = (event: MouseEvent, viewSet: TViewSet) => {
+    if (viewSet === '') return
+
     dispatch(socketServiceActions.modifyBoardViewPermission({ boardId, viewSet }))
     menu?.current?.hide(event)
   }
@@ -64,7 +70,7 @@ export default function BoardPermissionMenu() {
   const items: MenuItem[] = [
     { label: 'title', template: () => <div className={Style.permission_item_title}>觀看權限</div> },
     { separator: true },
-    ...permissionItems(onClick),
+    ...permissionItems(onClick, boardViewSet),
   ]
 
   const handleMenuToggle = (event: MouseEvent<HTMLButtonElement>) => {

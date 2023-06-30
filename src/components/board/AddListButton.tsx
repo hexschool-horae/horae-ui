@@ -48,7 +48,7 @@ const AddListButton: FC<IAddListButtonProps> = () => {
   }
 
   return (
-    <>
+    <div className={classNames({ 'bg-white': inputVisible, 'p-4': inputVisible })}>
       {/* 列表標題輸入框 */}
       <div className={classNames('mb-4', { hidden: !inputVisible })}>
         <ValidateController className="mb-4" label="" name="title" control={control}>
@@ -69,14 +69,14 @@ const AddListButton: FC<IAddListButtonProps> = () => {
       <Button
         disabled={!token}
         name="add-list"
-        className="w-[286px] border-secondary-2 bg-white row-span-full text-secondary-3 flex h-16"
+        className="w-full border-secondary-2 bg-white row-span-full text-secondary-3 flex h-16"
         outlined
         onClick={() => setInputVisible(true)}
       >
         新增其他列表
         <span className="ml-auto">+</span>
       </Button>
-    </>
+    </div>
   )
 }
 

@@ -398,6 +398,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     } else {
       const message: string = data.data.message
       if (message === '成員已經存在此看板，不可新增') {
+        // location.href = "/"
         // store.dispatch(boardSliceActions.updateBoardMembersList(data.result.members))
       } else {
         store.dispatch(

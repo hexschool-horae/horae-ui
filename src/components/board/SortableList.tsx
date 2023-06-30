@@ -74,7 +74,7 @@ const SortableList = ({
       {...attributes}
       {...listeners}
     >
-      <div className={classNames('bg-secondary-4 px-4 py-5 ', { 'bg-secondary-2': isOverContainer })}>
+      <div className={classNames('bg-secondary-4 px-4 py-5', { 'bg-secondary-2': isOverContainer })}>
         <SortableListTitle title={listTitle} listId={id} isDragging={isDragging}></SortableListTitle>
         {children}
       </div>

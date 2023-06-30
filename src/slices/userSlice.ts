@@ -6,7 +6,7 @@ interface IthemeColor {
   textColor: string
 }
 const hexToRgb = (hex: string) => {
-  if (hex === '') return
+  if (hex === '' || hex === undefined) return
   // 移除可能的前缀，并保留六位十六进制数
   hex = hex.replace(/^#/, '')
 

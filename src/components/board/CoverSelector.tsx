@@ -83,7 +83,7 @@ const CoverSelector = () => {
           />
         )}
 
-        <div className="text-xl text-center">
+        <div className="w-full text-xl text-center">
           {coverType === null ? '更換背景' : coverType === 'unsplash' ? '照片由 Unsplash 提供' : '顏色主題'}
         </div>
 
@@ -116,13 +116,9 @@ const CoverSelector = () => {
 
       {/* 從 unsplash 選擇 */}
       {coverType === 'unsplash' && (
-        <div className="w-full flex flex-wrap justify-between">
+        <div className={Style['cover-theme-box']}>
           {imgList.map((item, index: number) => (
-            <div
-              key={index}
-              className={classNames('p-[4px] hover:border-violet-700 active:border-violet-700', Style.img_item)}
-              onClick={() => handleUpdateCover('unsplash', item)}
-            >
+            <div key={index} className={classNames(Style.img_item)} onClick={() => handleUpdateCover('unsplash', item)}>
               <img style={{ width: '100%', height: '100px' }} src={item.url} />
             </div>
           ))}

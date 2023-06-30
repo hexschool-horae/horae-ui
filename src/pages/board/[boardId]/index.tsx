@@ -435,6 +435,7 @@ const Board: FC = () => {
       }
     } catch (e) {
       let errorMessage = ''
+
       if (e instanceof AxiosError) {
         errorMessage = e.response?.data.message
 
@@ -444,16 +445,17 @@ const Board: FC = () => {
         ) {
           router.push('/board/boardWithoutPermission')
         }
-      } else {
-        errorMessage = '發生錯誤'
-      }
 
-      dispatch(
-        errorSliceActions.pushNewErrorMessage({
-          code: -1,
-          message: errorMessage,
-        })
-      )
+        dispatch(
+          errorSliceActions.pushNewErrorMessage({
+            code: -1,
+            message: errorMessage,
+          })
+        )
+      } else {
+        console.log(e)
+        // errorMessage = '發生錯誤'
+      }
     }
   }
 
@@ -512,7 +514,7 @@ const Board: FC = () => {
     const isMember = boardMembersList.some(item => item.userId.email === profile.email)
 
     if (!isMember && !token) router.push(`/board/boardWithoutPermission`)
-  }, [boardMembersList, profile])
+  }, [boardMembersList, profile, token])
 
   /** 取得 url query boardID */
   useEffect(() => {
@@ -625,11 +627,14 @@ const Board: FC = () => {
                 })}
               </SortableContext>
 
-              <div className="row-span-full">
-                <div className="h-auto">
-                  <AddListButton />
+              {/* 登入者才可以看到新增列表按鈕 */}
+              {token && (
+                <div className="row-span-full">
+                  <div className="h-auto">
+                    <AddListButton />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </DndContext>
           {/* 卡片元件 */}

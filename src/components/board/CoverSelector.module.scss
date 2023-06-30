@@ -10,24 +10,7 @@
 
 .img_item {
   border-radius: 8px;
-  width: 160px;
   cursor: pointer;
-  margin-bottom: 8px;
-
-  :nth-of-type(2n + 1) {
-    margin-right: 4px;
-  }
-}
-.theme_item {
-  border-radius: 8px;
-  width: 160px;
-  height: 90px;
-  margin-bottom: 8px;
-  cursor: pointer;
-
-  :nth-of-type(2n + 1) {
-    margin-right: 4px;
-  }
 }
 
 .cover-theme-box {

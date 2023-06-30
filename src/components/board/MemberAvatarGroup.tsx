@@ -5,7 +5,7 @@ import { useAppSelector } from '@/hooks/useAppStore'
 /** 看板上方主選單的團隊成員群組 */
 export default function MemberAvatarGroup() {
   const boardMembersList = useAppSelector(state => state.board.boardMembersList)
-  console.log(boardMembersList)
+  // console.log(boardMembersList)
   return (
     <>
       {boardMembersList !== null ? (
