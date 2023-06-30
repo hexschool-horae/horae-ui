@@ -8,6 +8,7 @@ import { classNames } from 'primereact/utils'
 import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { errorSliceActions } from '@/slices/errorSlice'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
+import IconCancelTheme from '@/assets/icons/icon_cancel_theme.svg'
 
 type TCoverType = 'local' | 'unsplash' | 'theme' | null
 interface IImgItem {
@@ -131,6 +132,9 @@ const CoverSelector = () => {
       {/* 從主題選擇 */}
       {coverType === 'theme' && (
         <div className={Style['cover-theme-box']}>
+          <div className={`${Style.theme} ${Style['default-theme']}`} onClick={() => onSetCoverTheme('')}>
+            <IconCancelTheme className="w-[50px] h-[50px]" />
+          </div>
           <div className={`${Style.theme} ${Style.theme1}`} onClick={() => onSetCoverTheme('theme1')}></div>
           <div className={`${Style.theme} ${Style.theme2}`} onClick={() => onSetCoverTheme('theme2')}></div>
           <div className={`${Style.theme} ${Style.theme3}`} onClick={() => onSetCoverTheme('theme3')}></div>

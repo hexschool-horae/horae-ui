@@ -41,6 +41,10 @@
     border-radius: 8px;
     @apply cursor-pointer;
   }
+  .default-theme {
+    @apply flex justify-center items-center;
+    @apply bg-secondary-4;
+  }
   .theme1 {
     @apply bg-theme1-header;
   }
