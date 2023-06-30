@@ -70,7 +70,7 @@ const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
   }, [profile])
 
   const getAvatorDisplayName = () => {
-    return profile?.email.slice(0, 1)
+    return profile?.name.slice(0, 1)
   }
 
   const onLogout = async () => {
