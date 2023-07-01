@@ -74,7 +74,7 @@ export default function SortableListTitle({ title, listId, isDragging }: IListPr
   }, [isDragging])
 
   return (
-    <form className={`mb-8 relative ${isFocus ? '' : style.list_title_view}`} onSubmit={handleSubmit(onSubmit)}>
+    <form className={`mb-4 relative ${isFocus ? '' : style.list_title_view}`} onSubmit={handleSubmit(onSubmit)}>
       <ValidateController name={`title-${listId}`} label="" control={control}>
         <InputText ref={inputRef} onClick={() => token && setIsFocus(true)} onBlur={() => handleOnModifySubmit()} />
       </ValidateController>

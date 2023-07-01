@@ -72,13 +72,7 @@ const emptyCard = {
     },
   ],
   position: 0,
-  tags: [
-    {
-      _id: '',
-      title: '',
-      color: '',
-    },
-  ],
+  tags: [],
 }
 
 const findContainer = (list: any[], id: string) => {
@@ -296,10 +290,11 @@ const Board: FC = () => {
     // 判斷是否在 over  之下
     const isBelowOverItem = intersectionY > over.rect.top + over.rect.height
 
-    if (active.data.current?.type === 'card') {
-      // 如果是同張卡片，忽略動作
-      if (activeContainer === overContainer) return
+    if (activeListPosition !== over.data.current.listPosition) {
+      recentlyMovedToNewContainer.current = true
+    }
 
+    if (active.data.current?.type === 'card') {
       let newLists = cloneDeep(lists)
 
       // 重新產生新的佔位卡片前，清除前一個佔位卡片
@@ -309,8 +304,22 @@ const Board: FC = () => {
           return { ...item, cards: newCards }
         })
       )
+      // 如果是同張卡片，忽略動作
+      if (activeContainer === overContainer) return
 
-      const newChildren = { ...emptyCard }
+      const newChildren =
+        (activeCardItem?.tags !== undefined && activeCardItem?.tags.length > 0) || activeCardItem?.proiority !== ''
+          ? {
+              ...emptyCard,
+              tags: [
+                {
+                  _id: '',
+                  title: '',
+                  color: '',
+                },
+              ],
+            }
+          : { ...emptyCard }
 
       newLists[over.data.current.listPosition].cards.splice(
         isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index,
@@ -330,6 +339,24 @@ const Board: FC = () => {
 
     const overId = over?.id
 
+    if (overId == null) {
+      let newLists = cloneDeep(lists)
+      newLists = cloneDeep(
+        newLists.map(item => {
+          const newCards = item.cards.filter(item2 => {
+            return item2.title !== ''
+          })
+
+          return { ...item, cards: newCards }
+        })
+      )
+
+      dispatch(boardSliceActions.updateBoardList(newLists))
+
+      setActiveId(null)
+      return
+    }
+
     // 取得當前 activeItem的座標資訊
     const activatorCoordinates = getEventCoordinates(activatorEvent)
     const intersectionY = (activatorCoordinates?.y || 0) + delta.y
@@ -346,6 +373,10 @@ const Board: FC = () => {
 
       const newLists = arrayMove(clonedLists, activeIndex, overIndex) as ISingleBoardInterface['lists']
       dispatch(boardSliceActions.updateBoardList(newLists))
+
+      // 拖曳到列表相同位置，就不更新資料
+      if (activeListId === over.data.current.listId) return
+
       dispatch(
         socketServiceActions.moveBoardList({
           boardId,
@@ -353,11 +384,6 @@ const Board: FC = () => {
           finalPosition: overIndex,
         })
       )
-      return
-    }
-
-    if (overId == null) {
-      setActiveId(null)
       return
     }
 
@@ -402,7 +428,11 @@ const Board: FC = () => {
 
         finalPosition = overIndex
       } else {
-        finalPosition = isBelowOverItem ? over.data.current.sortable.index + 1 : over.data.current.sortable.index
+        finalPosition = isBelowOverItem
+          ? over.data.current.sortable.index + 1 >= newLists[over.data.current.listPosition].cards.length
+            ? newLists[over.data.current.listPosition].cards.length
+            : over.data.current.sortable.index + 1
+          : over.data.current.sortable.index
         newLists[over.data.current.listPosition].cards.splice(finalPosition, 0, newChildren)
 
         newLists[activeListPosition].cards = newLists[activeListPosition].cards.filter(
@@ -478,7 +508,7 @@ const Board: FC = () => {
                 key={cardItem._id}
                 id={cardItem._id}
                 title={cardItem.title}
-                priority={''}
+                priority={cardItem.proiority}
                 tags={cardItem.tags}
               />
             )
@@ -499,7 +529,12 @@ const Board: FC = () => {
 
     return (
       <div className="rotate-12">
-        <BoardCard id={activeCardId} title={activeCardItem.title} priority={''} tags={activeCardItem.tags} />
+        <BoardCard
+          id={activeCardId}
+          title={activeCardItem.title}
+          priority={activeCardItem.proiority}
+          tags={activeCardItem.tags}
+        />
       </div>
     )
   }
@@ -514,10 +549,12 @@ const Board: FC = () => {
   }
   // 成員名單變動
   useEffect(() => {
-    if (boardMembersList === null || !boardMembersList.length) return
-    const isMember = boardMembersList.some(item => item.userId.email === profile.email)
+    if (boardMembersList === null || !boardMembersList.length) {
+      return
+    }
 
-    if (!isMember && !token) router.push(`/board/boardWithoutPermission`)
+    const isMember = boardMembersList.some(item => item.userId.email === profile.email)
+    if (!isMember) router.push(`/board/boardWithoutPermission`)
   }, [boardMembersList, profile, token])
 
   /** 取得 url query boardID */
@@ -625,7 +662,7 @@ const Board: FC = () => {
                         {listsItem.cards?.length ? (
                           listsItem.cards.map((cardItem, index) => {
                             return (
-                              <>
+                              <div key={cardItem._id}>
                                 <SortableCard
                                   key={cardItem._id}
                                   id={cardItem._id}
@@ -638,7 +675,7 @@ const Board: FC = () => {
                                   <DragOverlay dropAnimation={dropAnimation}>{handleRenderOverlay()}</DragOverlay>,
                                   document.body
                                 )}
-                              </>
+                              </div>
                             )
                           })
                         ) : (
