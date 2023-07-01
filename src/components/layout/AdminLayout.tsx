@@ -16,7 +16,7 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
   const [boardId, setBoardId] = useState('')
 
   const errorMessages = useAppSelector(state => state.error.errors)
-  const theme = useAppSelector(state => state.board.singleBaord?.covercolor) || ''
+  // const theme = useAppSelector(state => state.board.singleBaord?.covercolor) || ''
   const dispatch = useAppDispatch()
   const toastRef = useRef<Toast>(null)
 
@@ -42,9 +42,9 @@ const AdminLayout: FC<IAdminLayoutProps> = ({ children }) => {
   return (
     <AdminLayoutContextProvider>
       <div className="flex flex-col h-full">
-        <Header boardId={boardId} theme={theme} />
+        <Header boardId={boardId} />
         <div className="flex flex-1 overflow-y-auto">
-          <Sidebar boardId={boardId} theme={theme} />
+          <Sidebar boardId={boardId} />
           <div
             className={`w-full h-full overflow-x-auto overflow-y-auto
             ${boardId ? 'bg-white' : 'bg-secondary-4'} ${boardId ? '' : 'py-[50px] px-[64px]'}`}

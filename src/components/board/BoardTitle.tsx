@@ -10,7 +10,7 @@ export default function BoardTitle() {
   const token = useAppSelector(state => state.user.token)
   const boardId = useAppSelector(state => state.board?.boardId)
   const boardTitle = useAppSelector(state => state.board?.singleBaord?.title) || ''
-  const boardThemeColor = useAppSelector(state => state.user?.themeColor)
+  const { textColor } = useAppSelector(state => state.board?.themeColor)
   const dispatch = useAppDispatch()
 
   const [isEdit, setIsEdit] = useState(false)
@@ -53,7 +53,7 @@ export default function BoardTitle() {
         {isEdit && token ? (
           <InputText ref={inputRef} value={localBoardTitle} onChange={e => setLocalBoardTitle(e.target.value)} />
         ) : (
-          <h4 className="text-2xl" style={{ color: boardThemeColor?.textColor }}>
+          <h4 className="text-2xl" style={{ color: textColor }}>
             {boardTitle}
           </h4>
         )}

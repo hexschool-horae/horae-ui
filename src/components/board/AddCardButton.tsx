@@ -23,6 +23,7 @@ const schema = yup
 
 /** 新增看板按鈕 */
 const AddCardButton: FC<IAddCardButtonProps> = ({ listId = '' }) => {
+  const token = useAppSelector(state => state.user.token)
   const boardId = useAppSelector(state => state.board?.boardId)
   const dispatch = useAppDispatch()
 
@@ -64,13 +65,15 @@ const AddCardButton: FC<IAddCardButtonProps> = ({ listId = '' }) => {
       </div>
 
       {/* 新增卡片按鈕 */}
-      <Button
-        name="add-card"
-        className="!w-full !tracking-[1px] !text-sm !text-secondary-3 !text-center p-0"
-        label="+ 新增卡片"
-        text
-        onClick={() => setCardInputVisible(true)}
-      />
+      {token && (
+        <Button
+          name="add-card"
+          className="!w-full !tracking-[1px] !text-sm !text-secondary-3 !text-center p-0"
+          label="+ 新增卡片"
+          text
+          onClick={() => setCardInputVisible(true)}
+        />
+      )}
     </>
   )
 }

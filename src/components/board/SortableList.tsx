@@ -58,12 +58,9 @@ const SortableList = ({
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    // transform: `translate3d(${transform?.x}px, ${transform?.y}px, 0)`,
     transition,
     opacity: isDragging ? 0.5 : undefined,
   }
-
-  // console.log('isDragging', isDragging)
 
   return (
     <div
@@ -74,7 +71,7 @@ const SortableList = ({
       {...attributes}
       {...listeners}
     >
-      <div className={classNames('bg-secondary-4 px-4 py-5 ', { 'bg-secondary-2': isOverContainer })}>
+      <div className={classNames('bg-secondary-4 px-4 py-5', { 'bg-secondary-2': isOverContainer })}>
         <SortableListTitle title={listTitle} listId={id} isDragging={isDragging}></SortableListTitle>
         {children}
       </div>

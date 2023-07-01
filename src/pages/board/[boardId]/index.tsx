@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { FC, useEffect, useState, useRef, useCallback } from 'react'
+import { FC, useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { AxiosError } from 'axios'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
@@ -110,6 +110,10 @@ const Board: FC = () => {
   const singleBaord = useAppSelector(state => state.board.singleBaord)
   const boardLists = singleBaord?.lists
   const clonedBoardList = cloneDeep(boardLists)?.map(item => ({ id: item._id, ...item }))
+  const profile = useAppSelector(state => state.user.profile)
+  const boardMembersList = useAppSelector(state => state.board.boardMembersList)
+  const { themeColor: theme } = useAppSelector(state => state.board.themeColor)
+
   const dispatch = useAppDispatch()
 
   const [lists, setLists] = useState(clonedBoardList)
@@ -198,9 +202,9 @@ const Board: FC = () => {
   const dropAnimation: DropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: {
-        // active: {
-        //   opacity: '0.5',
-        // },
+        active: {
+          // opacity: '0.5',
+        },
         // dragOverlay: {
         //   opacity: '1',
         // },
@@ -210,6 +214,7 @@ const Board: FC = () => {
   // 初始所在列表資訊
   const [activeListPosition, setActiveListPosition] = useState<number | null>(null)
   const [activeListId, setActiveListId] = useState<string | null>(null)
+  const [activeCardPosition, setActiveCardPosition] = useState<number | null>(null)
   // 當前拖曳中的卡片內容
   const [activeCardId, setActiveCardId] = useState<UniqueIdentifier | null>(null)
   const [activeCardItem, setActiveCardItem] = useState<ICardItem | null>(null)
@@ -407,6 +412,8 @@ const Board: FC = () => {
     }
 
     dispatch(boardSliceActions.updateBoardList(newLists))
+
+    if (activeListId === over.data.current.listId && activeCardPosition === finalPosition) return
     dispatch(
       socketServiceActions.moveCard({
         boardId,
@@ -428,9 +435,11 @@ const Board: FC = () => {
       if (result !== undefined) {
         const { data } = result
         dispatch(boardSliceActions.setSingleBoard(data))
+        dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.covercolor, textColor: '' }))
       }
     } catch (e) {
       let errorMessage = ''
+
       if (e instanceof AxiosError) {
         errorMessage = e.response?.data.message
 
@@ -440,16 +449,17 @@ const Board: FC = () => {
         ) {
           router.push('/board/boardWithoutPermission')
         }
-      } else {
-        errorMessage = '發生錯誤'
-      }
 
-      dispatch(
-        errorSliceActions.pushNewErrorMessage({
-          code: -1,
-          message: errorMessage,
-        })
-      )
+        dispatch(
+          errorSliceActions.pushNewErrorMessage({
+            code: -1,
+            message: errorMessage,
+          })
+        )
+      } else {
+        console.log(e)
+        // errorMessage = '發生錯誤'
+      }
     }
   }
 
@@ -486,7 +496,12 @@ const Board: FC = () => {
       !Object.keys(activeCardItem).length
     )
       return <></>
-    return <BoardCard id={activeCardId} title={activeCardItem.title} priority={''} tags={activeCardItem.tags} />
+
+    return (
+      <div className="rotate-12">
+        <BoardCard id={activeCardId} title={activeCardItem.title} priority={''} tags={activeCardItem.tags} />
+      </div>
+    )
   }
 
   const handleRenderOverlay = () => {
@@ -497,6 +512,13 @@ const Board: FC = () => {
       return renderCardDragOverlay()
     }
   }
+  // 成員名單變動
+  useEffect(() => {
+    if (boardMembersList === null || !boardMembersList.length) return
+    const isMember = boardMembersList.some(item => item.userId.email === profile.email)
+
+    if (!isMember && !token) router.push(`/board/boardWithoutPermission`)
+  }, [boardMembersList, profile, token])
 
   /** 取得 url query boardID */
   useEffect(() => {
@@ -518,12 +540,31 @@ const Board: FC = () => {
     handleGetSingleBoard()
   }, [boardId])
 
+  const themeMapping = useMemo(() => {
+    return {
+      theme1: 'bg-theme1-content',
+      theme2: 'bg-theme2-content',
+      theme3: 'bg-theme3-content',
+    }
+  }, [])
+
+  const boardThemeClass = useMemo(() => {
+    if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
+      return `bg-${theme}-content`
+    }
+    return ''
+  }, [theme])
+
   return (
     <div
-      className={classNames('w-full h-full py-[50px] px-[64px] overflow-x-auto', { 'p-9': !token })}
+      className={classNames(
+        'w-full h-full py-[50px] px-[64px] overflow-x-auto',
+        { 'p-9': !token },
+        `${boardThemeClass}`
+      )}
       style={{
-        backgroundImage: `url(${singleBaord?.coverPath})`,
-        backgroundSize: 'cover',
+        backgroundImage: singleBaord?.coverPath ? `url(${singleBaord?.coverPath})` : '',
+        backgroundSize: singleBaord?.coverPath ? 'cover' : '',
       }}
     >
       <Head>
@@ -548,6 +589,7 @@ const Board: FC = () => {
               if (active.data.current.type === 'card') {
                 setActiveCardId(active.data.current.cardId)
                 setActiveCardItem(active.data.current.children)
+                setActiveCardPosition(active.data.current.sortable.index)
               }
 
               setActiveListPosition(active.data.current.listPosition)
@@ -609,11 +651,14 @@ const Board: FC = () => {
                 })}
               </SortableContext>
 
-              <div className="row-span-full">
-                <div className="h-auto">
-                  <AddListButton />
+              {/* 登入者才可以看到新增列表按鈕 */}
+              {token && (
+                <div className="row-span-full">
+                  <div className="h-auto">
+                    <AddListButton />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </DndContext>
           {/* 卡片元件 */}

@@ -8,12 +8,12 @@ import IconAdd from '@/assets/icons/icon_add.svg'
 import IconArrowDown from '@/assets/icons/icon_arrow_down.svg'
 import IconArrowLeft from '@/assets/icons/icon_left_arrow.svg'
 import { AdminLayoutContext } from '@/contexts/adminLayoutContext'
+import { useAppSelector } from '@/hooks/useAppStore'
+import { useRouter } from 'next/router'
 
 interface ISidebarProps {
-  className?: string
   boardId?: string
   alwaysHide?: boolean | null
-  theme?: string
 }
 
 interface IUserBoardMenuToggleStatus {
@@ -21,7 +21,20 @@ interface IUserBoardMenuToggleStatus {
   active: boolean
 }
 
-const Sidebar: FC<ISidebarProps> = ({ className, boardId, theme }) => {
+const boardRouters = [
+  '/board/[boardId]',
+  '/board/[boardId]/members/[id]',
+  '/board/boardClosed',
+  '/board/boardWithoutPermission',
+]
+
+const Sidebar: FC<ISidebarProps> = ({ boardId }) => {
+  const { themeColor: theme, textColor } = useAppSelector(state => state.board.themeColor)
+  const [sidebarClass, setSidebarClass] = useState('')
+  const [sidebarColor, setSidebarColor] = useState('')
+  const router = useRouter()
+  const { pathname } = router
+
   const themeMapping: { [key: string]: string } = useMemo(() => {
     return {
       ['theme1']: 'bg-theme1-sidebar',
@@ -29,13 +42,24 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId, theme }) => {
       ['theme3']: 'bg-theme3-sidebar',
     }
   }, [])
-  const sidebarStyle = (() => {
-    if (boardId) {
-      return 'bg-gray-3'
+
+  useEffect(() => {
+    if (boardRouters.includes(pathname)) {
+      if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
+        setSidebarClass(`${themeMapping[theme]}`)
+        setSidebarColor('')
+      } else if (theme) {
+        setSidebarClass('')
+        setSidebarColor(theme)
+      } else {
+        setSidebarClass('bg-gray-3')
+        setSidebarColor('')
+      }
     } else {
-      return 'bg-white'
+      setSidebarClass('bg-white')
+      setSidebarColor('')
     }
-  })()
+  }, [theme, pathname, boardId, textColor])
   const { handleGetWorkSpaceTitleData, userWorkSpaceList, userWorkSpaceBoardMenuToggleStatus } =
     useContext(AdminLayoutContext)
   const [userBoardMenuToggleStatus, setUserBoardMenuToggleStatus] = useState<IUserBoardMenuToggleStatus[]>([])
@@ -82,9 +106,8 @@ const Sidebar: FC<ISidebarProps> = ({ className, boardId, theme }) => {
 
   return (
     <div
-      className={`${classes.sidebar} ${className} ${sidebarStyle} ${toggleSidebar ? classes.close : ''} ${
-        theme && boardId ? `${themeMapping[theme]} text-white` : ''
-      } `}
+      className={`${classes.sidebar} ${toggleSidebar ? classes.close : ''} ${sidebarClass}`}
+      style={{ backgroundColor: sidebarColor, color: textColor ? textColor : '#1A1A1A' }}
     >
       <div className="px-5 pt-4">
         <Link href="/board" className="cursor-pointer">

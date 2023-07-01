@@ -9,7 +9,6 @@ import store from '@/app/store'
 import { boardSliceActions } from '@/slices/boardSlice'
 import { errorSliceActions } from '@/slices/errorSlice'
 import { dialogSliceActions } from '@/slices/dialogSlice'
-import { updateUserTheme } from '@/slices/userSlice'
 
 let boardSocket: Socket
 
@@ -377,7 +376,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_DELETE_MEMBER_RESULT, data => {
     console.log('監聽 刪除看板成員權限是否成功:', data)
     if (data.code !== -1) {
-      store.dispatch(boardSliceActions.updateBoardMembersList(data.result))
+      store.dispatch(boardSliceActions.updateBoardMembersList(data.result.members))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -390,7 +389,26 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽 看板新增成員是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, () => undefined)
+  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_ADD_MEMBER_RESULT, data => {
+    console.log('監聽 看板新增成員是否成功:', data)
+    if (data.code !== -1) {
+      store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT))
+      store.dispatch(boardSliceActions.updateBoardMembersList(data.result.members))
+    } else {
+      const message: string = data.data.message
+      if (message === '成員已經存在此看板，不可新增') {
+        // location.href = "/"
+        // store.dispatch(boardSliceActions.updateBoardMembersList(data.result.members))
+      } else {
+        store.dispatch(
+          errorSliceActions.pushNewErrorMessage({
+            code: -1,
+            message,
+          })
+        )
+      }
+    }
+  })
 
   // 監聽 新增卡片成員是否成功
   boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_CARD_ADD_MEMBER_RESULT, data => {
@@ -482,8 +500,8 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     store.dispatch(dialogSliceActions.popSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT))
 
     if (data.code !== -1) {
+      // store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
       store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
-      store.dispatch(updateUserTheme({ themeColor: data.result.covercolor, textColor: '' }))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -503,7 +521,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     if (data.code !== -1) {
       //  清空封面、清空主題背景
       store.dispatch(boardSliceActions.updateBoardCover(''))
-      store.dispatch(updateUserTheme({ themeColor: '', textColor: '' }))
+      store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -582,9 +600,9 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
   })
 
   // 監聽看板修改主題是否成功
-  boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT, data => {
-    store.dispatch(boardSliceActions.updateBoardCoverColor(data.result))
-  })
+  // boardSocket.on(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT, data => {
+  //   store.dispatch(boardSliceActions.updateBoardCoverColor(data.result))
+  // })
 
   return {
     createList,
@@ -723,7 +741,6 @@ const archiveBoardList = (payload: interfaces.IArchiveBoardListPayload) => {
 
 // 新增卡片 todo 標題
 const addNewTodoTitle = (payload: interfaces.IAddNewTodoTitle) => {
-  console.log(payload)
   boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE, payload)
 }
 

@@ -80,11 +80,8 @@ const BoardCard = ({
   isSorting?: boolean
   transform?: Transform
   transition?: string | null
-  // over
-  // overIndex
 }) => {
   const router = useRouter()
-  // console.log(BoardCardItem)
 
   const getPriorityColor = (val: string) => {
     switch (val) {
@@ -107,7 +104,7 @@ const BoardCard = ({
           'w-[254px] flex flex-col justify-between rounded-md  bg-white p-4 mb-3'
         )}
       >
-        <h6 className={classNames({ 'mb-10': tags.length > 0 }, 'text-start')}>{title}</h6>
+        <h6 className={classNames('grow', 'text-start')}>{title}</h6>
         <div className="flex items-center flex-wrap gap-1">
           {priority && (
             <div

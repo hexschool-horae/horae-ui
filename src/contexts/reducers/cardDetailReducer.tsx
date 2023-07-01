@@ -107,9 +107,6 @@ type TReducerAction =
   | { type: 'DELETE_TODO_LIST'; payload: { todolists: ITodoList[] } }
 
 export function cardDetailReducer(state: IInitialState, { type, payload }: TReducerAction) {
-  // console.log(state, type)
-  // console.log('payload:', payload)
-
   switch (type) {
     case 'INITIALIZE_CARD': {
       return {

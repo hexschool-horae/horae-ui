@@ -5,7 +5,7 @@ import WorkSpaceTitle from '@/components/workSpace/WorkSpaceTitle'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { setViewSet } from '@/slices/workspaceSlice'
+import { setWorkspaceData } from '@/slices/workspaceSlice'
 
 export default function Home() {
   const dispatch = useAppDispatch()
@@ -36,7 +36,12 @@ export default function Home() {
       const result = await GET_WORK_SPACE(wId, isLogin ? true : false)
       if (!result) return
       setWorkSpaceDate(result.data)
-      dispatch(setViewSet(result.data.viewSet))
+      dispatch(
+        setWorkspaceData({
+          viewSet: result.data.viewSet,
+          workspaceName: result.data.title,
+        })
+      )
     } catch (e: any) {
       // 403 msg	無工作區權限
       const { status } = e.response ?? null

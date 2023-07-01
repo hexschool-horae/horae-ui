@@ -17,6 +17,7 @@ interface IListProps {
 export default function SortableListTitle({ title, listId, isDragging }: IListProps) {
   const appDispatch = useAppDispatch()
   const boardId = useAppSelector(state => state.board.boardId)
+  const token = useAppSelector(state => state.user.token)
   const inputRef = useRef<HTMLInputElement>(null)
   const [isFocus, setIsFocus] = useState(false)
 
@@ -75,7 +76,7 @@ export default function SortableListTitle({ title, listId, isDragging }: IListPr
   return (
     <form className={`mb-8 relative ${isFocus ? '' : style.list_title_view}`} onSubmit={handleSubmit(onSubmit)}>
       <ValidateController name={`title-${listId}`} label="" control={control}>
-        <InputText ref={inputRef} onClick={() => setIsFocus(true)} onBlur={() => handleOnModifySubmit()} />
+        <InputText ref={inputRef} onClick={() => token && setIsFocus(true)} onBlur={() => handleOnModifySubmit()} />
       </ValidateController>
     </form>
   )

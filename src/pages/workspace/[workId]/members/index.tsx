@@ -17,10 +17,9 @@ import { Button } from 'primereact/button'
 import { Dropdown } from 'primereact/dropdown'
 import { ConfirmDialog } from 'primereact/confirmdialog'
 import InvitationLink from '@/components/common/InvitationLink'
-import { setWorkspaceId } from '@/slices/workspaceSlice'
+import { setWorkspaceId, setWorkspaceData } from '@/slices/workspaceSlice'
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore'
 import { Fragment } from 'react'
-import { setViewSet } from '@/slices/workspaceSlice'
 
 // const schemaInvitation = yup.object().shape({
 //   userEmail: yup.string().required().email(),
@@ -55,7 +54,7 @@ export default function Members() {
     { name: '成員', role: 'editor' },
   ]
 
-  const [workspaceData, setWorkspaceData] = useState<IWorkspaceData>({
+  const [workspaceObj, setWorkspaceObj] = useState<IWorkspaceData>({
     title: '',
     viewSet: '',
     discribe: '',
@@ -96,17 +95,20 @@ export default function Members() {
       const response = await GET_WORKSPACE_MEMBERS_BY_ID(workId)
       if (!response) return
       const data = response.data.members ?? []
-      console.log('response', response)
+      dispatch(
+        setWorkspaceData({
+          viewSet: response.data.viewSet,
+          workspaceName: response.data.title,
+        })
+      )
       setMembers(data)
-      setWorkspaceData({
+      setWorkspaceObj({
         title: response.data.title,
         viewSet: response.data.viewSet,
         discribe: '',
         status: '',
         _id: '',
       })
-      dispatch(setViewSet(response.data.viewSet))
-      console.log('members', members)
     } catch (e: any) {
       // 401 msg	此為私人看板，訪客請先登入
       // 403 msg	此為私人看板，您不是看板成員，不可查看
@@ -137,7 +139,6 @@ export default function Members() {
   }
   // 刪除成員 API
   const handleCallDeleteMember = async (memberId: string) => {
-    console.log('delete', memberId)
     const response = await DELETE_WORKSPACE_MEMBER(workspaceId, { userId: memberId })
     if (!response) return
     handlerCallGetWorkPaceMembers(workspaceId)
@@ -158,7 +159,6 @@ export default function Members() {
       [memberId]: value,
     }))
 
-    console.log('req', req)
     setShowAddMembersConfirmation(true) // 顯示確認對話框
     setConfirmConfig({ message: '確定要更改成員權限嗎?', type: 'add-member' })
   }
@@ -190,7 +190,6 @@ export default function Members() {
     }
 
     setShowAddMembersConfirmation(false) // 隱藏確認對話框
-    console.log('Accept')
   }
 
   const reject = () => {
@@ -222,7 +221,7 @@ export default function Members() {
         accept={accept}
         reject={reject}
       />
-      {workspaceData.title ? <WorkSpaceTitle boardData={workspaceData}></WorkSpaceTitle> : ''}
+      {workspaceObj.title ? <WorkSpaceTitle boardData={workspaceObj}></WorkSpaceTitle> : ''}
 
       <div className="invitation flex justify-between">
         {/* <h5 className="pb-5">邀請成員加入你</h5> */}
@@ -275,7 +274,7 @@ export default function Members() {
             <div className="flex justify-between mb-4">
               <div className="member flex">
                 <div
-                  className="member-icon text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3"
+                  className="member-icon text-black rounded-full w-[48px] h-[48px] p-3 text-center mr-3"
                   style={{ backgroundColor: member.userId.avatar ? member.userId.avatar : '#CC3A3A' }}
                 >
                   {getShortName(member.userId.name)}

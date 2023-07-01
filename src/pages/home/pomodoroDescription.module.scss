@@ -38,7 +38,7 @@
   height: 0;
   padding-bottom: 31%;
   border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
-  animation: go 450s infinite;
+  animation: go 20s infinite;
   img {
     position: absolute;
     top: 0;
@@ -51,7 +51,7 @@
     object-fit: cover;
     transition: border-radius 3s linear;
     border-radius: 60% 40% 50% 50% / 35% 45% 55% 65%;
-    animation: go 40s infinite;
+    animation: go 20s infinite;
   }
   &::before,
   &::after,

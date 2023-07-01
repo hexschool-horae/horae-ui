@@ -65,7 +65,7 @@ const MemberInfoGroup = ({
         className="w-[3rem] h-[3rem] flex justify-center items-center rounded-full mr-3"
         style={{ backgroundColor: model.userId.avatar }}
       >
-        {model.userId.email.slice(0, 1)}
+        {model.userId.name.slice(0, 1)}
       </div>
       <div>
         <span>{model.userId?.name}</span>
