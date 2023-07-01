@@ -71,7 +71,6 @@ export default function Setting() {
   const accept = () => {
     handlerCallDeleteWorkSpace()
     setShowAddMembersConfirmation(false) // 隱藏確認對話框
-    console.log('Accept')
   }
 
   const reject = () => {

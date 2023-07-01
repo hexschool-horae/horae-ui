@@ -78,7 +78,6 @@ export default function WorkSpaceTitle({ boardData, isEdit = false, handleGetWor
       viewSet: submitData.viewSet,
       status: submitData.status ? 'open' : 'close',
     }
-    console.log('req', req)
     const res = await PATCH_WORK_SPACE(boardData?._id ?? '', req)
     if (res === undefined) return
 

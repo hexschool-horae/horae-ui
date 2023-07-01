@@ -58,12 +58,9 @@ const SortableList = ({
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    // transform: `translate3d(${transform?.x}px, ${transform?.y}px, 0)`,
     transition,
     opacity: isDragging ? 0.5 : undefined,
   }
-
-  // console.log('isDragging', isDragging)
 
   return (
     <div

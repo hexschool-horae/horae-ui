@@ -61,7 +61,6 @@ export default function BoardPermissionMenu() {
 
   const onClick = (event: MouseEvent, viewSet: TViewSet) => {
     if (viewSet === '') return
-
     dispatch(socketServiceActions.modifyBoardViewPermission({ boardId, viewSet }))
     menu?.current?.hide(event)
   }

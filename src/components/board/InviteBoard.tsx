@@ -23,7 +23,6 @@ export default function InviteBoard() {
   const [invitationLink, setInvitationLink] = useState('')
   const [isCopied, setIsCopied] = useState(false)
   const linkInputRef = useRef<HTMLInputElement>(null)
-
   const handleGetBoardMembersList = async () => {
     const { data } = await GET_BOARD_ALL_MEMBERS_BY_ID(boardId)
 
@@ -46,7 +45,6 @@ export default function InviteBoard() {
         await navigator.clipboard.writeText(linkInputRef.current.value)
         setIsCopied(true)
       } catch (error) {
-        console.log(error)
         setIsCopied(false)
       }
     }

@@ -70,7 +70,6 @@ const CardInternal = () => {
       })
 
       appDispatch(boardSliceActions.setCardDetail(response.data))
-      console.log('etCardDetail', response.data)
     } catch (error) {
       console.error('Error fetching card data:', error)
     }

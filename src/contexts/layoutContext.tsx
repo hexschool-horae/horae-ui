@@ -12,7 +12,6 @@ interface LayoutContextProviderProps {
 
 const LayoutContextProvider = ({ children }: LayoutContextProviderProps) => {
   const scrollToSection = (sectionId: string) => {
-    console.log('------', sectionId)
     const section = document.getElementById(sectionId)
     if (section) {
       const sectionTop = section.offsetTop

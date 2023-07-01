@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { FC, useEffect, useState, useRef, useCallback } from 'react'
+import { FC, useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { AxiosError } from 'axios'
 import { DndContext, useSensors, useSensor, PointerSensor } from '@dnd-kit/core'
@@ -52,7 +52,6 @@ import { classNames } from 'primereact/utils'
 
 import BoardGuard from '@/app/BoardGuard'
 import AddCardButton from '@/components/board/AddCardButton'
-import { updateUserTheme } from '@/slices/userSlice'
 
 const emptyCard = {
   _id: '',
@@ -113,6 +112,8 @@ const Board: FC = () => {
   const clonedBoardList = cloneDeep(boardLists)?.map(item => ({ id: item._id, ...item }))
   const profile = useAppSelector(state => state.user.profile)
   const boardMembersList = useAppSelector(state => state.board.boardMembersList)
+  const { themeColor: theme, textColor } = useAppSelector(state => state.board.themeColor)
+
   const dispatch = useAppDispatch()
 
   const [lists, setLists] = useState(clonedBoardList)
@@ -431,7 +432,7 @@ const Board: FC = () => {
       if (result !== undefined) {
         const { data } = result
         dispatch(boardSliceActions.setSingleBoard(data))
-        dispatch(updateUserTheme({ themeColor: data.covercolor, textColor: '' }))
+        dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.covercolor, textColor: '' }))
       }
     } catch (e) {
       let errorMessage = ''
@@ -536,12 +537,49 @@ const Board: FC = () => {
     handleGetSingleBoard()
   }, [boardId])
 
+  const themeMapping = useMemo(() => {
+    return {
+      theme1: 'bg-theme1-content',
+      theme2: 'bg-theme2-content',
+      theme3: 'bg-theme3-content',
+    }
+  }, [])
+
+  const boardThemeClass = useMemo(() => {
+    if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
+      return `bg-${theme}-content`
+    }
+    return ''
+  }, [theme])
+
+  // const boardStyle = () => {
+  //   if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
+  //     setHeaderClass(`${headerThemeMapping[theme]}`)
+  //     setHeaderColor('')
+  //   } else if (theme) {
+  //     setHeaderClass('')
+  //     setHeaderColor(theme)
+  //   } else {
+  //     setHeaderClass('bg-gray-3')
+  //     setHeaderColor('')
+  //   }
+  //   return {
+  //     backgroundImage: singleBaord?.coverPath ? `url(${singleBaord?.coverPath})` : '',
+  //     backgroundSize: singleBaord?.coverPath ? 'cover' : '',
+  //   }
+  // }
+
   return (
     <div
-      className={classNames('w-full h-full py-[50px] px-[64px] overflow-x-auto', { 'p-9': !token })}
+      className={classNames(
+        'w-full h-full py-[50px] px-[64px] overflow-x-auto',
+        { 'p-9': !token },
+        `${boardThemeClass}`
+      )}
       style={{
         backgroundImage: singleBaord?.coverPath ? `url(${singleBaord?.coverPath})` : '',
         backgroundSize: singleBaord?.coverPath ? 'cover' : '',
+        color: textColor ? textColor : '#1A1A1A',
       }}
     >
       <Head>

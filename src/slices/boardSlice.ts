@@ -80,14 +80,28 @@ export const boardSlice = createSlice({
       }
     },
     updateBoardTheme(state, action: PayloadAction<IthemeColor>) {
-      if (action.payload.themeColor !== '') {
-        const hexColor = hexToRgb(action.payload.themeColor)
+      const themeColor = action.payload.themeColor
 
+      if (themeColor !== '') {
+        let hexColor = null
+        if (themeColor.startsWith('th')) {
+          if (themeColor === 'theme1') {
+            hexColor = hexToRgb('#bee2ff')
+          } else if (themeColor === 'theme2') {
+            hexColor = hexToRgb('#101322')
+          } else if (themeColor === 'theme3') {
+            hexColor = hexToRgb('#ffdda7')
+          }
+        } else {
+          hexColor = hexToRgb(action.payload.themeColor)
+        }
         if (hexColor && hexColor.b) {
           state.themeColor = {
             themeColor: action.payload.themeColor,
             textColor: hexColor.b < 125 ? '#ffffff' : '#000000',
           }
+        } else {
+          state.themeColor = { themeColor: '', textColor: '' }
         }
       } else {
         state.themeColor = { themeColor: '', textColor: '' }
@@ -173,7 +187,6 @@ export const boardSlice = createSlice({
       }
     },
     updateCardMembers(state, action: PayloadAction<ICardDetail>) {
-      console.log('updateCardMembers', state)
       if (state.cardDetail && state.cardDetail._id === action.payload._id) {
         state.cardDetail.members = action.payload.members
       }
@@ -184,7 +197,6 @@ export const boardSlice = createSlice({
         state.listCard.cardId = action.payload._id
         state.listCard.title = action.payload.title
         state.listCard.proiority = action.payload.proiority
-        // console.log(state.listCard)
       }
     },
     updateListCardTags(state, action: PayloadAction<ICardDetail>) {
@@ -210,7 +222,6 @@ export const boardSlice = createSlice({
       }
     },
     updateCardAttachment(state, action: PayloadAction<ICardDetail>) {
-      console.log('updateCardAttachment', state)
       if (state.cardDetail && state.cardDetail._id === action.payload._id) {
         state.cardDetail.attachments = action.payload.attachments
       }

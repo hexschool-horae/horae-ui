@@ -32,10 +32,6 @@ export default function CardPopupPomodoro({ label }: ICardPopupPomodoroProps) {
     break: 5,
   })
 
-  // useEffect(() => {
-  // 	console.log(newTimer)
-  // }, [newTimer])
-
   const handleChange = (e: InputNumberChangeEvent, name: string) => {
     if (e.value == null) {
       setIsDisabled(true)

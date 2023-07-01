@@ -22,8 +22,6 @@ const BoardGuard = ({ children }: { children?: ReactNode }) => {
     if (viewSet === 'public') {
       if (pathname === '/board/boardWithoutPermission') router.push('/board/[boardId]')
     }
-
-    console.log('boadGuard', viewSet, yourRole)
   }, [viewSet])
 
   return <>{children}</>

@@ -18,19 +18,19 @@ module.exports = {
         'gray-2': '#606060',
         'gray-3': '#F8F8F8',
         theme1: {
-          header: '#00003d',
-          sidebar: '#0079BF',
-          content: '#E5E7EB',
+          header: '#bee2ff',
+          sidebar: '#2076c5',
+          content: '#7fc2ff',
         },
         theme2: {
-          header: '#2B511E',
-          sidebar: '#519839',
-          content: '#E5E7EB',
+          header: '#101322',
+          sidebar: '#101322',
+          content: '#232733',
         },
         theme3: {
-          header: '#5E261B',
-          sidebar: '#7B3123',
-          content: '#D1D5DB',
+          header: '#ffdda7',
+          sidebar: '#ffe6ca',
+          content: '#fdfdfd',
         },
       },
       fontSize: {

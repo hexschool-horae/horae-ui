@@ -96,7 +96,6 @@ export const GET_BOARD_ALL_MEMBERS_BY_ID = (boardId: string) => {
 
 /** B03-7 單一看板新增成員 */
 export const POST_BOARD_MEMBERS_BY_ID = (boardId: string, hashData: string, hasAuth: boolean) => {
-  console.log(boardId)
   return axiosFetcher.post<interfaces.IBasicResponse>(
     `${apiPath.POST_BOARD_MEMBERS_BY_ID}/${boardId}/members/${hashData}`,
     null,
