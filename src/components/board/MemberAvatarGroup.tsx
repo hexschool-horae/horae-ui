@@ -15,9 +15,10 @@ export default function MemberAvatarGroup() {
               return (
                 <Avatar
                   key={index}
-                  label={userId.name.slice(0, 1).toLocaleUpperCase()}
+                  label={userId.name.slice(0, 1)}
                   shape="circle"
                   size="large"
+                  className="text-sm"
                   style={{ backgroundColor: userId.avatar, color: '#000' }}
                 />
               )

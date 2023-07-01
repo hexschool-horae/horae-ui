@@ -16,6 +16,7 @@ import CoverSelector from './CoverSelector'
 import { POST_BOARD_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
 
 const BoardAboutTemplate = () => {
+  const userAvatar = useAppSelector(state => state.user.profile.avatar)
   const members = useAppSelector(state => state.board?.singleBaord?.members)
   const discribe = useAppSelector(state => state.board?.singleBaord?.discribe)
   const admins = members?.filter(item => item.role === 'admin')
@@ -29,7 +30,12 @@ const BoardAboutTemplate = () => {
       <div className="mb-3">看板管理員</div>
 
       <div className="flex">
-        <div className="w-[3rem] h-[3rem] bg-black rounded-full mr-3"></div>
+        <div
+          className="w-[3rem] h-[3rem] bg-black rounded-full mr-3 flex justify-center items-center"
+          style={{ backgroundColor: userAvatar }}
+        >
+          <div>{admin?.userId?.name.slice(0, 1)}</div>
+        </div>
         <div>
           <div className="mb-1">{admin?.userId?.name || '成員名稱'}</div>
           <div className="text-gray-2 text-xs font-light mb-1">{admin?.userId?.email || '@nick name'}</div>

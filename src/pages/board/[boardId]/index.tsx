@@ -112,7 +112,7 @@ const Board: FC = () => {
   const clonedBoardList = cloneDeep(boardLists)?.map(item => ({ id: item._id, ...item }))
   const profile = useAppSelector(state => state.user.profile)
   const boardMembersList = useAppSelector(state => state.board.boardMembersList)
-  const { themeColor: theme, textColor } = useAppSelector(state => state.board.themeColor)
+  const { themeColor: theme } = useAppSelector(state => state.board.themeColor)
 
   const dispatch = useAppDispatch()
 
@@ -552,23 +552,6 @@ const Board: FC = () => {
     return ''
   }, [theme])
 
-  // const boardStyle = () => {
-  //   if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
-  //     setHeaderClass(`${headerThemeMapping[theme]}`)
-  //     setHeaderColor('')
-  //   } else if (theme) {
-  //     setHeaderClass('')
-  //     setHeaderColor(theme)
-  //   } else {
-  //     setHeaderClass('bg-gray-3')
-  //     setHeaderColor('')
-  //   }
-  //   return {
-  //     backgroundImage: singleBaord?.coverPath ? `url(${singleBaord?.coverPath})` : '',
-  //     backgroundSize: singleBaord?.coverPath ? 'cover' : '',
-  //   }
-  // }
-
   return (
     <div
       className={classNames(
@@ -579,7 +562,6 @@ const Board: FC = () => {
       style={{
         backgroundImage: singleBaord?.coverPath ? `url(${singleBaord?.coverPath})` : '',
         backgroundSize: singleBaord?.coverPath ? 'cover' : '',
-        color: textColor ? textColor : '#1A1A1A',
       }}
     >
       <Head>

@@ -69,7 +69,7 @@ export default function CardDetailMember({ label, cardId }: ICardDetailMemberPro
               <Fragment key={member._id}>
                 <li className="flex items-center">
                   <div
-                    className="member-icon text-white rounded-full w-[40px] h-[40px] p-2 text-center mr-3"
+                    className="member-icon rounded-full w-[40px] h-[40px] p-2 text-center mr-3"
                     style={{ backgroundColor: member.avatar ? member.avatar : '#CC3A3A' }}
                   >
                     {getShortName(member.name)}

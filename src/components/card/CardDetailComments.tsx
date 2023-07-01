@@ -130,7 +130,7 @@ export default function CardDetailComments() {
             className="w-[42px] h-[42px] rounded-full absolute left-2 top-1/2 translate-y-[-50%] flex justify-center items-center"
             style={{ backgroundColor: profile.avatar }}
           >
-            {profile.email.slice(0, 1)}
+            {profile.name.slice(0, 1)}
           </div>
           <div className="grow">
             <InputText
