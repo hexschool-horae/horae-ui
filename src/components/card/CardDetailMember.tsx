@@ -48,28 +48,30 @@ export default function CardDetailMember({ label, cardId }: ICardDetailMemberPro
 
   return (
     <div className={`${style.detail_list}`}>
-      <div className={style.detail_list_title}>成員</div>
-      {token && (
-        <Button
-          icon="pi pi-plus"
-          rounded
-          aria-label="add"
-          className={`${style.detail_list_add_btn}`}
-          onClick={() => {
-            dispatch({
-              type: 'TOTGGLE_POPUP',
-              payload: label,
-            })
-          }}
-        />
-      )}
-      <ul>
+      <div className="flex w-[17%] mt-[5px]">
+        <div className={style.detail_list_title}>成員</div>
+        {token && (
+          <Button
+            icon="pi pi-plus"
+            rounded
+            aria-label="add"
+            className={`${style.detail_list_add_btn}`}
+            onClick={() => {
+              dispatch({
+                type: 'TOTGGLE_POPUP',
+                payload: label,
+              })
+            }}
+          />
+        )}
+      </div>
+      <ul className="flex flex-wrap w-[83%]">
         {selectedMembers
           ? selectedMembers.map(member => (
               <Fragment key={member._id}>
-                <li className="flex items-center">
+                <li className="flex items-center pr-2 pb-2">
                   <div
-                    className="member-icon rounded-full w-[40px] h-[40px] p-2 text-center mr-3"
+                    className="member-icon text-black rounded-full w-[40px] h-[40px] p-2 text-center mr-3"
                     style={{ backgroundColor: member.avatar ? member.avatar : '#CC3A3A' }}
                   >
                     {getShortName(member.name)}

@@ -274,7 +274,7 @@ export default function Members() {
             <div className="flex justify-between mb-4">
               <div className="member flex">
                 <div
-                  className="member-icon text-white rounded-full w-[48px] h-[48px] p-3 text-center mr-3"
+                  className="member-icon text-black rounded-full w-[48px] h-[48px] p-3 text-center mr-3"
                   style={{ backgroundColor: member.userId.avatar ? member.userId.avatar : '#CC3A3A' }}
                 >
                   {getShortName(member.userId.name)}
