@@ -1,5 +1,6 @@
 import router from 'next/router'
 import { useEffect, useState } from 'react'
+import { cloneDeep } from 'lodash-es'
 import style from './cardDetail.module.scss'
 import tagStyle from './tags.module.scss'
 import { Chip } from 'primereact/chip'
@@ -17,7 +18,7 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
   const boardId = router.query.boardId as string
   const cardId = router.query.cardId as string
 
-  const { state, dispatch } = useCardDetail()
+  const { dispatch } = useCardDetail()
   const appDispatch = useAppDispatch()
   const token = useAppSelector(state => state.user.token) || ''
   const socketTags = useAppSelector(state => state.board.cardDetail?.tags)
@@ -40,9 +41,27 @@ export default function CardDetailTags({ label }: ICardDetailTagsProps) {
     })
   }
 
+  // 看板修改、刪除標籤連動卡片
+  const boardTags = useAppSelector(state => state.board.boardTags)
   useEffect(() => {
-    setTags(state.cardDetail.tags)
-  }, [state.cardDetail.tags])
+    let tempTags = cloneDeep(tags)
+    tempTags = tempTags.filter(tag => boardTags.some(boardTag => boardTag._id === tag._id))
+    tempTags.forEach(tag => {
+      console.log(tag)
+      boardTags.forEach(boardTag => {
+        if (tag._id == boardTag._id) {
+          tag._id = boardTag._id
+          tag.color = boardTag.color
+          tag.title = boardTag.title
+        }
+      })
+    })
+    setTags(tempTags)
+  }, [boardTags])
+
+  // useEffect(() => {
+  //   setTags(state.cardDetail.tags)
+  // }, [state.cardDetail.tags])
 
   useEffect(() => {
     if (socketTags == undefined) return
