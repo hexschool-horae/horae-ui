@@ -214,6 +214,7 @@ const Board: FC = () => {
   // 初始所在列表資訊
   const [activeListPosition, setActiveListPosition] = useState<number | null>(null)
   const [activeListId, setActiveListId] = useState<string | null>(null)
+  const [activeCardPosition, setActiveCardPosition] = useState<number | null>(null)
   // 當前拖曳中的卡片內容
   const [activeCardId, setActiveCardId] = useState<UniqueIdentifier | null>(null)
   const [activeCardItem, setActiveCardItem] = useState<ICardItem | null>(null)
@@ -411,6 +412,8 @@ const Board: FC = () => {
     }
 
     dispatch(boardSliceActions.updateBoardList(newLists))
+
+    if (activeListId === over.data.current.listId && activeCardPosition === finalPosition) return
     dispatch(
       socketServiceActions.moveCard({
         boardId,
@@ -586,6 +589,7 @@ const Board: FC = () => {
               if (active.data.current.type === 'card') {
                 setActiveCardId(active.data.current.cardId)
                 setActiveCardItem(active.data.current.children)
+                setActiveCardPosition(active.data.current.sortable.index)
               }
 
               setActiveListPosition(active.data.current.listPosition)
