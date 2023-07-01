@@ -19,16 +19,31 @@ export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProp
   const boardId = useAppSelector(state => state.board.boardId)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [fileList, setFileList] = useState<File[]>([])
+  const [fileErrMsg, setFileErrMsg] = useState('')
   const appDispatch = useAppDispatch()
   const { dispatch } = useCardDetail()
 
   const handleFileChange = () => {
     const selectedFile = fileInputRef.current?.files
     if (!selectedFile || selectedFile.length === 0) return
+    verifyFile(selectedFile[0])
     setFileList(Array.from(selectedFile)) // 將 FileList 轉換為陣列
   }
 
+  const verifyFile = (file: File) => {
+    // 附件大小 檢核
+    const fileSize = file.size / 1024 / 1024
+    // 附件格式 檢核
+    const index = file.name.lastIndexOf('.')
+    const ext = file.name.substr(index + 1).toLowerCase()
+    const pattern = /^(jpg|jpeg|png)$/
+    setFileErrMsg(fileSize < 10 ? '' : '檔案不可超過10M')
+    setFileErrMsg(pattern.test(ext) ? '' : '檔案格式僅限JPG、JPEG、PNG，請重新選擇')
+    setFileErrMsg(pattern.test(ext) && fileSize < 10 ? '' : '檔案不可超過10M 且 格式僅限JPG、JPEG、PNG，請重新選擇')
+  }
+
   const handleRemoveFile = (index: number) => {
+    setFileErrMsg('')
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -73,7 +88,14 @@ export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProp
         <form className="real-file" onSubmit={onSubmit}>
           <label className={`${cardPopupsStyle.fake_file}`}>
             選擇本機檔案路徑
-            <input ref={fileInputRef} className="attach-file" type="file" name="file" onChange={handleFileChange} />
+            <input
+              ref={fileInputRef}
+              className="attach-file"
+              type="file"
+              name="file"
+              accept=".jpg,.jpeg,.png"
+              onChange={handleFileChange}
+            />
           </label>
           <div className="file-name-box mb-6">
             {fileList
@@ -86,9 +108,11 @@ export default function CardPopupFiles({ label, cardId }: ICardPopupPriorityProp
                   </Fragment>
                 ))
               : null}
+            {fileErrMsg && <small className="p-error">{fileErrMsg}</small>}
           </div>
+
           <Button
-            disabled={fileList.length === 0}
+            disabled={fileList.length === 0 || !!fileErrMsg}
             className="w-full"
             type="submit"
             label="附加"

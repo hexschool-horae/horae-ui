@@ -5,11 +5,11 @@
 }
 
 .detail_list {
-  @apply flex items-center mb-2;
+  @apply flex mb-2;
 }
 
 .detail_list_title {
-  @apply mr-3;
+  @apply mr-3 mt-0.5;
 }
 
 .detail_list_add_btn {
