@@ -9,6 +9,8 @@ import { socketServiceActions } from '@/slices/socketServiceSlice'
 // import { errorSliceActions } from '@/slices/errorSlice'
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppStore'
 import IconCancelTheme from '@/assets/icons/icon_cancel_theme.svg'
+import { dialogSliceActions } from '@/slices/dialogSlice'
+import { SOCKET_EVENTS_ENUM } from '@/socketService/sockets.events'
 
 type TCoverType = 'local' | 'unsplash' | 'theme' | null
 interface IImgItem {
@@ -42,18 +44,18 @@ const CoverSelector = () => {
   }
 
   const onSetCoverTheme = (theme: string) => {
-    console.log('onSetCoverTheme = ', theme)
+    dispatch(
+      socketServiceActions.deleteBoardCover({
+        boardId,
+      })
+    )
     dispatch(
       socketServiceActions.modifyBoardTheme({
         covercolor: theme,
         boardId,
       })
     )
-    dispatch(
-      socketServiceActions.deleteBoardCover({
-        boardId,
-      })
-    )
+    dispatch(dialogSliceActions.pushSpinnerQueue(SOCKET_EVENTS_ENUM.BOARD_MODIFY_THEME_RESULT))
   }
 
   const handleUpdateCover = (type: TCoverType, payload: IImgItem) => {
@@ -98,7 +100,12 @@ const CoverSelector = () => {
         <div className="w-full flex mb-5">
           <div className="flex-1 mr-2">
             <div
-              className={classNames('bg-secondary-3', Style.cover_selector_item)}
+              className={classNames(Style.cover_selector_item)}
+              style={{
+                backgroundImage:
+                  'url("https://images.unsplash.com/photo-1654119220681-517da68f36f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2970&q=80")',
+                backgroundSize: 'cover',
+              }}
               onClick={() => handleSetCoverType('unsplash')}
             ></div>
             <div className="text-center">照片</div>
@@ -107,13 +114,17 @@ const CoverSelector = () => {
           <div className="flex-1 ">
             <div
               className={classNames('bg-secondary-4', Style.cover_selector_item)}
+              style={{
+                backgroundImage:
+                  'url("https://images.unsplash.com/photo-1502691876148-a84978e59af8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80")',
+                backgroundSize: 'cover',
+              }}
               onClick={() => handleSetCoverType('theme')}
             ></div>
             <div className="text-center">顏色</div>
           </div>
         </div>
       )}
-
       {/* 從 unsplash 選擇 */}
       {coverType === 'unsplash' && (
         <div className="w-full flex flex-wrap justify-between">
@@ -138,18 +149,6 @@ const CoverSelector = () => {
           <div className={`${Style.theme} ${Style.theme1}`} onClick={() => onSetCoverTheme('theme1')}></div>
           <div className={`${Style.theme} ${Style.theme2}`} onClick={() => onSetCoverTheme('theme2')}></div>
           <div className={`${Style.theme} ${Style.theme3}`} onClick={() => onSetCoverTheme('theme3')}></div>
-          {/* <div className="flex-1 mr-2">
-            <div
-              className={classNames('bg-gray-2', Style.theme_item)}
-              onClick={() => handleSetCoverType('theme')}
-            ></div>
-          </div>
-          <div className="flex-1  mr-2">
-            <div
-              className={classNames('bg-gray-3', Style.theme_item)}
-              onClick={() => handleSetCoverType('theme')}
-            ></div>
-          </div> */}
         </div>
       )}
     </div>

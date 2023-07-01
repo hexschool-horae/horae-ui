@@ -14,7 +14,6 @@ import { Menu } from 'primereact/menu'
 
 interface IHeaderProps {
   boardId?: string
-  theme?: string
 }
 
 const boardRouters = [
@@ -24,12 +23,12 @@ const boardRouters = [
   '/board/boardWithoutPermission',
 ]
 
-const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
+const Header: FC<IHeaderProps> = ({ boardId }) => {
   const router = useRouter()
   const { pathname } = router
   const dispatch = useDispatch<AppDispatch>()
   const profile = useAppSelector(state => state.user.profile)
-  const boardThemeColor = useAppSelector(state => state.user.themeColor)
+  const { themeColor: theme, textColor } = useAppSelector(state => state.board.themeColor)
   const [avatorDisplayName, setAvatorDisplayName] = useState('')
   const [headerClass, setHeaderClass] = useState('')
   const [headerColor, setHeaderColor] = useState('')
@@ -47,11 +46,11 @@ const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
   useEffect(() => {
     if (boardRouters.includes(pathname)) {
       if (['theme1', 'theme2', 'theme3'].indexOf(theme) > -1) {
-        setHeaderClass(`${headerThemeMapping[theme]} text-white`)
+        setHeaderClass(`${headerThemeMapping[theme]}`)
         setHeaderColor('')
-      } else if (boardThemeColor?.themeColor) {
+      } else if (theme) {
         setHeaderClass('')
-        setHeaderColor(boardThemeColor?.themeColor)
+        setHeaderColor(theme)
       } else {
         setHeaderClass('bg-gray-3')
         setHeaderColor('')
@@ -60,12 +59,11 @@ const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
       setHeaderClass('bg-white')
       setHeaderColor('')
     }
-  }, [boardThemeColor, pathname, boardId, theme])
+  }, [theme, pathname, boardId, textColor])
   useEffect(() => {
     if (profile?.email) {
       const displayName = getAvatorDisplayName()
       setAvatorDisplayName(displayName)
-      console.log('displayName = ', displayName)
     }
   }, [profile])
 
@@ -108,14 +106,11 @@ const Header: FC<IHeaderProps> = ({ boardId, theme = '' }) => {
   return (
     <div
       className={`flex items-center py-4 px-[50px] text-black border-b border-white ${headerClass}`}
-      style={{ backgroundColor: headerColor, opacity: headerColor ? 0.95 : 1 }}
+      style={{ backgroundColor: headerColor }}
     >
       <Link href="/board">
         {/* <LogoSVG fillColor={boardThemeColor?.textColor ? boardThemeColor?.textColor : '#1A1A1A'}></LogoSVG> */}
-        <IconLogo
-          className="cursor-pointer"
-          style={{ color: boardThemeColor?.textColor ? boardThemeColor.textColor : '#1A1A1A' }}
-        />
+        <IconLogo className="cursor-pointer" style={{ color: textColor ? textColor : '#1A1A1A' }} />
       </Link>
       <div className="ml-auto flex items-center">
         <div

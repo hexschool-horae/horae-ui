@@ -120,7 +120,6 @@ export default function CardDetailComments() {
     }))
     setComments(list)
     clearStatus()
-    console.log('comment = ', comments)
   }, [socketComments])
 
   return (

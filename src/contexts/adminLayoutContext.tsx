@@ -41,7 +41,6 @@ const AdminLayoutContextProvider = ({ children }: AdminLayoutContextProviderProp
       if (!response) return
       const data = response.data
       setUserBoardsData(data)
-      console.log(' handleGetUserBoardsData userBoardsData', userBoardsData)
     } catch (error) {
       console.error('Error fetching user boards data:', error)
     }

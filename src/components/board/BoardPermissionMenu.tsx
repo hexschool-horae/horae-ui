@@ -54,7 +54,6 @@ export default function BoardPermissionMenu() {
   const dispatch = useAppDispatch()
 
   const onClick = (event: MouseEvent, viewSet: 'public' | 'private' | 'workspace') => {
-    console.log(boardId, viewSet)
     // return
     dispatch(socketServiceActions.modifyBoardViewPermission({ boardId, viewSet }))
     menu?.current?.hide(event)

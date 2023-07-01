@@ -80,11 +80,8 @@ const BoardCard = ({
   isSorting?: boolean
   transform?: Transform
   transition?: string | null
-  // over
-  // overIndex
 }) => {
   const router = useRouter()
-  // console.log(BoardCardItem)
 
   const getPriorityColor = (val: string) => {
     switch (val) {

@@ -21,7 +21,6 @@ export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
   const token = useAppSelector(state => state.user.token) || ''
   const socketFileList = useAppSelector(state => state.board.cardDetail?.attachments)
   const selectedFileList: IAttachment[] = socketFileList as IAttachment[]
-  const [fileList] = useState<IAttachment[]>(selectedFileList ?? [])
   const [showFileConfirmation, setShowFileConfirmation] = useState(false)
   const [confirmConfig, setConfirmConfig] = useState({ message: '' })
   const [fileId, setFileId] = useState('')
@@ -29,8 +28,6 @@ export default function CardDetailFiles({ cardId }: ICardDetailFileProps) {
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    const selectedFiles = fileList
-    console.log(selectedFiles)
   }
 
   const handleRemoveFile = (index: number, fileId: string) => {

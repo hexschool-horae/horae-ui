@@ -53,7 +53,6 @@ export default function WorkSpaceList({ userBoardItem, handleGetUserBoardsData }
   }
 
   const handleSettings = (value: string) => {
-    // console.log("value", value)
     if (value === 'board') {
       router.push(`/workspace/${userBoardItem._id}/home`)
     } else if (value === 'members') {

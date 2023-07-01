@@ -47,7 +47,6 @@ instance.interceptors.response.use(
 async function post<T>(url: string, data?: unknown | null, isAuth = true) {
   try {
     if (store === null) throw new Error('data from redux-toolkit store is null!')
-    console.log(store)
     // 取得store中的state
     const rootState: RootState = store.getState()
 

@@ -58,7 +58,6 @@ export default function WorkSpaceModel({ visible, onHide, setVisible }: Props) {
   }
 
   const handleCreateWorkspace = async (reqData: IWorkspaceFormReq) => {
-    console.log('reqData', reqData)
     const result = await post<IWorkspaceId>('/work-space', reqData)
     if (!result) return
 

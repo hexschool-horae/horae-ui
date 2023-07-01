@@ -9,7 +9,6 @@ import store from '@/app/store'
 import { boardSliceActions } from '@/slices/boardSlice'
 import { errorSliceActions } from '@/slices/errorSlice'
 import { dialogSliceActions } from '@/slices/dialogSlice'
-import { updateUserTheme } from '@/slices/userSlice'
 
 let boardSocket: Socket
 
@@ -501,7 +500,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
 
     if (data.code !== -1) {
       // store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
-      store.dispatch(updateUserTheme({ themeColor: data.result.covercolor, textColor: '' }))
+      store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -521,7 +520,7 @@ export const useBoardService = (namespace: string, boardId: string, token: strin
     if (data.code !== -1) {
       //  清空封面、清空主題背景
       store.dispatch(boardSliceActions.updateBoardCover(''))
-      store.dispatch(updateUserTheme({ themeColor: '', textColor: '' }))
+      store.dispatch(boardSliceActions.updateBoardTheme({ themeColor: data.result.covercolor, textColor: '' }))
     } else {
       const message: string = data.data.message
       store.dispatch(
@@ -741,7 +740,6 @@ const archiveBoardList = (payload: interfaces.IArchiveBoardListPayload) => {
 
 // 新增卡片 todo 標題
 const addNewTodoTitle = (payload: interfaces.IAddNewTodoTitle) => {
-  console.log(payload)
   boardSocket.emit(SOCKET_EVENTS_ENUM.ADD_CARD_TODO_TITLE, payload)
 }
 

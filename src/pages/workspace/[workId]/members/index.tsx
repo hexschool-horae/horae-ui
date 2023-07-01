@@ -95,7 +95,6 @@ export default function Members() {
       const response = await GET_WORKSPACE_MEMBERS_BY_ID(workId)
       if (!response) return
       const data = response.data.members ?? []
-      console.log('response', response)
       dispatch(
         setWorkspaceData({
           viewSet: response.data.viewSet,
@@ -110,8 +109,6 @@ export default function Members() {
         status: '',
         _id: '',
       })
-
-      console.log('members', members)
     } catch (e: any) {
       // 401 msg	此為私人看板，訪客請先登入
       // 403 msg	此為私人看板，您不是看板成員，不可查看
@@ -142,7 +139,6 @@ export default function Members() {
   }
   // 刪除成員 API
   const handleCallDeleteMember = async (memberId: string) => {
-    console.log('delete', memberId)
     const response = await DELETE_WORKSPACE_MEMBER(workspaceId, { userId: memberId })
     if (!response) return
     handlerCallGetWorkPaceMembers(workspaceId)
@@ -163,7 +159,6 @@ export default function Members() {
       [memberId]: value,
     }))
 
-    console.log('req', req)
     setShowAddMembersConfirmation(true) // 顯示確認對話框
     setConfirmConfig({ message: '確定要更改成員權限嗎?', type: 'add-member' })
   }
@@ -195,7 +190,6 @@ export default function Members() {
     }
 
     setShowAddMembersConfirmation(false) // 隱藏確認對話框
-    console.log('Accept')
   }
 
   const reject = () => {
