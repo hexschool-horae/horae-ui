@@ -2,6 +2,8 @@ import style from './cardPopups.module.scss'
 import { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { InputNumber, InputNumberChangeEvent } from 'primereact/inputnumber'
+import { InputSwitch } from 'primereact/inputswitch'
+import { Divider } from 'primereact/divider'
 import { Button } from 'primereact/button'
 import { useAppSelector } from '@/hooks/useAppStore'
 import { useCardDetail } from '@/contexts/cardDetailContext'
@@ -9,6 +11,7 @@ import CardPopupWrapper from './CardPopupWrapper'
 import IconPause from '@/assets/icons/icon_pause.svg'
 import IconClose from '@/assets/icons/icon_close.svg'
 import IconRestart from '@/assets/icons/icon_restart.svg'
+import IconPlay from '@/assets/icons/icon_play.svg'
 
 interface ICardPopupPomodoroProps {
   label: string
@@ -19,6 +22,7 @@ interface INewTimer {
   count: number
   work: number
   break: number
+  isAuto: boolean
 }
 
 export default function CardPopupPomodoro({ label }: ICardPopupPomodoroProps) {
@@ -30,6 +34,7 @@ export default function CardPopupPomodoro({ label }: ICardPopupPomodoroProps) {
     count: 1,
     work: 25,
     break: 5,
+    isAuto: true,
   })
 
   const handleChange = (e: InputNumberChangeEvent, name: string) => {
@@ -149,6 +154,22 @@ export default function CardPopupPomodoro({ label }: ICardPopupPomodoroProps) {
               />
             </div>
           </div>
+          <Divider />
+          <div className="flex items-center gap-5 pl-8">
+            <p>自動開始番茄鐘</p>
+            <InputSwitch
+              checked={newTimer.isAuto}
+              onChange={e => {
+                const val = e.value as boolean
+                setNewTimer(prev => {
+                  return {
+                    ...prev,
+                    isAuto: val,
+                  }
+                })
+              }}
+            />
+          </div>
           <Button
             type="submit"
             label="確定"
@@ -182,6 +203,7 @@ const Timer = ({ newTimer, onReset }: ITimerProps) => {
   const [time, setTime] = useState(0)
   const [key, setKey] = useState(0)
   const [count, setCount] = useState(0)
+  // let reStartTimeout: ReturnType<typeof setTimeout>;
 
   const alarmSound = useMemo(() => {
     return new Audio('/clock-alarm.mp3')
@@ -239,7 +261,7 @@ const Timer = ({ newTimer, onReset }: ITimerProps) => {
     setStartCountdown(false)
 
     if (activeTimer === 'break' && count === 1) {
-      setTimeout(() => resetTimer(), 2500)
+      setTimeout(() => resetTimer(), 2000)
       return
     }
 
@@ -253,6 +275,10 @@ const Timer = ({ newTimer, onReset }: ITimerProps) => {
     }
 
     replayTimer()
+
+    if (newTimer.isAuto) {
+      setTimeout(() => startTimer(), 1000)
+    }
   }
 
   function stopAlarm() {
@@ -268,6 +294,9 @@ const Timer = ({ newTimer, onReset }: ITimerProps) => {
     setTimerTime(activeTimer)
     setCount(newTimer.count)
     setKey(prev => prev + 1)
+    if (newTimer.isAuto) {
+      startTimer()
+    }
   }, [])
 
   return (
@@ -314,16 +343,27 @@ const Timer = ({ newTimer, onReset }: ITimerProps) => {
           className={`${style.pomodoro_func_btn} ${!state.maximize && 'hidden'}`}
           onClick={replayTimer}
         />
-        <Button
-          icon={IconPause}
-          rounded
-          outlined
-          aria-label="Pause"
-          className={`${style.pomodoro_func_btn} ${style.lg}  
-						${!startCountdown && 'bg-secondary-4 border-secondary-3'}
-					`}
-          onClick={handlePauseTimer}
-        />
+        {startCountdown ? (
+          <Button
+            icon={IconPause}
+            rounded
+            outlined
+            aria-label="Pause"
+            className={`${style.pomodoro_func_btn} ${style.lg}`}
+            onClick={handlePauseTimer}
+          />
+        ) : (
+          <Button
+            icon={IconPlay}
+            rounded
+            outlined
+            aria-label="Play"
+            className={`${style.pomodoro_func_btn} ${style.lg}  
+              bg-secondary-4 border-secondary-3
+              `}
+            onClick={handlePauseTimer}
+          />
+        )}
 
         <Button
           icon={IconClose}

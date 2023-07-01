@@ -26,9 +26,10 @@ type TStep = 'list' | 'create' | 'edit'
 
 const tagColorList = ['#ffe4e2', '#ffe1d6', '#fff1bc', '#D8F9C7', '#e8f1fc', '#f2e8fc', '#fce8f7', '#eaeaea', '#f7f7f7']
 
-export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsProps) {
+export default function CardPopupTags({ page, dispatch }: ICardPopupTagsProps) {
   const appDispatch = useAppDispatch()
   const socketBoardTags = useAppSelector(state => state.board.boardTags)
+  const socketCardTags = useAppSelector(state => state.board.cardDetail?.tags) || []
 
   const [currentStep, setCurrentStep] = useState<TStep>('list')
   const [tagList, setTagList] = useState<ITag[]>([])
@@ -60,8 +61,8 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
   }, [socketBoardTags])
 
   const isActiveTag = (tag: string) => {
-    if (page !== 'card' || dispatch == undefined) return true
-    return state?.cardDetail.tags.some(cardTag => cardTag._id === tag)
+    if (page !== 'card' || cardId == undefined) return true
+    return socketCardTags.some(cardTag => cardTag._id === tag)
   }
 
   const filteredTags = useMemo(() => {
@@ -230,7 +231,7 @@ export default function CardPopupTags({ page, state, dispatch }: ICardPopupTagsP
       ) : (
         <>
           <div className="h-[120px] mb-5 ">
-            <div className="flex justify-center items-center h-[120px] bg-gray-100 absolute left-0 right-0">
+            <div className="flex justify-center items-center h-[136px] -translate-y-[20px] bg-gray-100 absolute left-0 right-0">
               <Chip
                 label={tagTitle}
                 className={`drop-shadow-md text-secondary-3 ${style.tag}`}

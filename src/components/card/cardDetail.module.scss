@@ -42,7 +42,18 @@
     padding-left: 30px;
   }
   pre {
-    background-color: transparent !important;
+    background-color: #f8f8ff !important;
+  }
+  code {
+    background-color: #f8f8ff !important;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0 !important;
   }
 }
 .editor_overlay {
