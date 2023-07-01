@@ -100,7 +100,11 @@ const BoardCard = ({
     <Link className={classNames({ 'disabled-link': isDragging })} href={`/board/${router.query.boardId}/?cardId=${id}`}>
       <div
         className={classNames(
-          { 'h-[152px]': tags.length > 0 || priority != '', 'opacity-50': title === '' },
+          {
+            'h-[152px]': tags.length > 0 || priority != '',
+            'h-[56px]': tags.length === 0 && priority == '',
+            'opacity-50': title === '',
+          },
           'w-[254px] flex flex-col justify-between rounded-md  bg-white p-4 mb-3'
         )}
       >

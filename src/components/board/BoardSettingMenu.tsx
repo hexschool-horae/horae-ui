@@ -14,6 +14,7 @@ import Style from './BoardSettingMenu.module.scss'
 import CardPopupTags from '../card/CardPopupTags'
 import CoverSelector from './CoverSelector'
 import { POST_BOARD_INVITATION_LINK_BY_ID } from '@/apis/axios-service'
+import { classNames } from 'primereact/utils'
 
 const BoardAboutTemplate = () => {
   const userAvatar = useAppSelector(state => state.user.profile.avatar)
@@ -102,15 +103,20 @@ const settingData1Items = [
   { mainLabel: '標籤', subTemplate: <LabelListTemplate /> },
 ]
 
-const setting1Items = settingData1Items.map((item, i) => ({
-  label: item.mainLabel,
-  items: [{ template: item.subTemplate }],
-  template: (
-    <div className={Style.setting_item} key={i}>
-      <div className={Style.setting_item_label}>{item.mainLabel}</div>
-    </div>
-  ),
-}))
+const setting1Items = () => {
+  const token = useAppSelector(state => state.user.token) || ''
+  return settingData1Items.map((item, i) => ({
+    label: item.mainLabel,
+    items: [{ template: item.subTemplate }],
+    template: (
+      <>
+        <div className={classNames(Style.setting_item, { hidden: !token && i > 0 })} key={i}>
+          <div className={Style.setting_item_label}>{item.mainLabel}</div>
+        </div>
+      </>
+    ),
+  }))
+}
 
 // const setting2Items = {
 //   label: '新增看板背景',
@@ -154,13 +160,12 @@ export default function BoardSettingMenu() {
     {
       template: () => <div style={{ borderTop: '1px solid #dee2e6', margin: '0 0 1.25rem 0' }}></div>,
     },
-    ...setting1Items,
+    ...setting1Items(),
     {
       label: '新增看板背景',
       items: [{ template: <CoverSelector /> }],
-      disabled: !token,
       template: (
-        <div className={Style.setting_item}>
+        <div className={classNames(Style.setting_item, { hidden: !token })}>
           <div className={Style.setting_item_label}>更換背景</div>
         </div>
       ),
