@@ -98,6 +98,7 @@ export interface ISingleBoardInterface {
       userId: {
         _id: string
         name: string
+        email?: string
       }
       role: string
       _id: string
