@@ -16,7 +16,7 @@ export const injectStore = (_store: EnhancedStore) => {
   store = _store
 }
 
-const baseURL = 'https://horae-api-5x0d.onrender.com/'
+const baseURL = 'horae-api.zeabur.app/'
 
 const instance: AxiosInstance = axios.create({
   baseURL,
